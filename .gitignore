@@ -1,0 +1,23 @@
+# Credenciales y sesion de Strava: nunca deben subirse.
+connector/.env
+connector/.tokens.json
+
+# Crudo descargado de la API (pesado y regenerable con sync.mjs).
+data/raw/
+
+# Datos incrustados para abrir la pagina sin servidor (se regenera con build.mjs --js).
+datos.js
+
+node_modules/
+.DS_Store
+Thumbs.db
+
+ano2026_datos.min.anterior.json
+ano2026_datos.min copy.json
+
+# Datos personales de entrenamiento: el repositorio es publico. Se generan en local con el conector.
+ano2026_datos*.json
+index.original.html
+
+# Logo de Strava (marca registrada): no se redistribuye.
+strava.png
