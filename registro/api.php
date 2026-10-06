@@ -2,9 +2,26 @@
 // api.php — registro de comidas: sube foto + descripción, lista y sirve fotos. Todo con token.
 declare(strict_types=1);
 header('X-Content-Type-Options: nosniff');
-$cfg = @include __DIR__ . '/config.php';
+// Almacén persistente, FUERA de public_html (Hostinger borra public_html en cada deploy).
+// Orden: 1) variable MISTRAVA_STORE si está definida; 2) carpeta 'mistrava-store' a la par
+// de public_html (auto-detectada subiendo por el árbol); 3) __DIR__ (desarrollo local).
+function mistrava_store(): string {
+  $env = (string)(getenv('MISTRAVA_STORE') ?: ($_SERVER['MISTRAVA_STORE'] ?? ''));
+  if ($env !== '') return rtrim($env, '/');
+  $p = __DIR__;
+  for ($i = 0; $i < 8; $i++) {
+    if (basename($p) === 'public_html') return dirname($p) . '/mistrava-store';
+    $padre = dirname($p);
+    if ($padre === $p) break;            // llegamos a la raíz del sistema
+    $p = $padre;
+  }
+  return __DIR__;                        // local: todo junto como hasta ahora
+}
+$store = mistrava_store();
+$cfg = @include $store . '/config.php';
 $token = is_array($cfg) ? (string)($cfg['token'] ?? '') : '';
-$dir = __DIR__ . '/datos';
+$dir = $store . '/datos';
+if (!is_dir($dir)) @mkdir($dir, 0775, true);
 $indice = $dir . '/indice.json';
 
 function salir(int $c, array $d): never { http_response_code($c); header('Content-Type: application/json; charset=utf-8'); echo json_encode($d, JSON_UNESCAPED_UNICODE); exit; }

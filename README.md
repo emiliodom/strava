@@ -11,7 +11,7 @@ Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma
 Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
 ```
 
-> **Versión 0.10.0** · ver [CHANGELOG.md](CHANGELOG.md)
+> **Versión 0.10.1** · ver [CHANGELOG.md](CHANGELOG.md)
 
 ## Los datos son públicos a propósito
 

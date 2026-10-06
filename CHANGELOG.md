@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.10.1] — 2026-10-06
+
+### Corregido
+- **Persistencia del registro de comidas en el hosting.** El deploy de Hostinger borra todo el contenido de `public_html` en cada publicación, así que el token (`config.php`) y las fotos subidas (`datos/`) no sobrevivían por estar en `.gitignore` (ignorar un archivo no lo protege del borrado). `registro/api.php` ahora guarda el token y las fotos en un almacén **fuera de `public_html`**: usa `MISTRAVA_STORE` si está definida, o detecta sola una carpeta `mistrava-store` a la par de `public_html`, y cae a `__DIR__` en local. Sólo hay que crear esa carpeta con `config.php` una vez; sobrevive a los deploys.
+
 ## [0.10.0] — 2026-10-06
 
 ### Añadido
