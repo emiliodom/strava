@@ -1,0 +1,16 @@
+{
+  "name": "strava-analyzer-connector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Conector propio de Strava: OAuth, descarga incremental y generacion del JSON que consume la pagina.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "auth": "node auth.mjs",
+    "sync": "node sync.mjs",
+    "build": "node build.mjs --js",
+    "serve": "node serve.mjs",
+    "deploy": "node deploy.mjs",
+    "actualizar": "node sync.mjs && node build.mjs --js"
+  }
+}
