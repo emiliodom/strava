@@ -40,24 +40,14 @@
     return p.join(' · ') || F.num(r.min, 0) + ' min';
   }
 
-  var RUTINAS = {
-    A: { nom: 'pierna y empuje', min: 25, items: ['3 rondas', 'Sentadilla búlgara con mancuerna de 25 lb · 8–10 por pierna', 'Peso muerto rumano a una pierna con kettlebell · 8–10 por lado', 'Flexiones con soportes · 8–15', 'Press de hombros con mancuernas · 8–10'] },
-    B: { nom: 'espalda y cadera', min: 25, items: ['3 rondas', 'Dominadas con banda o negativas de 4 s · 3–6', 'Remo inclinado con la barra · 10–12', 'Puente de glúteo con la barra · 12–15', 'Balanceo de kettlebell · 20'] },
-    C: { nom: 'boxeo', min: 20, items: ['5 rounds de 3 min en el saco, 1 min de pausa', '3 × 2 min de cuerda'] }
-  };
-  function rutinaHtml(tag) {
-    var r = RUTINAS[tag];
-    return r ? "<details><summary><b>Fuerza " + tag + '</b> · ' + esc(r.nom) + ' (' + r.min + " min)</summary><ul>" +
-      r.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></details>' : '';
-  }
-
   function render(D) {
     var pid = planActivo(), hoyISO = isoLocal(new Date());
     var dias = App.calExport.dias(pid);
     var ultimoDato = D.dias.length ? D.dias[D.dias.length - 1].iso : null;
     var hoyDia = dias.filter(function (d) { return d.fecha === hoyISO; })[0];
-    var botones = "<div role='group' style='margin-bottom:1rem'>" + ['estructurado', 'brutal'].map(function (id) {
-      return "<button data-hoy-plan='" + id + "' class='" + (id === pid ? '' : 'outline secondary') + "'>" + (id === 'brutal' ? 'Brutal' : 'Normal') + '</button>';
+    var NOMBRE = { estructurado: 'Normal', intermedio: 'Intermedio', brutal: 'Brutal' };
+    var botones = "<div role='group' style='margin-bottom:1rem'>" + ['estructurado', 'intermedio', 'brutal'].map(function (id) {
+      return "<button data-hoy-plan='" + id + "' class='" + (id === pid ? '' : 'outline secondary') + "'>" + NOMBRE[id] + '</button>';
     }).join('') + '</div>';
 
     var cab = "<h3>Lo que te toca hoy</h3>" + botones;
@@ -72,11 +62,12 @@
     var partes = [];
     if (hoyDia.km >= 1) partes.push(F.num(hoyDia.km, 1) + ' km');
     if (hoyDia.minBici) partes.push(hoyDia.minBici + ' min de bici');
+    var obj = App.actividad ? App.actividad.corto(hoyDia, D) : '';
     var html = cab + U.note(esc(tipo.nom || 'Sesión') + ' · ' + esc(fecha(hoyISO)),
-      '<b>' + esc(hoyDia.sesion) + '</b><br>' + (partes.length ? esc(partes.join(' + ')) + '. ' : '') + 'Ventana: ' + esc(ventana) + '.', hoyDia.tipo === 'C' ? 'warn' : 'ok');
+      '<b>' + esc(hoyDia.sesion) + '</b><br>' + (partes.length ? esc(partes.join(' + ')) + '. ' : '') +
+      (obj ? 'Objetivo: <b>' + esc(obj) + '</b>. ' : '') + 'Ventana: ' + esc(ventana) + '.', hoyDia.tipo === 'C' ? 'warn' : 'ok');
 
-    var m = /fuerza ([ABC])/.exec(hoyDia.sesion);
-    if (m) html += rutinaHtml(m[1]);
+    if (App.actividad) html += U.acc('Detalle de la actividad, por deporte', App.actividad.detalle(hoyDia, D), true);
 
     if (App.cuerpo && App.cuerpo.metaDia) {
       var n = App.cuerpo.metaDia(pid, hoyDia);

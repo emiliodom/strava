@@ -3,6 +3,17 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.9.0] — 2026-10-06
+
+### Añadido
+- Detalle de la actividad por deporte: al tocar cualquier día del calendario (y en «Lo que te toca hoy») se abre la referencia de qué hacer —ritmo objetivo al correr calculado desde tus zonas, intensidad en la bici (RPE/zonas/FTP) y la rutina de fuerza en casa— reutilizada como componente (`assets/actividad.js`).
+- Tercer camino **Ruta intermedia**, entre la estructurada y la brutal, con calidad de verdad y un día libre real. Los tres aparecen en el calendario, en «Lo que te toca hoy» y en la comparación de riesgo (ACWR).
+- Seis tipos de sesión nuevos: HIIT (VO₂máx), Sprints, Trail duro, FTP en bici, Sprints en bici y Montaña dura, con color propio en la leyenda y referencia específica.
+- Registro real por día: el plan ya no se edita; cada día muestra sus km e intensidad como referencia fija y un campo libre para anotar lo que hiciste de verdad (km, minutos, ritmo/intensidad y sensaciones), con el porcentaje de desvío plan vs realidad para ver dónde se está fallando.
+
+### Cambiado
+- El modal de día pasó de «editar la sesión» a «ver detalles + registrar lo real». El botón de exportación «Deshacer mis ediciones» ahora es «Borrar mi registro real».
+
 ## [0.8.1] — 2026-10-06
 
 ### Añadido
