@@ -18,7 +18,7 @@ export NVM_DIR="$HOME/.nvm"
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$RAIZ"
 
-git pull --no-edit origin main
+git pull --rebase --autostash origin main
 ( cd connector && npm run actualizar )   # sync.mjs + build.mjs --js
 
 if git diff --quiet -- ano2026_datos.min.json; then
@@ -26,6 +26,8 @@ if git diff --quiet -- ano2026_datos.min.json; then
 else
   git add ano2026_datos.min.json
   git commit -m "datos: sync automático $(date +%F' '%H:%M)"
+  # el sync puede tardar y main avanzar entretanto: rebase antes de empujar
+  git pull --rebase --autostash origin main
   git push origin main
   echo "✓ $(date +%F' '%H:%M) datos actualizados y publicados"
 fi
