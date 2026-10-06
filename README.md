@@ -7,13 +7,16 @@ Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma
 Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
 ```
 
-> **Versión 0.5.0** · ver [CHANGELOG.md](CHANGELOG.md)
+> **Versión 0.5.1** · ver [CHANGELOG.md](CHANGELOG.md)
 
-## Tus datos no están en este repositorio
+## Los datos son públicos a propósito
 
-El repositorio es público, así que **no incluye datos de entrenamiento**: `ano2026_datos*.json`, `data/raw/` y
-`index.original.html` están en `.gitignore`. Al clonarlo, la página abrirá vacía con instrucciones hasta que
-generes tus propios datos con el conector (pasos abajo). Las credenciales de Strava tampoco se suben nunca.
+`ano2026_datos.min.json` está en el repositorio como **ejemplo real** de un análisis de ciencia del deporte aplicado
+a Strava: es el resultado de `connector/build.mjs` con las actividades de 2026 de su autor, y toda esa información
+ya es visible en su perfil de Strava. Puedes abrir la página y verla funcionando sin configurar nada.
+
+Para analizar **tus** datos, sigue los pasos de abajo: el conector genera tu propio JSON y lo sobrescribe.
+Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crudo de la API (`data/raw/`, que incluye trazados GPS).
 
 ## Qué mide
 

@@ -15,8 +15,10 @@ Thumbs.db
 ano2026_datos.min.anterior.json
 ano2026_datos.min copy.json
 
-# Datos personales de entrenamiento: el repositorio es publico. Se generan en local con el conector.
-ano2026_datos*.json
+# El JSON generado (ano2026_datos.min.json) SI se publica a proposito: es la referencia de ejemplo.
+# Se excluyen sus copias de seguridad y el crudo de la API (lleva trazados GPS).
+ano2026_datos.min.anterior.json
+ano2026_datos.min copy.json
 index.original.html
 
 # Logo de Strava (marca registrada): no se redistribuye.

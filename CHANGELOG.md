@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.5.1] — 2026-10-06
+
+### Añadido
+- `ano2026_datos.min.json` se publica como ejemplo de referencia (decisión del autor: los datos ya son públicos en Strava).
+
+### Cambiado
+- `.gitignore` sigue excluyendo credenciales, el crudo con trazados GPS y las copias de seguridad.
+
 ## [0.5.0] — 2026-10-05
 
 ### Añadido
