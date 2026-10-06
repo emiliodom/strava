@@ -3,7 +3,7 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'registro', 'recursos'];
+  var ORDEN = ['resumen', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'preparacion', 'registro', 'recursos'];
   var EN_TABBAR = ['resumen', 'carga', 'proyeccion', 'calendario', 'suenos', 'cuerpo'];
   var MODELO = null, MODS = {};
 

@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.8.1] — 2026-10-06
+
+### Añadido
+- Módulo Preparación: qué debe ocurrir 15, 10 y 5 días antes de cada evento del calendario (carrera, trail o bici), con matices por evento y la Guatemágica alineada al plan.
+
 ## [0.8.0] — 2026-10-06
 
 ### Añadido
