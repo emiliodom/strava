@@ -40,6 +40,7 @@
         kcal: a.calories || 0, ms: ms, paceSpk: ms > 0 ? 1000 / ms : null,
         maxMs: a.max_speed || 0, elapsed: (a.elapsed_time || 0) / 60,
         mkm: km > 0.5 ? (a.elevation_gain || 0) / km : null,
+        hr: a.avg_hr || null, hrMax: a.max_hr || null, cad: a.avg_cadence || null, watts: a.avg_watts || null, splits: a.splits || null,
         anomalia: anomalias[String(a.id)] || null
       };
     }).sort(function (x, y) { return x.fechaISO < y.fechaISO ? -1 : 1; });
@@ -392,7 +393,67 @@
       intensidad: zonas ? distribucionIntensidad(runs, zonas) : null,
       bici: analisisBici(base.acts),
       habitos: habitos(dias, base.acts),
+      fc: fisiologia(base.acts, null),
       est: e, extra: raw.estadisticas_extra || {}
+    };
+  }
+
+  /* ===================== 6. Fisiología (frecuencia cardiaca) ===================== */
+  // Zonas de 3 niveles sobre %FCmáx, en línea con el modelo polarizado de Seiler:
+  // Z1 por debajo del primer umbral ventilatorio (~77%), Z3 por encima del segundo (~87%).
+  var FC_LIM = { z1: 0.77, z2: 0.87 };
+
+  function fisiologia(acts, fcMaxUsuario) {
+    var runs = acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia && a.km >= 0.5; });
+    var conHr = runs.filter(function (a) { return a.hr; });
+    var maximos = acts.filter(function (a) { return a.hrMax && !a.anomalia; }).map(function (a) { return a.hrMax; });
+    // El máximo absoluto suele ser un pico del sensor óptico; el percentil 98 es más honesto.
+    var observada = maximos.length ? Math.round(S.quantile(maximos, 0.98)) : null;
+    var fcmax = fcMaxUsuario || observada;
+    if (!fcmax || !conHr.length) return { disponible: false, cobertura: { n: conHr.length, total: runs.length } };
+
+    var l1 = fcmax * FC_LIM.z1, l2 = fcmax * FC_LIM.z2;
+    var zona = function (hr) { return hr < l1 ? 'z1' : hr < l2 ? 'z2' : 'z3'; };
+    var seg = { z1: 0, z2: 0, z3: 0 }, conParciales = 0;
+
+    conHr.forEach(function (a) {
+      var sp = (a.splits || []).filter(function (s) { return s[1]; });
+      if (sp.length >= 3) { conParciales++; sp.forEach(function (s) { seg[zona(s[1])] += s[0]; }); }
+      else seg[zona(a.hr)] += a.min * 60;
+    });
+    var tot = seg.z1 + seg.z2 + seg.z3;
+    var pct = { z1: 100 * seg.z1 / tot, z2: 100 * seg.z2 / tot, z3: 100 * seg.z3 / tot };
+
+    // Eficiencia aeróbica: velocidad (m/min) por latido, sólo en salidas por debajo del umbral alto.
+    var porMes = {};
+    conHr.filter(function (a) { return a.hr < l2 && a.km >= 3; }).forEach(function (a) {
+      (porMes[a.fechaISO.slice(0, 7)] = porMes[a.fechaISO.slice(0, 7)] || []).push(a.ms * 60 / a.hr);
+    });
+    var eficiencia = Object.keys(porMes).sort().map(function (m) { return { mes: m, n: porMes[m].length, ef: S.median(porMes[m]) }; });
+
+    // Desacople: cuánto cae la eficiencia entre la primera y la segunda mitad de una salida larga.
+    var deriva = [];
+    conHr.filter(function (a) { return a.km >= 8; }).forEach(function (a) {
+      var n = Math.floor(a.km), sp = (a.splits || []).slice(0, n);
+      if (sp.length < 6 || sp.some(function (s) { return !s[1]; })) return;
+      var mid = Math.floor(sp.length / 2);
+      var ef = function (arr) { return S.mean(arr.map(function (s) { return (1000 / s[0]) * 60 / s[1]; })); };
+      var e1 = ef(sp.slice(0, mid)), e2 = ef(sp.slice(mid));
+      deriva.push({ fecha: a.fechaISO, nombre: a.nombre, km: a.km, pct: 100 * (e1 - e2) / e1 });
+    });
+    var dMed = deriva.length ? S.median(deriva.map(function (d) { return d.pct; })) : null;
+
+    // Fácil que no lo es: salidas largas y tranquilas en ritmo pero con la FC en zona 2 o 3.
+    var largas = conHr.filter(function (a) { return a.km >= 5; });
+    var largasAltas = largas.filter(function (a) { return a.hr >= l1; });
+
+    return {
+      disponible: true, fcmax: fcmax, observada: observada, usuario: !!fcMaxUsuario,
+      lim: { l1: Math.round(l1), l2: Math.round(l2) },
+      cobertura: { n: conHr.length, total: runs.length, conParciales: conParciales },
+      pct: pct, min: { z1: seg.z1 / 60, z2: seg.z2 / 60, z3: seg.z3 / 60 },
+      eficiencia: eficiencia, deriva: deriva, derivaMediana: dMed,
+      largas: { n: largas.length, altas: largasAltas.length }
     };
   }
 
@@ -404,6 +465,7 @@
     ritmoDePctVdot: ritmoDePctVdot, riegel: riegel, PCT_ZONA: PCT_ZONA,
     distribucionIntensidad: distribucionIntensidad,
     proyectarVdot: proyectarVdot, ESCENARIOS: ESCENARIOS, mesObjetivo: mesObjetivo, rampaVolumen: rampaVolumen,
+    fisiologia: fisiologia, FC_LIM: FC_LIM,
     analisisBici: analisisBici, habitos: habitos, GRUPO: GRUPO, GRUPO_NOM: GRUPO_NOM, GRUPO_COLOR: GRUPO_COLOR
   };
 })(this);
