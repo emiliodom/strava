@@ -24,7 +24,5 @@ index.original.html
 # Logo de Strava (marca registrada): no se redistribuye.
 strava.png
 
-# Escaneo corporal: fotos y medidas personales, nunca al repositorio
+# Escaneo corporal: los originales (con cara, 150 MB de DNG) no se suben; sí las fotos difuminadas y body360.js
 data/body360/
-assets/body/
-body360.js

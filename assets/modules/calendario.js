@@ -208,7 +208,7 @@
     });
 
     return h`
-      ${raw(U.modhead('3', 'Octubre y noviembre, día por día', 'Dos caminos sobre las mismas seis competencias. Puedes editar cualquier día y exportarlo a tu calendario.'))}
+      ${raw(U.modhead('3', 'Octubre y noviembre, día por día', 'Dos caminos sobre las mismas seis competencias. Puedes editar cualquier día y exportarlo a tu calendario. Ajustados a tu horario: entre semana desde las 18:00 (máx. 75 min), sábado desde las 14:00 y domingo desde las 05:00; las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360).'))}
 
       ${raw(P.CONFLICTOS.map(function (c) { return U.note(c.titulo, esc(c.texto), c.nivel); }).join(''))}
 

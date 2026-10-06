@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.7.0] — 2026-10-06
+
+### Cambiado
+- Los dos calendarios se recalculan desde hoy según tu horario real (entre semana desde las 18:00, sábado desde las 14:00, domingo desde las 05:00): sin MTB de 2 h de noche ni rutas largas que acaben a oscuras.
+- Fuerza en casa en ambos caminos (A y B; el brutal suma C de boxeo), nunca antes de calidad ni durante la semana de la Guatemágica.
+
+### Añadido
+- Rutinas A, B y C con el equipo de casa en «Cuerpo 360».
+- Se publican las fotos difuminadas y `body360.js` (los originales siguen fuera).
+
 ## [0.6.0] — 2026-10-06
 
 ### Añadido

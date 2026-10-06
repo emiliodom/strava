@@ -78,7 +78,7 @@
         'cámara a la altura del ombligo a 2 m, cuatro vistas (frente, ambos perfiles, espalda) y cinta a la altura del ombligo exhalando. ' +
         'Estas fotos mezclan pantalón, ropa interior y lentes distintos: sirven de línea base, no de comparación exacta.', 'ok') +
       U.note('Privacidad',
-        'La cara se difumina con pixelado grueso más desenfoque (no es reversible) y se borran los metadatos GPS. Las fotos y <code>body360.js</code> están en <code>.gitignore</code>: no se suben al repositorio.', 'ok') +
+        'La cara se difumina con pixelado grueso más desenfoque (no es reversible) y se borran los metadatos GPS. Los originales (con cara) no se versionan; sólo las copias difuminadas y las medidas, que el autor decidió publicar.', 'ok') +
 
       '<h3>Dos caminos para la misma meta</h3>' +
       U.tabla([{ t: 'Ruta' }, { t: 'Comer', n: 1 }, { t: 'Proteína', n: 1 }, { t: 'Por semana', n: 1 }, { t: 'Llegas a ' + F.num(meta, 0) + ' kg' }, { t: 'Cómo' }], rutas,
@@ -94,6 +94,13 @@
         '<p><b>Alrededor del entreno:</b> antes, banano con pan o tortilla con frijol; después, huevos con frijol y tortilla o pollo con arroz. Ahí van los carbohidratos; el resto del día, menos.</p>' +
         '<p><b>Proteína:</b> en 4 tomas de 30–40 g (' + F.num(1.8 * A.kg, 0) + '–' + F.num(2.2 * A.kg, 0) + ' g al día). Un huevo ≈ 6 g, una pechuga mediana ≈ 40 g, una taza de frijoles ≈ 15 g, un vaso de leche ≈ 8 g.</p>' +
         '<p><b>Calor y sodio:</b> en Retalhuleu sudarás mucho; en los entrenos largos agrega electrolitos o sal al agua.</p>'), true) +
+
+      U.acc('Rutinas en casa (fuerza A, B y C)', U.coach('Con lo que tienes en casa',
+        '<p><b>Material:</b> kettlebell 15 lb, mancuernas de 17,8 y 25 lb, barra de 40 lb en total sin soportes, bandas, barra de dominadas, rueda abdominal, soportes para flexiones/fondos, colchoneta, saco y guantes de boxeo y cuerda. Las cargas son ligeras: se compensa con <b>una pierna a la vez, tempo lento (3 s bajando) y repeticiones cerca del fallo</b> (deja 1–2 en reserva).</p>' +
+        '<p><b>Fuerza A · pierna y empuje (25 min, 3 rondas):</b> sentadilla búlgara con la mancuerna de 25 lb (8–10 por pierna) · peso muerto rumano a una pierna con la kettlebell (8–10 por lado) · flexiones con soportes (8–15) · press de hombros de pie con la barra (10–12) · rueda abdominal (6–10).</p>' +
+        '<p><b>Fuerza B · espalda y cadera (25 min, 3 rondas):</b> dominadas con banda o negativas de 4 s (3–6) · remo inclinado con la barra (10–12) · puente de glúteo con la barra, luego a una pierna (12–15) · balanceo de kettlebell (20) · elevación de talones a una pierna (15 por lado) · pájaro-perro (8 por lado).</p>' +
+        '<p><b>Fuerza C · boxeo (20 min, camino brutal):</b> 5 rounds de 3 min en el saco con 1 min de pausa + 3 × 2 min de cuerda. Es cardio y core, no fuerza máxima.</p>' +
+        '<p><b>Progresión:</b> semanas 1–2, 2 rondas; desde la 3, 3 rondas; cuando completes todas las repeticiones limpias, añade una repetición, alarga el tempo o pasa a una variante a una pierna. Con estas cargas no hay fuerza máxima: si en 2–3 meses se quedan cortas, una mancuerna ajustable es la mejor compra. Siempre después del trote fácil o en el día suave, nunca antes de una sesión de calidad ni los 6 días previos a la Guatemágica (sólo 10 min de bandas el 18).</p>')) +
 
       U.acc('Sueño', U.coach('Dormir es parte del plan',
         '<p>Dormir poco sube el apetito por azúcar y grasa y, en déficit, hace que pierdas más músculo y menos grasa. Meta: <b>7,5–9 h</b> y hora de levantarte fija, también sábado y domingo.</p>' +
