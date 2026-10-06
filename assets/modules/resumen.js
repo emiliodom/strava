@@ -29,6 +29,7 @@
     ];
 
     return h`
+      ${raw(App.hoy ? App.hoy.render(D) : "")}
       ${raw(U.modhead('', 'Dónde estás hoy', 'Cuatrocientas cincuenta y siete actividades resumidas en lo que importa.'))}
 
       ${raw(U.kpis([
@@ -54,5 +55,5 @@
     `;
   }
 
-  App.mods.push({ id: 'resumen', nom: 'Resumen', tab: 'Inicio', icono: 'M3 11l9-8 9 8M5 10v10h14V10', render: render });
+  App.mods.push({ id: 'resumen', nom: 'Resumen', tab: 'Inicio', icono: 'M3 11l9-8 9 8M5 10v10h14V10', render: render, montar: function (el) { if (App.hoy) App.hoy.montar(el); } });
 })(this);

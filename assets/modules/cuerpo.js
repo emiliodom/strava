@@ -45,12 +45,13 @@
     var cinturaCm = A.cintura;                               // body360.py ya convierte pulgadas a cm
 
     var rutas = [
-      { n: 'Camino normal', ini: hoy, def: 400, prot: 1.8, nota: 'Déficit moderado; sostenible durante meses sin dañar el rendimiento.' },
+      { n: 'Camino normal', ini: hoy, def: 400, pre: 300, prot: 1.8, nota: 'Déficit moderado; sostenible durante meses sin dañar el rendimiento.' },
       { n: 'Camino brutal', ini: new Date(carrera.getTime() + 3 * 864e5), def: 750, prot: 2.2, nota: 'Cerca del 1 % del peso por semana: el tope razonable. Dos días de mantenimiento y fecha de fin fija.' }
     ].map(function (r) {
       var porSem = r.def * 7 / 7700, sem = Math.ceil((A.kg - meta) / porSem);
       var fin = new Date(r.ini.getTime() + (sem * 7 + 7) * 864e5);
-      return [esc(r.n), F.num(A.tdee - r.def, 0) + ' kcal', F.num(r.prot * A.kg, 0) + ' g', '−' + F.num(porSem, 2) + ' kg',
+      var comer = r.pre ? F.num(A.tdee - r.pre, 0) + ' kcal hasta el 21 nov; luego ' + F.num(A.tdee - r.def, 0) : F.num(A.tdee - r.def, 0) + ' kcal';
+      return [esc(r.n), comer, F.num(r.prot * A.kg, 0) + ' g', '−' + F.num(porSem, 2) + ' kg',
         sem + ' sem · ' + fechaLarga(fin), esc(r.nota)];
     });
 
@@ -103,7 +104,7 @@
         '<p><b>Progresión:</b> semanas 1–2, 2 rondas; desde la 3, 3 rondas; cuando completes todas las repeticiones limpias, añade una repetición, alarga el tempo o pasa a una variante a una pierna. Con estas cargas no hay fuerza máxima: si en 2–3 meses se quedan cortas, una mancuerna ajustable es la mejor compra. Siempre después del trote fácil o en el día suave, nunca antes de una sesión de calidad ni los 6 días previos a la Guatemágica (sólo 10 min de bandas el 18).</p>')) +
 
       U.acc('Sueño', U.coach('Dormir es parte del plan',
-        '<p>Dormir poco sube el apetito por azúcar y grasa y, en déficit, hace que pierdas más músculo y menos grasa. Meta: <b>7,5–9 h</b> y hora de levantarte fija, también sábado y domingo.</p>' +
+        '<p>Dormir poco sube el apetito por azúcar y grasa y, en déficit, tiende a hacer que pierdas más músculo y menos grasa (estudios en déficit, efecto moderado). Meta: <b>7,5–9 h</b> y hora de levantarte fija, también sábado y domingo.</p>' +
         '<p>Último café a las 14:00. Cena ligera 2–3 h antes de dormir. Cuarto oscuro y fresco; sin pantallas 30 min antes. Si entrenas de madrugada, acuéstate antes en vez de recortar horas. Una siesta de 20 min antes de las 16:00 ayuda sin robarle a la noche.</p>')) +
 
       U.acc('Estrés', U.coach('Entrenar todos los días también es estrés',
@@ -114,6 +115,27 @@
         '<p>Si bajas peso sin fuerza pierdes músculo junto con la grasa. Dos sesiones de 40 min: sentadilla o prensa, peso muerto rumano, remo, press, plancha y cargas de campesino. Tu brazo (' + F.num(A.brazo, 0) + ' cm) y tu muslo (' + F.num(A.muslo, 0) + ' cm) deberían mantenerse o subir mientras la cintura baja: esa es la señal de que vas bien.</p>' +
         '<p>En el camino brutal, tres sesiones y los días de mantenimiento calórico en las semanas de más carga.</p>'));
   }
+
+
+  /* Metas de comida de un día del plan (para «Lo que te toca hoy»). Mismo cálculo que la tabla de rutas. */
+  function metaDia(pid, dia) {
+    var B = global.__BODY360__, at = B && Object.keys(B)[0], e = at && B[at][B[at].length - 1];
+    if (!e) return null;
+    var A = analizar(e.medidas), f = dia.fecha, brutal = pid === 'brutal', def, modo;
+    if (f >= '2026-11-16' && f <= '2026-11-23') { def = 0; modo = 'semana de carrera: sin déficit'; }
+    else if (brutal && f < '2026-11-24') { def = 0; modo = 'mantenimiento hasta la carrera'; }
+    else if (brutal) { def = 750; modo = 'déficit brutal'; }
+    else if (f < '2026-11-21') { def = 300; modo = 'déficit suave (−300)'; }
+    else { def = 400; modo = 'déficit moderado (−400)'; }
+    if (def && dia.evento) { def = 0; modo = 'día de evento: sin déficit'; }
+    var kcal = A.tdee - def, prot = (brutal && def ? 2.2 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
+    var carbG = Math.max(120, (kcal - prot * 4 - grasa * 9) / 4);
+    var duro = /^(Q|C|L|R|E)$/.test(dia.tipo) && (dia.km >= 12 || dia.minBici >= 90 || dia.evento);
+    return { kcal: kcal, modo: modo, prot: prot, carbG: carbG,
+      carbTxt: duro ? 'día largo: carbohidrato antes y durante' : 'reparte con el entreno',
+      nota: 'Estimación (Mifflin–St Jeor ×1,55). Grasa ≈ ' + F.num(grasa, 0) + ' g. Ajusta con tu peso y cintura cada 2–4 semanas.' };
+  }
+  App.cuerpo = { metaDia: metaDia, analizar: analizar };
 
   App.mods.push({ id: 'cuerpo', nom: 'Cuerpo 360', tab: 'Cuerpo', icono: 'M12 4a2 2 0 100 4 2 2 0 000-4zM8 21l1.5-8L7 11l5-2 5 2-2.5 2L16 21', render: render });
 })(this);

@@ -148,7 +148,7 @@
   /* ---- frecuencia cardiaca: lo que el ritmo no enseña ---- */
   function seccionFc(D) {
     var pref = Number(App.data.pref('fcmax', 0)) || null;
-    var fc = M.fisiologia(D.acts, pref);
+    var fc = M.fisiologia(D.acts, pref, App.data.atleta().edad);
     var cob = fc.cobertura;
     if (!fc.disponible) {
       return U.note('Frecuencia cardiaca', 'Sólo ' + cob.n + ' de ' + cob.total + ' carreras tienen FC; hacen falta más para sacar conclusiones.', 'warn');
@@ -157,7 +157,7 @@
     var out = '<h3>Lo que dice tu corazón</h3>';
     out += U.kpis([
       U.kpi('Carreras con FC', cob.n + ' / ' + cob.total, 'Sólo desde ' + (nivelEf.length ? F.mesLargo(nivelEf[0].mes) : 'hace poco') + ' (' + F.num(100 * cob.n / cob.total, 0) + '%)'),
-      U.kpi('FC máxima usada', F.num(fc.fcmax, 0), fc.usuario ? 'la que pusiste en Perfil' : 'percentil 98 de tus máximos'),
+      U.kpi('FC máxima usada', F.num(fc.fcmax, 0), fc.usuario ? 'la que pusiste en Perfil' : fc.acotada ? 'tope por edad (Tanaka); observada ' + fc.observada : 'percentil 98 de tus máximos'),
       U.kpi('Límites de zona', fc.lim.l1 + ' / ' + fc.lim.l2, 'lpm: fácil · umbral · alta')
     ], 'k3');
     out += C.hbars([
@@ -167,7 +167,7 @@
     ], { max: 100 });
     if (!fc.usuario) {
       out += U.note('Este reparto depende de tu FC máxima y la mía es una estimación',
-        'Tomé ' + fc.fcmax + ' lpm, el percentil 98 de tus máximos registrados. Los relojes de muñeca suelen inflar los picos, y si tu máxima real es más baja, ' +
+        (fc.acotada ? 'Tus máximos registrados llegan a ' + fc.observada + ' lpm, muy por encima de lo esperable a tu edad (208 − 0,7·edad ± 10; Tanaka 2001), así que los traté como picos del sensor y usé ' + fc.fcmax + ' lpm. ' : 'Tomé ' + fc.fcmax + ' lpm, el percentil 98 de tus máximos registrados. ') + 'Los relojes de muñeca suelen inflar los picos, y si tu máxima real es más baja, ' +
         'una parte del tiempo que aparece como fácil sería en realidad umbral. Si la conoces de una prueba o de una carrera a tope, ' +
         'ponla en <b>Perfil</b> y todo se recalcula.', 'warn');
     }

@@ -1,0 +1,4 @@
+# El código del servidor no se sirve; las fotos sólo salen por api.php con token.
+<FilesMatch "^config\.php$">
+  Require all denied
+</FilesMatch>

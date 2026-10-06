@@ -26,3 +26,10 @@ strava.png
 
 # Escaneo corporal: los originales (con cara, 150 MB de DNG) no se suben; sí las fotos difuminadas y body360.js
 data/body360/
+
+# Registro de comidas: el token y las fotos reales no se suben.
+registro/config.php
+registro/datos/*
+!registro/datos/.htaccess
+!registro/datos/.gitkeep
+data/comidas/

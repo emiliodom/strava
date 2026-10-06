@@ -36,5 +36,11 @@
     var p = leerPrefs(); p[k] = v; return guardarPrefs(p);
   }
 
-  App.data = { cargar: cargar, RUTA: RUTA, pref: pref, setPref: setPref, leerPrefs: leerPrefs, guardarPrefs: guardarPrefs };
+  // Edad y peso del atleta: el perfil manda; si no está relleno, el último escaneo de Cuerpo 360.
+  function atleta() {
+    var B = global.__BODY360__, k = B && Object.keys(B)[0], e = k && B[k][B[k].length - 1], m = (e && e.medidas) || {};
+    return { edad: pref('edad', null) || m.age || null, peso: pref('peso', null) || m.weight || null };
+  }
+
+  App.data = { atleta: atleta, cargar: cargar, RUTA: RUTA, pref: pref, setPref: setPref, leerPrefs: leerPrefs, guardarPrefs: guardarPrefs };
 })(this);

@@ -143,17 +143,14 @@
     });
   }
 
-  function clasifMonotonia(v) {
-    if (v < 1.5) return { nivel: 'ok', txt: 'variada' };
-    if (v < 2.0) return { nivel: 'warn', txt: 'poco variada' };
-    return { nivel: 'bad', txt: 'monótona' };
-  }
+  // Devuelven el nivel ('ok' | 'warn' | 'bad' | 'mut'); los módulos lo comparan como texto.
+  function clasifMonotonia(v) { return v == null ? 'mut' : v < 1.5 ? 'ok' : v < 2.0 ? 'warn' : 'bad'; }
   function clasifAcwr(v) {
-    if (v == null) return { nivel: 'mut', txt: 'sin dato' };
-    if (v < 0.8) return { nivel: 'warn', txt: 'desentrenando' };
-    if (v <= 1.3) return { nivel: 'ok', txt: 'zona segura' };
-    if (v <= 1.5) return { nivel: 'warn', txt: 'subiendo rápido' };
-    return { nivel: 'bad', txt: 'riesgo alto' };
+    if (v == null) return 'mut';
+    if (v < 0.8) return 'warn';          // desentrenando
+    if (v <= 1.3) return 'ok';           // zona segura (Gabbett 2016)
+    if (v <= 1.5) return 'warn';         // subiendo rápido
+    return 'bad';
   }
 
   /* ===================== 4. VDOT (Daniels) y predicciones ===================== */
@@ -403,13 +400,16 @@
   // Z1 por debajo del primer umbral ventilatorio (~77%), Z3 por encima del segundo (~87%).
   var FC_LIM = { z1: 0.77, z2: 0.87 };
 
-  function fisiologia(acts, fcMaxUsuario) {
+  function fisiologia(acts, fcMaxUsuario, edad) {
     var runs = acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia && a.km >= 0.5; });
     var conHr = runs.filter(function (a) { return a.hr; });
     var maximos = acts.filter(function (a) { return a.hrMax && !a.anomalia; }).map(function (a) { return a.hrMax; });
     // El máximo absoluto suele ser un pico del sensor óptico; el percentil 98 es más honesto.
     var observada = maximos.length ? Math.round(S.quantile(maximos, 0.98)) : null;
+    // Tanaka 2001: FCmax ≈ 208 − 0,7·edad, con desviación de ±10 lpm. Un máximo observado muy por encima suele ser un pico del sensor.
+    var tope = edad ? Math.round(208 - 0.7 * edad) + 10 : null, acotada = false;
     var fcmax = fcMaxUsuario || observada;
+    if (!fcMaxUsuario && tope && observada > tope) { fcmax = tope; acotada = true; }
     if (!fcmax || !conHr.length) return { disponible: false, cobertura: { n: conHr.length, total: runs.length } };
 
     var l1 = fcmax * FC_LIM.z1, l2 = fcmax * FC_LIM.z2;
@@ -448,7 +448,7 @@
     var largasAltas = largas.filter(function (a) { return a.hr >= l1; });
 
     return {
-      disponible: true, fcmax: fcmax, observada: observada, usuario: !!fcMaxUsuario,
+      disponible: true, fcmax: fcmax, observada: observada, usuario: !!fcMaxUsuario, acotada: acotada,
       lim: { l1: Math.round(l1), l2: Math.round(l2) },
       cobertura: { n: conHr.length, total: runs.length, conParciales: conParciales },
       pct: pct, min: { z1: seg.z1 / 60, z2: seg.z2 / 60, z3: seg.z3 / 60 },

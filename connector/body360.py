@@ -10,7 +10,7 @@ BASE = os.path.join(RAIZ, 'data', 'body360')
 SALIDA = os.path.join(RAIZ, 'assets', 'body')
 CARAS = json.load(open(os.path.join(RAIZ, 'connector', 'caras.json'), encoding='utf8'))
 ANCHO = 720
-FOTO_BLUR = 6   # desenfoque de toda la foto: la mitad del que se aplica a la cara (~12)
+FOTO_BLUR = 16   # desenfoque de toda la foto: la mitad del que se aplica a la cara (~12)
 PLU = {'in': 2.54, 'cm': 1, 'mts': 100, 'm': 100, 'kg': 1}
 
 def medidas(ruta):

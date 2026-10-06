@@ -3,6 +3,18 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.8.0] — 2026-10-06
+
+### Añadido
+- «Lo que te toca hoy» en el Resumen: sesión del día (modo normal o brutal), rutina de fuerza, metas de comida y comparación contra Strava de los últimos 7 días.
+- Módulo Ciencia: lactato, ultradistancia, combustible en carrera, evaluación de tus suplementos y cómo mejorar tus comidas favoritas.
+- Módulo Registro de comidas: foto y descripción hacia un endpoint PHP con token (`registro/api.php`); `connector/comidas.mjs` descarga el registro y arma el resumen semanal para evaluarlo con IA en local.
+
+### Corregido
+- Las clasificaciones de monotonía y ACWR devolvían objetos y siempre mostraban «fuera de rango».
+- La FCmax estimada se acota con la fórmula de Tanaka (+10 lpm) cuando el percentil 98 observado la supera.
+- Cuerpo 360: déficit del camino normal coherente (−300 hasta la carrera, −400 después).
+
 ## [0.7.1] — 2026-10-06
 
 ### Cambiado

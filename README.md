@@ -176,6 +176,10 @@ con alguna, crea `connector/anomalias.json`:
 
 Escáner corporal: pon las fotos y un `measurements.txt` (`waist=37in`, `weight=77kg`, `height=1.70mts`, `age`, `gender`…) en `data/body360/<atleta>/<fecha>/`, añade las cajas de cara en `connector/caras.json` y ejecuta `python connector/body360.py` (sólo Pillow). El script difumina la cara (pixelado + desenfoque), borra EXIF/GPS y genera `body360.js`; el módulo calcula IMC, cintura/talla, % de grasa estimado (CUN-BAE y Deurenberg) y dos rutas (normal y brutal), con nutrición guatemalteca, sueño, estrés y fuerza. Los originales (con cara) están en `.gitignore`; sólo se publican las copias difuminadas y las medidas, por decisión del autor.
 
+## Registro de comidas (PHP)
+
+Copia `registro/config.example.php` como `registro/config.php` en el hosting (no se versiona) y pon un token largo; el mismo token se escribe una vez en el módulo Registro. Para evaluar la semana en local agrega `COMIDAS_URL` y `COMIDAS_TOKEN` a `connector/.env` y ejecuta `node connector/comidas.mjs`: crea `data/comidas/resumen-<fecha>.md` con las fotos, listo para pasárselo a la IA.
+
 ## Licencia
 
 [MIT](LICENSE) © 2026 Emilio Dominguez. Los datos de ejemplo son del propio autor; el logotipo de Strava no se redistribuye.
