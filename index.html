@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Análisis de entrenamiento 2026 y plan de octubre–noviembre a partir de los datos reales de Strava.">
+<meta name="theme-color" content="#11191f">
+<title>Análisis 2026 · Emilio</title>
+<link rel="stylesheet" href="assets/pico.css">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='19' font-size='20'>🏃</text></svg>">
+</head>
+<body>
+
+<header class="top">
+  <nav class="container">
+    <ul>
+      <li class="brand"><a href="#resumen">Análisis 2026<small>Emilio · Guatemala</small></a></li>
+    </ul>
+    <ul class="links" id="nav"></ul>
+    <ul>
+      <li><button id="btnPerfil" class="secondary outline" title="Perfil del atleta" aria-label="Perfil del atleta">Perfil</button></li>
+      <li><button id="tm" class="contrast outline" aria-label="Cambiar tema">☾</button></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="container" id="main">
+  <div class="skel" aria-live="polite">Cargando tus datos de entrenamiento…</div>
+</main>
+
+<footer class="container">
+  <small id="pie"></small>
+</footer>
+
+<nav class="tabbar" id="tab" aria-label="Secciones"></nav>
+
+<dialog id="perfil">
+  <article>
+    <header><b>Perfil del atleta</b></header>
+    <form id="perfilForm">
+      <p><small>Estos datos sólo se guardan en este navegador y sirven para afinar las recomendaciones de nutrición.</small></p>
+      <label>Peso (kg)<input name="peso" type="number" step="0.5" min="35" max="160" required></label>
+      <label>Edad<input name="edad" type="number" step="1" min="12" max="90" required></label>
+      <label>Frecuencia cardiaca máxima (si la conoces)<input name="fcmax" type="number" step="1" min="120" max="230" placeholder="opcional"></label>
+      <footer>
+        <button type="button" class="secondary outline" data-act="cancelar">Cancelar</button>
+        <button type="submit">Guardar</button>
+      </footer>
+    </form>
+  </article>
+</dialog>
+
+<!-- datos.js sólo existe si generaste la versión incrustada para abrir la página sin servidor -->
+<script src="datos.js" onerror="this.dataset.missing=1"></script>
+
+<script src="assets/core.js"></script>
+<script src="assets/ui.js"></script>
+<script src="assets/charts.js"></script>
+<script src="assets/metrics.js"></script>
+<script src="assets/plan.js"></script>
+<script src="assets/data.js"></script>
+
+<script src="assets/modules/resumen.js"></script>
+<script src="assets/modules/ano.js"></script>
+<script src="assets/modules/carga.js"></script>
+<script src="assets/modules/running.js"></script>
+<script src="assets/modules/bici.js"></script>
+<script src="assets/modules/proyeccion.js"></script>
+<script src="assets/modules/calendario.js"></script>
+<script src="assets/modules/suenos.js"></script>
+<script src="assets/modules/recursos.js"></script>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
