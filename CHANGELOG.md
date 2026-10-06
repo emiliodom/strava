@@ -3,6 +3,18 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [No publicado]
+
+### Documentación
+- **Despliegue en Hostinger con cron**, documentado con diagramas Mermaid en el README: topología de las tres
+  carpetas (public_html + `mistrava-store` + `mistrava-cron`), la autenticación headless con Strava (autorizas
+  una vez en local, el servidor sólo refresca por HTTPS) y el ciclo del cron (`git pull` → sync → build →
+  `git push` → deploy).
+- Nuevo **[CHEATSHEET.md](CHEATSHEET.md)** con los comandos de uso diario, el montaje del servidor paso a paso
+  y la tabla de «si algo falla».
+- `connector/actualizar.sh`: script de cron que refresca los datos desde el servidor y los publica por git.
+- `.gitattributes` fuerza fin de línea LF en los `.sh` para que el shebang funcione en el servidor Linux.
+
 ## [0.10.1] — 2026-10-06
 
 ### Corregido

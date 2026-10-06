@@ -7,11 +7,14 @@ Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma
 
 <p align="center"><img src="docs/movil-oscuro.png" alt="Vista móvil" width="320"> <img src="docs/escritorio-oscuro.png" alt="Vista de escritorio" width="560"></p>
 
-```
-Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
+```mermaid
+flowchart LR
+  S[Strava API] -->|connector/sync.mjs| R[data/raw/*.json]
+  R -->|connector/build.mjs| J[ano2026_datos.min.json]
+  J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.10.1** · ver [CHANGELOG.md](CHANGELOG.md)
+> **Versión 0.10.1** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -129,6 +132,82 @@ Sube sólo `index.html`, `ano2026_datos.min.json` y `assets/`. Nunca `.env`, `.t
 > **Ojo con publicarlo**: el bucket queda accesible para cualquiera que tenga el enlace. Son tus datos de
 > entrenamiento, con fechas y lugares. Si no quieres eso, quédate con `serve.mjs` en tu red local.
 
+## Despliegue en Hostinger (producción con cron)
+
+El sitio se publica en un hosting compartido de Hostinger conectado a GitHub: cada `push` a `main`
+**borra y recrea todo `public_html`** con el contenido del repo. Eso obliga a separar tres cosas, porque
+lo que se escribe en el servidor no puede vivir dentro de `public_html` (se borraría en cada publicación).
+
+### Topología: qué vive dónde
+
+Todo cuelga de `~/domains/<tu-sitio>.hostingersite.com/`:
+
+```mermaid
+flowchart TB
+  subgraph srv["Hostinger · domains/&lt;sitio&gt;.hostingersite.com/"]
+    PH["public_html/<br/>el sitio que sirve el dominio<br/><b>el deploy la BORRA y recrea</b>"]
+    STORE["mistrava-store/<br/>config.php + fotos del registro<br/>(persistente)"]
+    CRON["mistrava-cron/<br/>clon del repo + .env + .tokens.json<br/>(persistente)"]
+  end
+  CRON -->|git push| GH[(GitHub<br/>emiliodom/strava)]
+  GH -->|deploy automático| PH
+  PH <-. "api.php sube por el árbol<br/>y lee/escribe aquí" .-> STORE
+```
+
+- **`public_html/`** — sólo lo que el navegador descarga. `ano2026_datos.min.json` está versionado en el
+  repo, así que llega aquí con cada deploy (queda junto a `index.html` y el `fetch` relativo lo encuentra).
+  Que el wipe lo borre da igual: el deploy lo repone al instante.
+- **`mistrava-store/`** (hermana de `public_html`) — el token (`config.php`) y las fotos del registro de
+  comidas. `registro/api.php` sube por el árbol hasta encontrar `public_html` y usa esta carpeta hermana,
+  así que sobrevive a los deploys.
+- **`mistrava-cron/`** (hermana de `public_html`) — un clon del repo que hace de "fábrica": aquí viven los
+  secretos de Strava (`.env`, `.tokens.json`) y desde aquí corre el cron. **El dominio nunca mira esta
+  carpeta**; sólo empuja datos a GitHub.
+
+### Autenticación con Strava sin navegador (headless)
+
+OAuth tiene un paso interactivo (navegador) y uno automático (sólo HTTP). El servidor sólo necesita el
+automático:
+
+```mermaid
+sequenceDiagram
+  participant Yo as Tu PC (navegador)
+  participant St as Strava
+  participant Sv as Servidor (cron)
+  Note over Yo,St: UNA sola vez, en tu PC
+  Yo->>St: npm run auth → autorizas en el navegador (callback localhost:8765)
+  St-->>Yo: refresh_token guardado en .tokens.json
+  Yo->>Sv: scp .env + .tokens.json al clon
+  Note over Sv,St: Cada sync, sin navegador
+  Sv->>St: POST /oauth/token con el refresh_token
+  St-->>Sv: access_token nuevo (y refresh_token nuevo)
+  Sv->>St: GET /athlete/activities
+```
+
+El `refresh_token` de Strava no caduca mientras no revoques el acceso, y `sync.mjs` nunca toca `localhost`:
+por eso el servidor no necesita navegador. Como Strava devuelve un `refresh_token` nuevo en cada refresco y
+el connector lo reescribe, el `.tokens.json` **debe** vivir en el clon persistente (no en `public_html`).
+
+### El ciclo del cron
+
+```mermaid
+flowchart LR
+  C([Cron 08:00 / 20:00]) --> PULL[git pull]
+  PULL --> SYNC[sync.mjs<br/>baja Strava]
+  SYNC --> BUILD[build.mjs --js<br/>regenera el JSON]
+  BUILD --> DIFF{¿cambió<br/>el JSON?}
+  DIFF -->|no| END([fin, sin publicar])
+  DIFF -->|sí| PUSH[git commit + push]
+  PUSH --> DEP[deploy de Hostinger]
+  DEP --> LIVE[public_html al día]
+```
+
+El script es [`connector/actualizar.sh`](connector/actualizar.sh). La primera corrida tarda ~40-45 min
+(baja el detalle de todas las carreras, con el límite de 100 peticiones/15 min de Strava); las siguientes
+son incrementales y tardan segundos.
+
+> **Los pasos exactos de montaje y los comandos están en [CHEATSHEET.md](CHEATSHEET.md).**
+
 ## Exportar el calendario a Google Calendar
 
 Dentro del módulo **Calendario** tienes dos salidas, para el camino que tengas activo (estructurado, intermedio o brutal):
@@ -152,6 +231,9 @@ Dentro del módulo **Calendario** tienes dos salidas, para el camino que tengas 
 | `assets/actividad.js` | El detalle de cada actividad por deporte (ritmo e intensidad objetivo), reutilizado en el calendario y en «Lo que te toca hoy». |
 | `assets/modules/*.js` | Un archivo por módulo de la página. |
 | `connector/` | OAuth, descarga, transformación, servidor y despliegue. |
+| `connector/actualizar.sh` | Tarea de cron del servidor: `git pull` → sync → build → `git push` del JSON. |
+| `registro/api.php` | Endpoint del registro de comidas; guarda token y fotos en `mistrava-store/` (fuera de public_html). |
+| `CHEATSHEET.md` | Comandos rápidos: uso diario, montaje del servidor y cron. |
 | `data/raw/` | El crudo de la API. No se versiona: se regenera. |
 
 ## Si algo falla
