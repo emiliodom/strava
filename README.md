@@ -1,0 +1,166 @@
+# Análisis 2026 · Emilio
+
+Página de análisis de entrenamiento y planificación, alimentada por tus propios datos de Strava.
+Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma.
+
+```
+Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
+```
+
+> **Versión 0.5.0** · ver [CHANGELOG.md](CHANGELOG.md)
+
+## Tus datos no están en este repositorio
+
+El repositorio es público, así que **no incluye datos de entrenamiento**: `ano2026_datos*.json`, `data/raw/` y
+`index.original.html` están en `.gitignore`. Al clonarlo, la página abrirá vacía con instrucciones hasta que
+generes tus propios datos con el conector (pasos abajo). Las credenciales de Strava tampoco se suben nunca.
+
+## Qué mide
+
+| Módulo | Contenido |
+|---|---|
+| Resumen y año | Totales, horas por deporte, hábitos, composición semanal |
+| 1 · Carga | Carga diaria, monotonía de Foster, ACWR (EWMA), recuperaciones |
+| Running | VDOT de Daniels, ritmos de entrenamiento, metas, **zonas por frecuencia cardiaca, eficiencia aeróbica y deriva** |
+| Bici | VAM, desnivel, MTB frente a ruta |
+| 2 · Proyecciones | Corto, mediano y largo plazo |
+| 3 · Calendario | Plan estructurado y plan «brutal», editables, exportables a `.ics` |
+| 4 · Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
+| 5 · Recursos | Nutrición, recuperación y lecturas con enlaces verificados |
+
+La FC sólo existe en las actividades donde el dispositivo la registró; la página indica la cobertura real.
+Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
+
+## Versionado
+
+[SemVer](https://semver.org/lang/es/) con una etiqueta `vX.Y.Z` por hito. Mientras sea `0.x`, el esquema del JSON
+puede cambiar entre versiones menores; el `CHANGELOG.md` lo indica.
+
+## Puesta en marcha (una sola vez)
+
+Necesitas **Node 20 o superior**. No hay dependencias que instalar.
+
+### 1. Crear tu aplicación de Strava
+
+En <https://www.strava.com/settings/api> crea "My API Application":
+
+| Campo | Valor |
+|---|---|
+| Category | Data Importer |
+| Website | `http://localhost:8000` |
+| **Authorization Callback Domain** | **`localhost`** (exactamente eso, sin `http://` ni puerto) |
+
+Apunta el **Client ID** y el **Client Secret**.
+
+### 2. Configurar el conector
+
+```bash
+cp connector/.env.example connector/.env
+# edita connector/.env y pega STRAVA_CLIENT_ID y STRAVA_CLIENT_SECRET
+```
+
+`connector/.env` y `connector/.tokens.json` están en `.gitignore`. **No los subas a ningún sitio.**
+
+### 3. Autorizar
+
+```bash
+node connector/auth.mjs
+```
+
+Se abre el navegador, aceptas y la terminal confirma la conexión. Concede **"Ver todas tus actividades,
+incluidas las privadas"**: sin ese permiso faltarán entrenamientos.
+
+### 4. Descargar y generar
+
+```bash
+node connector/sync.mjs          # descarga incremental (la 1.ª vez tarda; después, segundos)
+node connector/build.mjs --js    # genera ano2026_datos.min.json y datos.js
+```
+
+### 5. Ver la página
+
+```bash
+node connector/serve.mjs
+```
+
+Imprime una dirección `http://localhost:8000` y otra de tu red local para abrirla **en el móvil**
+(la página está diseñada para pantalla pequeña primero).
+
+Si prefieres abrir `index.html` con doble clic, funciona siempre que hayas generado `datos.js`
+con `build.mjs --js`: el navegador bloquea `fetch` sobre `file://`, y `datos.js` esquiva esa limitación.
+
+## Uso diario
+
+```bash
+node connector/sync.mjs && node connector/build.mjs --js
+```
+
+o, desde `connector/`, `npm run actualizar`.
+
+## Publicar en Google Cloud Storage
+
+```bash
+# una sola vez
+gcloud auth login
+gcloud config set project TU-PROYECTO
+gcloud storage buckets create gs://TU-BUCKET --location=us-central1 --uniform-bucket-level-access
+gcloud storage buckets add-iam-policy-binding gs://TU-BUCKET --member=allUsers --role=roles/storage.objectViewer
+gcloud storage buckets update gs://TU-BUCKET --web-main-page-suffix=index.html --web-error-page=index.html
+
+# y luego, cada vez
+# (pon GCS_BUCKET=TU-BUCKET en connector/.env)
+node connector/deploy.mjs --simular   # enseña los comandos sin ejecutarlos
+node connector/deploy.mjs
+```
+
+Sube sólo `index.html`, `ano2026_datos.min.json` y `assets/`. Nunca `.env`, `.tokens.json` ni `data/raw/`.
+
+> **Ojo con publicarlo**: el bucket queda accesible para cualquiera que tenga el enlace. Son tus datos de
+> entrenamiento, con fechas y lugares. Si no quieres eso, quédate con `serve.mjs` en tu red local.
+
+## Exportar el calendario a Google Calendar
+
+Dentro del **Módulo 3** (Calendario) tienes dos salidas, para cada uno de los dos planes:
+
+- **Descargar .ics** — el archivo que importas en Google Calendar (*Configuración → Importar y exportar*),
+  en Apple Calendar o en Outlook. Crea los 57 días como eventos de todo el día.
+- **Añadir a Google Calendar** — un enlace por día, por si sólo quieres meter las carreras.
+
+## Estructura
+
+| Ruta | Qué es |
+|---|---|
+| `index.html` | El armazón: carga los estilos y los módulos. |
+| `index.original.html` | La versión estática original, guardada por si acaso. |
+| `assets/pico.css` | Pico.css, el framework de base. |
+| `assets/app.css` | La capa propia, móvil primero. |
+| `assets/core.js` | Formato de números, fechas y estadística. |
+| `assets/charts.js` | Gráficas en SVG, sin librerías. |
+| `assets/metrics.js` | El motor: carga, ACWR, monotonía, VDOT, zonas. |
+| `assets/plan.js` | Los dos planes y las seis carreras. |
+| `assets/modules/*.js` | Un archivo por módulo de la página. |
+| `connector/` | OAuth, descarga, transformación, servidor y despliegue. |
+| `data/raw/` | El crudo de la API. No se versiona: se regenera. |
+
+## Si algo falla
+
+| Síntoma | Causa |
+|---|---|
+| `Faltan STRAVA_CLIENT_ID…` | No creaste `connector/.env` a partir del ejemplo. |
+| Strava devuelve `redirect_uri` inválido | El *Callback Domain* de tu app no es exactamente `localhost`. |
+| `No hay sesión de Strava` | Ejecuta `node connector/auth.mjs` antes que `sync.mjs`. |
+| La página dice que no encuentra los datos | Abriste `index.html` con doble clic sin generar `datos.js`. Usa `build.mjs --js` o `serve.mjs`. |
+| Sin VDOT ni mejores esfuerzos | Sincronizaste con `--sin-detalle`. Los 1k/5k vienen del detalle de cada carrera. |
+| `límite de la API alcanzado` | Strava permite 100 peticiones cada 15 min. El conector espera solo; déjalo correr. |
+
+## Datos inconsistentes
+
+`build.mjs` marca y excluye de las estadísticas las actividades con datos imposibles (entradas manuales
+duplicadas, tiempos corruptos, ritmos de GPS disparatado) y las lista al terminar. Si no estás de acuerdo
+con alguna, crea `connector/anomalias.json`:
+
+```json
+{ "14321234567": "motivo por el que la excluyo", "14399999999": null }
+```
+
+`null` rehabilita una actividad que el detector marcó por error.
