@@ -11,7 +11,7 @@ Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma
 Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
 ```
 
-> **Versión 0.9.0** · ver [CHANGELOG.md](CHANGELOG.md)
+> **Versión 0.10.0** · ver [CHANGELOG.md](CHANGELOG.md)
 
 ## Los datos son públicos a propósito
 
@@ -31,7 +31,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Running | VDOT de Daniels, ritmos de entrenamiento, metas, zonas por frecuencia cardiaca, eficiencia aeróbica y deriva |
 | Bici | VAM, desnivel, MTB frente a ruta |
 | Proyecciones | Corto, mediano y largo plazo |
-| Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias. Cada día abre el **detalle de la actividad por deporte** —ritmo objetivo al correr, intensidad en bici (RPE/zonas/FTP) y rutina de fuerza— y un **registro real** para anotar lo que hiciste de verdad (con el % de desvío plan vs realidad). Exportable a `.ics` |
+| Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias, ahora con **entrenamiento híbrido** (bici + correr el mismo día): dobles AM/PM y bricks bici→carrera dosificados por nivel. Cada día abre el **detalle de la actividad por deporte** —ritmo objetivo al correr, intensidad en bici (RPE/zonas/FTP) y rutina de fuerza— y un **registro real** para anotar lo que hiciste de verdad (con el % de desvío plan vs realidad). Exportable a `.ics` |
 | Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |

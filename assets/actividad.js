@@ -44,9 +44,11 @@
   /* Una línea corta para la celda del calendario y para «Lo que te toca hoy». */
   function corto(dia, D) {
     var z = D && D.zonas, T = P.TIPOS[dia.tipo] || {};
-    if (esRun(dia, T)) { var f = CORTO_RUN[dia.tipo] || CORTO_RUN.E; return f(z); }
-    if (esBici(dia, T)) return CORTO_BICI[dia.tipo] || 'Z2';
-    return '';
+    var r = esRun(dia, T), b = esBici(dia, T);
+    var sr = r ? (CORTO_RUN[dia.tipo] || CORTO_RUN.E)(z) : '';
+    var sb = b ? (CORTO_BICI[dia.tipo] || 'Z2') : '';
+    if (r && b) return sr + ' + ' + sb;   // día híbrido: correr y bici
+    return sr || sb || '';
   }
 
   function bloque(icono, titulo, lineas, est, nota) {

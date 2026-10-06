@@ -3,6 +3,18 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.10.0] — 2026-10-06
+
+### Añadido
+- **Entrenamiento híbrido (bici + correr el mismo día)** en los tres caminos del calendario, dosificado por nivel y fundado en ciencia del deporte: la bici suma volumen aeróbico sin impacto (hasta ~50 % del running es sustituible sin perder rendimiento), los dobles AM/PM reparten la carga (una sesión dura, otra suave, ≥4–6 h de separación) y los bricks bici→carrera entrenan la transición por especificidad.
+  - **Estructurado:** un doble suave AM/PM a la semana (rodaje fácil + bici Z2) y un mini-brick bici→trote cada dos sábados.
+  - **Intermedio:** un brick por semana (FTP o fondo + 3–4 km en seco al bajar) y uno o dos dobles AM/PM.
+  - **Brutal:** dobles casi a diario (corre por la mañana, rueda y pega la fuerza por la noche) con bricks largos el fin de semana; la semana de la Guatemágica queda limpia.
+
+### Cambiado
+- El efecto de interferencia fuerza/resistencia guía el orden: en los planes suaves la fuerza se separa; donde se apila (brutal) se asume el coste.
+- `assets/actividad.js`: la línea corta de cada día muestra los dos deportes en los días híbridos (p. ej. «5:40/km + Z2»). El motor ya renderizaba dos deportes por día; sólo faltaban los datos.
+
 ## [0.9.0] — 2026-10-06
 
 ### Añadido

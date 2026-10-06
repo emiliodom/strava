@@ -1,6 +1,6 @@
 {
   "name": "strava-analyzer-connector",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "type": "module",
   "description": "Conector propio de Strava: OAuth, descarga incremental y generacion del JSON que consume la pagina.",
