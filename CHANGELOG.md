@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.7.1] — 2026-10-06
+
+### Cambiado
+- Las fotos del escaneo llevan además un desenfoque suave en toda la imagen (la mitad del de la cara).
+
 ## [0.7.0] — 2026-10-06
 
 ### Cambiado
