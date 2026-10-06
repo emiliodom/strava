@@ -3,6 +3,10 @@
 Página de análisis de entrenamiento y planificación, alimentada por tus propios datos de Strava.
 Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma.
 
+## Capturas
+
+<p align="center"><img src="docs/movil-oscuro.png" alt="Vista móvil" width="320"> <img src="docs/escritorio-oscuro.png" alt="Vista de escritorio" width="560"></p>
+
 ```
 Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
 ```
@@ -167,3 +171,7 @@ con alguna, crea `connector/anomalias.json`:
 ```
 
 `null` rehabilita una actividad que el detector marcó por error.
+
+## Licencia
+
+[MIT](LICENSE) © 2026 Emilio Dominguez. Los datos de ejemplo son del propio autor; el logotipo de Strava no se redistribuye.

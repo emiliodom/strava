@@ -8,7 +8,7 @@
   --ok:#199e70; --warn:#c98500; --bad:#e66767; --info:#3987e5; --accent:#d95926;
   --z1:#3987e5; --z2:#199e70; --z3:#c98500; --z4:#d95926; --z5:#e66767;
 }
-body{overscroll-behavior-y:none}
+html body{overscroll-behavior-y:none;background:var(--pico-background-color);color:var(--pico-color)}
 main.container{padding-inline:.9rem;padding-bottom:5.5rem}
 @media(min-width:900px){main.container{padding-bottom:2rem}}
 

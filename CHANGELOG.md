@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.5.2] — 2026-10-06
+
+### Añadido
+- Licencia MIT y capturas (móvil y escritorio) en el README.
+
+### Corregido
+- Fondo del `body` heredado de la página original (`var(--bg)`) que dejaba fondo blanco con texto de tema oscuro; ahora usa las variables de Pico.
+
 ## [0.5.1] — 2026-10-06
 
 ### Añadido
