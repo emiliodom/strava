@@ -11,7 +11,7 @@ Todo el cálculo ocurre en el navegador; el conector sólo descarga y transforma
 Strava API  →  connector/sync.mjs  →  data/raw/*.json  →  connector/build.mjs  →  ano2026_datos.min.json  →  index.html
 ```
 
-> **Versión 0.5.1** · ver [CHANGELOG.md](CHANGELOG.md)
+> **Versión 0.9.0** · ver [CHANGELOG.md](CHANGELOG.md)
 
 ## Los datos son públicos a propósito
 
@@ -26,14 +26,18 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 
 | Módulo | Contenido |
 |---|---|
-| Resumen y año | Totales, horas por deporte, hábitos, composición semanal |
-| 1 · Carga | Carga diaria, monotonía de Foster, ACWR (EWMA), recuperaciones |
-| Running | VDOT de Daniels, ritmos de entrenamiento, metas, **zonas por frecuencia cardiaca, eficiencia aeróbica y deriva** |
+| Resumen y año | Totales, horas por deporte, hábitos, composición semanal y **«Lo que te toca hoy»** (la sesión del día con su detalle por deporte y comparación contra Strava) |
+| Carga | Carga diaria, monotonía de Foster, ACWR (EWMA), recuperaciones |
+| Running | VDOT de Daniels, ritmos de entrenamiento, metas, zonas por frecuencia cardiaca, eficiencia aeróbica y deriva |
 | Bici | VAM, desnivel, MTB frente a ruta |
-| 2 · Proyecciones | Corto, mediano y largo plazo |
-| 3 · Calendario | Plan estructurado y plan «brutal», editables, exportables a `.ics` |
-| 4 · Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
-| 5 · Recursos | Nutrición, recuperación y lecturas con enlaces verificados |
+| Proyecciones | Corto, mediano y largo plazo |
+| Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias. Cada día abre el **detalle de la actividad por deporte** —ritmo objetivo al correr, intensidad en bici (RPE/zonas/FTP) y rutina de fuerza— y un **registro real** para anotar lo que hiciste de verdad (con el % de desvío plan vs realidad). Exportable a `.ics` |
+| Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
+| Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
+| Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
+| Preparación | Qué hacer 15, 10 y 5 días antes de cada evento del calendario |
+| Registro | Registro de comidas con foto hacia un endpoint PHP (ver abajo) |
+| Recursos | Nutrición, recuperación y lecturas con enlaces verificados |
 
 La FC sólo existe en las actividades donde el dispositivo la registró; la página indica la cobertura real.
 Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
@@ -127,7 +131,7 @@ Sube sólo `index.html`, `ano2026_datos.min.json` y `assets/`. Nunca `.env`, `.t
 
 ## Exportar el calendario a Google Calendar
 
-Dentro del **Módulo 3** (Calendario) tienes dos salidas, para cada uno de los dos planes:
+Dentro del módulo **Calendario** tienes dos salidas, para el camino que tengas activo (estructurado, intermedio o brutal):
 
 - **Descargar .ics** — el archivo que importas en Google Calendar (*Configuración → Importar y exportar*),
   en Apple Calendar o en Outlook. Crea los 57 días como eventos de todo el día.
@@ -144,7 +148,8 @@ Dentro del **Módulo 3** (Calendario) tienes dos salidas, para cada uno de los d
 | `assets/core.js` | Formato de números, fechas y estadística. |
 | `assets/charts.js` | Gráficas en SVG, sin librerías. |
 | `assets/metrics.js` | El motor: carga, ACWR, monotonía, VDOT, zonas. |
-| `assets/plan.js` | Los dos planes y las seis carreras. |
+| `assets/plan.js` | Los tres planes, los tipos de sesión, las rutinas de fuerza y las seis carreras. |
+| `assets/actividad.js` | El detalle de cada actividad por deporte (ritmo e intensidad objetivo), reutilizado en el calendario y en «Lo que te toca hoy». |
 | `assets/modules/*.js` | Un archivo por módulo de la página. |
 | `connector/` | OAuth, descarga, transformación, servidor y despliegue. |
 | `data/raw/` | El crudo de la API. No se versiona: se regenera. |
