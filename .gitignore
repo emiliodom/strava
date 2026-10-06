@@ -23,3 +23,8 @@ index.original.html
 
 # Logo de Strava (marca registrada): no se redistribuye.
 strava.png
+
+# Escaneo corporal: fotos y medidas personales, nunca al repositorio
+data/body360/
+assets/body/
+body360.js

@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.6.0] — 2026-10-06
+
+### Añadido
+- Módulo 6 «Cuerpo 360»: medidas y fotos de un escaneo, estimación de grasa, dos rutas de composición (normal y brutal), nutrición guatemalteca, sueño, estrés y fuerza.
+- `connector/body360.py`: difumina la cara, borra EXIF/GPS y genera `body360.js`; las fotos y medidas no se versionan.
+
 ## [0.5.2] — 2026-10-06
 
 ### Añadido
