@@ -5,6 +5,15 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 
 ## [No publicado]
 
+### Añadido
+- **Sección «Sesión del día»** (`assets/modules/dia.js`): analiza por separado cada actividad del último día con
+  datos en Strava (hoy pueden ser varias: la de correr, la de la bici, la fuerza…). Por cada una muestra las
+  métricas que tienen sentido según el deporte, clasifica la intensidad contra tus zonas reales (ritmo frente al
+  VDOT y FC frente a la máxima), y en las carreras con parciales añade el **ritmo kilómetro a kilómetro** (gráfico
+  con eje invertido coloreado por zona de FC), el **tiempo en cada zona de FC** y la tabla detallada. Arriba, un
+  resumen del día y el **veredicto contra el plan activo** (Normal/Intermedio/Brutal). Aparece en el menú y en la
+  barra inferior. El análisis histórico (año, running, bici…) sigue en sus módulos.
+
 ### Documentación
 - **Despliegue en Hostinger con cron**, documentado con diagramas Mermaid en el README: topología de las tres
   carpetas (public_html + `mistrava-store` + `mistrava-cron`), la autenticación headless con Strava (autorizas

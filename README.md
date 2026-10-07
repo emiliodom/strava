@@ -30,6 +30,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Módulo | Contenido |
 |---|---|
 | Resumen y año | Totales, horas por deporte, hábitos, composición semanal y **«Lo que te toca hoy»** (la sesión del día con su detalle por deporte y comparación contra Strava) |
+| Sesión del día | Desglose del **último día con datos**, actividad por actividad: métricas por deporte, intensidad clasificada contra tus zonas (ritmo/FC), **ritmo y FC kilómetro a kilómetro** en las carreras, tiempo en cada zona de FC y veredicto contra el plan activo |
 | Carga | Carga diaria, monotonía de Foster, ACWR (EWMA), recuperaciones |
 | Running | VDOT de Daniels, ritmos de entrenamiento, metas, zonas por frecuencia cardiaca, eficiencia aeróbica y deriva |
 | Bici | VAM, desnivel, MTB frente a ruta |
