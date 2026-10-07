@@ -7,6 +7,8 @@
   var COMIDAS = ['desayuno', 'almuerzo', 'cena', 'merienda', 'antes-entreno', 'despues-entreno', 'bebida'];
   var estado = { entradas: null, error: null, fotos: {} };
 
+  // Miniatura servida por el CDN de Cloudinary (ajusta formato/calidad/tamaño en la propia URL).
+  function miniatura(url) { return url.indexOf('/image/upload/') < 0 ? url : url.replace('/image/upload/', '/image/upload/f_auto,q_auto,c_limit,w_1024/'); }
   function token() { try { return localStorage.getItem(K_TOK) || ''; } catch (e) { return ''; } }
   function guardarToken(t) { try { localStorage.setItem(K_TOK, t); } catch (e) { /* sin almacenamiento */ } }
   function hoyISO() { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
@@ -45,7 +47,7 @@
     return Object.keys(porDia).sort().reverse().slice(0, 14).map(function (f) {
       return '<h4>' + esc(f) + '</h4>' + porDia[f].map(function (e) {
         return "<article style='padding:.75rem;margin:0 0 .75rem'><small>" + esc(e.hora) + ' · ' + esc(e.comida) + '</small>' +
-          (e.foto ? "<img data-foto='" + esc(e.id) + "' alt='" + esc(e.desc || e.comida) + "' style='width:100%;max-height:16rem;object-fit:cover;border-radius:var(--pico-border-radius);background:var(--pico-muted-border-color)'>" : '') +
+          (e.foto ? "<img " + (e.url ? "src='" + esc(miniatura(e.url)) + "' loading='lazy'" : "data-foto='" + esc(e.id) + "'") + " alt='" + esc(e.desc || e.comida) + "' style='width:100%;max-height:16rem;object-fit:cover;border-radius:var(--pico-border-radius);background:var(--pico-muted-border-color)'>" : '') +
           '<p style="margin:.25rem 0">' + esc(e.desc) + "</p><a href='#' data-borrar='" + esc(e.id) + "'><small>borrar</small></a></article>";
       }).join('');
     }).join('');

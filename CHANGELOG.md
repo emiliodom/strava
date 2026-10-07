@@ -13,6 +13,14 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Fotos del registro de comidas en Cloudinary** (`registro/api.php`, `assets/modules/registro.js`,
+  `connector/comidas.mjs`). Si existe `mistrava-store/.env` con las claves de Cloudinary
+  (`CLOUDINARY_CLOUD_NAME` / `API_KEY` / `API_SECRET`, ver `registro/store.env.example`), la subida se firma
+  en el servidor —el secreto nunca llega al navegador— y la foto va a su CDN; se guardan `url` y `public_id`
+  en el índice. El navegador muestra la imagen directo desde la URL de Cloudinary (con `f_auto,q_auto,c_limit`,
+  sin descargar un blob con token por foto), al borrar se elimina también en Cloudinary y el conector baja la
+  foto del CDN. Sin ese `.env` todo sigue igual que antes: las fotos caen en `mistrava-store/datos/`. Esto quita
+  los límites de disco del hosting y descarga al servidor de servir imágenes.
 - **Sección «Sesión del día»** (`assets/modules/dia.js`): analiza por separado cada actividad del último día con
   datos en Strava (hoy pueden ser varias: la de correr, la de la bici, la fuerza…). Por cada una muestra las
   métricas que tienen sentido según el deporte, clasifica la intensidad contra tus zonas reales (ritmo frente al

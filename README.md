@@ -147,7 +147,7 @@ Todo cuelga de `~/domains/<tu-sitio>.hostingersite.com/`:
 flowchart TB
   subgraph srv["Hostinger · domains/&lt;sitio&gt;.hostingersite.com/"]
     PH["public_html/<br/>el sitio que sirve el dominio<br/><b>el deploy la BORRA y recrea</b>"]
-    STORE["mistrava-store/<br/>config.php + fotos del registro<br/>(persistente)"]
+    STORE["mistrava-store/<br/>config.php + .env (Cloudinary)<br/>(persistente)"]
     CRON["mistrava-cron/<br/>clon del repo + .env + .tokens.json<br/>(persistente)"]
   end
   CRON -->|git push| GH[(GitHub<br/>emiliodom/strava)]
@@ -158,9 +158,11 @@ flowchart TB
 - **`public_html/`** — sólo lo que el navegador descarga. `ano2026_datos.min.json` está versionado en el
   repo, así que llega aquí con cada deploy (queda junto a `index.html` y el `fetch` relativo lo encuentra).
   Que el wipe lo borre da igual: el deploy lo repone al instante.
-- **`mistrava-store/`** (hermana de `public_html`) — el token (`config.php`) y las fotos del registro de
-  comidas. `registro/api.php` sube por el árbol hasta encontrar `public_html` y usa esta carpeta hermana,
-  así que sobrevive a los deploys.
+- **`mistrava-store/`** (hermana de `public_html`) — el token (`config.php`) y, opcionalmente, las claves de
+  Cloudinary (`.env`, ver `registro/store.env.example`). `registro/api.php` sube por el árbol hasta encontrar
+  `public_html` y usa esta carpeta hermana, así que sobrevive a los deploys. Con Cloudinary las fotos del
+  registro se guardan en su CDN (el navegador las pide directo por URL, sin pasar por el servidor); sin
+  Cloudinary caen en `mistrava-store/datos/` como hasta ahora.
 - **`mistrava-cron/`** (hermana de `public_html`) — un clon del repo que hace de "fábrica": aquí viven los
   secretos de Strava (`.env`, `.tokens.json`) y desde aquí corre el cron. **El dominio nunca mira esta
   carpeta**; sólo empuja datos a GitHub.
@@ -266,7 +268,7 @@ Escáner corporal: pon las fotos y un `measurements.txt` (`waist=37in`, `weight=
 
 ## Registro de comidas (PHP)
 
-Copia `registro/config.example.php` como `registro/config.php` en el hosting (no se versiona) y pon un token largo; el mismo token se escribe una vez en el módulo Registro. Para evaluar la semana en local agrega `COMIDAS_URL` y `COMIDAS_TOKEN` a `connector/.env` y ejecuta `node connector/comidas.mjs`: crea `data/comidas/resumen-<fecha>.md` con las fotos, listo para pasárselo a la IA.
+Copia `registro/config.example.php` como `config.php` dentro de `mistrava-store/` (no se versiona) y pon un token largo; el mismo token se escribe una vez en el módulo Registro. Para que las fotos vayan a Cloudinary (recomendado: quita límites de disco, sirve por CDN y descarga al servidor de guardarlas), copia `registro/store.env.example` como `.env` en esa misma carpeta con tu `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` y `CLOUDINARY_API_SECRET`; sin ese `.env` las fotos se guardan en disco como antes. Para evaluar la semana en local agrega `COMIDAS_URL` y `COMIDAS_TOKEN` a `connector/.env` y ejecuta `node connector/comidas.mjs`: crea `data/comidas/resumen-<fecha>.md` con las fotos (las baja del CDN si están en Cloudinary), listo para pasárselo a la IA.
 
 ## Licencia
 

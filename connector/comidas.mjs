@@ -22,7 +22,8 @@ const entradas = (await r.json()).entradas.filter((e) => e.fecha >= desde).sort(
 for (const e of entradas.filter((x) => x.foto)) {
   const d = path.join(out, 'fotos', `${e.fecha}_${e.hora.replace(':', '')}_${e.id}.jpg`);
   if (fs.existsSync(d)) continue;
-  const p = await pedir(`foto&id=${e.id}`);
+  // Si la foto está en Cloudinary se baja directo del CDN; si no, por el proxy con token de api.php.
+  const p = e.url ? await fetch(e.url) : await pedir(`foto&id=${e.id}`);
   if (p.ok) fs.writeFileSync(d, Buffer.from(await p.arrayBuffer())); else console.warn('⚠ foto', e.id, p.status);
 }
 const md = [`# Comidas desde ${desde}`, '', 'Evalúa estas comidas contra el plan (proteína 1,8–2,2 g/kg, verdura, azúcar líquida, alcohol, fritos) y contra lo entrenado en Strava. Devuelve: qué estuvo bien, 3 cambios concretos y calorías/proteína aproximadas por día.', ''];
