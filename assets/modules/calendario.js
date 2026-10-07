@@ -274,7 +274,7 @@
 
       ${raw(U.coach('La diferencia entre los tres caminos', `
         <p>La ruta estructurada acepta que el objetivo del año es la Guatemágica del 21 de noviembre y subordina todo lo demás:
-        el trail del 14 de octubre se corre controlado, Entre Senderos se rueda en Z2, San Felipe es activación o no se corre.
+        el trail del 11 de octubre se corre controlado, Entre Senderos se rueda en Z2, San Felipe es activación o no se corre.
         Llegas a la línea de salida descansado.</p>
         <p>La ruta intermedia es el punto medio que pediste: mete calidad de verdad —HIIT, sprints, un día de FTP en bici y una montaña
         fuerte— pero conserva un día libre real y una semana de descarga cada cuatro. El trail se corre a tempo, no a muerte.

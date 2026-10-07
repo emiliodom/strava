@@ -6,9 +6,9 @@
 
   /* ---------- Competencias confirmadas ---------- */
   var EVENTOS = [
-    { id: 'trail15', fecha: '2026-10-14', nombre: '15K Trail San Bartolomé Milpas Altas', deporte: 'trail',
+    { id: 'trail15', fecha: '2026-10-11', hora: '08:00', nombre: '15K Trail San Bartolomé Milpas Altas', deporte: 'trail',
       km: 15, prioridad: 'C', lugar: 'San Bartolomé Milpas Altas, Sacatepéquez',
-      nota: 'Trail de montaña a ~2.100 m. Diez días después de empezar el bloque y tu salida más larga de las últimas 6 semanas fue de 6 km.' },
+      nota: 'Trail de montaña a ~2.100 m, salida a las 8:00. Seis días después de empezar el bloque y tu salida más larga de las últimas 6 semanas fue de 6 km.' },
     { id: 'capis', fecha: '2026-10-18', nombre: 'Rodada con los Capis', deporte: 'mtb',
       km: null, prioridad: 'C', lugar: 'Por confirmar', nota: 'Rodada de grupo. Sirve como salida larga en bici.' },
     { id: 'campana', fecha: '2026-11-08', nombre: 'Campanabaj, Totonicapán', deporte: 'mtb',
@@ -56,11 +56,11 @@
     ['2026-10-07', 'B', '4 km fácil AM + bici Z2 PM', 4, 60, null],
     ['2026-10-08', 'E', 'E + fuerza A', 5, 0, null],
     ['2026-10-09', 'R', 'R + fuerza B', 2, 0, null],
-    ['2026-10-10', 'B', 'Bici fondo + 3 km off-bike (brick)', 3, 90, null],
-    ['2026-10-11', 'L', 'L', 11, 0, null],
+    ['2026-10-10', 'E', 'E corto + 4 rectas (pre-carrera)', 4, 0, null],
+    ['2026-10-11', 'C', 'C — Trail Milpas Altas (8:00)', 15, 0, 'trail15'],
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 4, 0, null],
-    ['2026-10-14', 'C', 'C', 15, 0, 'trail15'],
+    ['2026-10-14', 'Q', 'Q', 6, 0, null],
     ['2026-10-15', 'D', 'D', 1.6, 0, null],
     ['2026-10-16', 'R', 'R + fuerza B', 3, 0, null],
     ['2026-10-17', 'E', 'E', 4, 0, null],
@@ -116,11 +116,11 @@
     ['2026-10-07', 'B', 'Bici fondo + 3 km off-bike (brick)', 3, 75, null],
     ['2026-10-08', 'E', 'E AM + bici Z2 + fuerza A PM', 6, 40, null],
     ['2026-10-09', 'R', 'R AM + bici suave + fuerza B PM', 3, 30, null],
-    ['2026-10-10', 'B', 'Bici larga + 4 km off-bike (brick)', 4, 180, null],
-    ['2026-10-11', 'L', 'L', 13, 0, null],
+    ['2026-10-10', 'E', 'E corto + rectas + bici suave (pre-carrera)', 4, 20, null],
+    ['2026-10-11', 'T', 'Trail Milpas Altas — fuerte pero con cabeza (8:00)', 15, 0, 'trail15'],
     ['2026-10-12', 'R', 'R AM + bici suave + fuerza C PM', 3, 30, null],
     ['2026-10-13', 'E', 'E AM + bici Z2 PM', 5, 40, null],
-    ['2026-10-14', 'T', 'Trail duro', 15, 0, 'trail15'],
+    ['2026-10-14', 'Q', 'Q AM + bici suave PM', 7, 30, null],
     ['2026-10-15', 'R', 'R', 3, 0, null],
     ['2026-10-16', 'Q', 'Q AM + bici suave PM', 7, 30, null],
     ['2026-10-17', 'E', 'E AM + bici Z2 + fuerza B PM', 5, 50, null],
@@ -178,11 +178,11 @@
     ['2026-10-07', 'B', '5 km fácil AM + bici Z2 PM', 5, 70, null],
     ['2026-10-08', 'E', 'E + fuerza A', 6, 0, null],
     ['2026-10-09', 'R', 'R + fuerza B', 2, 0, null],
-    ['2026-10-10', 'B', 'B', 1.6, 120, null],
-    ['2026-10-11', 'L', 'L', 12, 0, null],
+    ['2026-10-10', 'E', 'E corto + 4 rectas (pre-carrera)', 4, 0, null],
+    ['2026-10-11', 'T', 'Trail Milpas Altas — a tempo (8:00)', 15, 0, 'trail15'],
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 5, 0, null],
-    ['2026-10-14', 'T', 'Trail duro', 15, 0, 'trail15'],
+    ['2026-10-14', 'Q', 'Q', 7, 0, null],
     ['2026-10-15', 'D', 'D', 1.6, 0, null],
     ['2026-10-16', 'R', 'R + fuerza B', 3, 0, null],
     ['2026-10-17', 'E', 'E', 4, 0, null],
@@ -246,7 +246,7 @@
     },
     intermedio: {
       id: 'intermedio', nombre: 'Ruta intermedia',
-      resumen: 'El punto medio: calidad de verdad —HIIT, sprints, FTP y una montaña fuerte— sobre una base parecida a la estructurada, pero con un día libre real y descargas cada cuarta semana. Un brick por semana (bici fuerte y 3–4 km en seco al bajar) y uno o dos dobles AM/PM. El trail del 14 de octubre se corre a tempo, no a muerte.',
+      resumen: 'El punto medio: calidad de verdad —HIIT, sprints, FTP y una montaña fuerte— sobre una base parecida a la estructurada, pero con un día libre real y descargas cada cuarta semana. Un brick por semana (bici fuerte y 3–4 km en seco al bajar) y uno o dos dobles AM/PM. El trail del 11 de octubre se corre a tempo, no a muerte.',
       dias: aObjetos(INTERMEDIO)
     },
     brutal: {
@@ -265,7 +265,7 @@
     { nivel: 'warn', titulo: 'San Felipe es 48 horas antes de la carrera A',
       texto: 'Un 10K a fondo el jueves 19 te quita entre 20 y 40 segundos por kilómetro el sábado. Si vas, corre sólo el 5K a ritmo de 15K y trátalo como activación.' },
     { nivel: 'warn', titulo: 'El 15K Trail llega muy pronto',
-      texto: 'Es el 14 de octubre, con una salida más larga de 6 km en las últimas 6 semanas y 15 km de trail en altura. A ritmo controlado es un gran largo; a fondo es la lesión más probable del bloque.' }
+      texto: 'Es este domingo 11 de octubre a las 8:00, con una salida más larga de 6 km en las últimas 6 semanas y 15 km de trail en altura. A ritmo controlado es un gran largo; a fondo es la lesión más probable del bloque.' }
   ];
 
   /* Disponibilidad real de Emilio (horarios-preferidos.txt): entre semana desde las 18:00, sábado desde las 14:00, domingo desde las 05:00. */

@@ -5,6 +5,13 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 
 ## [No publicado]
 
+### Corregido
+- **Fecha del 15K Trail de San Bartolomé Milpas Altas**: es el **domingo 11 de octubre a las 8:00**, no el 14.
+  Se corrigió el evento (`assets/plan.js`, con hora de salida) y se re-escaló el *taper* en los tres caminos para
+  que la carrera caiga el 11: el sábado 10 pasa a ser rodaje corto con rectas (pre-carrera), el largo de esa semana
+  lo absorbe la propia carrera, y el miércoles 14 —antes día de carrera— vuelve a una sesión normal de calidad.
+  Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
+
 ### Añadido
 - **Sección «Sesión del día»** (`assets/modules/dia.js`): analiza por separado cada actividad del último día con
   datos en Strava (hoy pueden ser varias: la de correr, la de la bici, la fuerza…). Por cada una muestra las
