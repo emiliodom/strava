@@ -108,6 +108,16 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 @media(min-width:760px){.cols{grid-template-columns:1fr 1fr}
   .cols.c3{grid-template-columns:repeat(3,1fr)}}
 
+/* registro de comidas */
+.reg-grid{align-items:start}
+.reg-card{padding:.6rem .7rem;margin:0}
+.reg-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.1rem}
+.reg-card img{width:100%;max-height:12rem;object-fit:cover;border-radius:var(--pico-border-radius);background:var(--pico-muted-border-color);margin:.4rem 0}
+.reg-foto{cursor:zoom-in}
+.reg-desc{margin:.1rem 0 .4rem}
+.reg-modal{padding:0;border:0;background:transparent;max-width:min(96vw,920px)}
+.reg-modal img{width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:var(--pico-border-radius);display:block;cursor:zoom-out}
+
 /* barras horizontales */
 .hbar{display:grid;grid-template-columns:auto 1fr auto;gap:.35rem .6rem;align-items:center;font-size:.8rem;margin-bottom:1rem}
 .hbar .t{white-space:nowrap;font-variant-numeric:tabular-nums}

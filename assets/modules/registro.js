@@ -40,16 +40,29 @@
     });
   }
 
+  // Color del chip según el tipo de comida, para leer el día de un vistazo.
+  var MEAL_CLS = { desayuno: 'info', almuerzo: 'ok', cena: 'warn', merienda: 'mut', 'antes-entreno': 'info', 'despues-entreno': 'ok', bebida: 'mut' };
+
+  function tarjeta(e) {
+    var img = e.foto
+      ? "<img class='reg-foto' " + (e.url ? "src='" + esc(miniatura(e.url)) + "' data-full='" + esc(e.url) + "' loading='lazy'" : "data-foto='" + esc(e.id) + "'") + " alt='" + esc(e.desc || e.comida) + "'>"
+      : '';
+    return "<article class='reg-card'>" +
+      "<div class='reg-head'>" + U.chip(e.comida, MEAL_CLS[e.comida] || 'mut') + "<small>" + esc(e.hora) + "</small></div>" +
+      img +
+      (e.desc ? "<p class='reg-desc'>" + esc(e.desc) + "</p>" : '') +
+      "<a href='#' data-borrar='" + esc(e.id) + "'><small>borrar</small></a></article>";
+  }
+
   function lista(entradas) {
-    if (!entradas.length) return '<p><small>Todavía no hay comidas registradas.</small></p>';
+    if (!entradas.length) return U.note('Sin registros', 'Todavía no hay comidas. Sube la primera con el formulario de arriba.', 'mut');
     var porDia = {};
-    entradas.slice().sort(function (a, b) { return (b.fecha + b.hora) < (a.fecha + a.hora) ? -1 : 1; }).forEach(function (e) { (porDia[e.fecha] = porDia[e.fecha] || []).push(e); });
-    return Object.keys(porDia).sort().reverse().slice(0, 14).map(function (f) {
-      return '<h4>' + esc(f) + '</h4>' + porDia[f].map(function (e) {
-        return "<article style='padding:.75rem;margin:0 0 .75rem'><small>" + esc(e.hora) + ' · ' + esc(e.comida) + '</small>' +
-          (e.foto ? "<img " + (e.url ? "src='" + esc(miniatura(e.url)) + "' loading='lazy'" : "data-foto='" + esc(e.id) + "'") + " alt='" + esc(e.desc || e.comida) + "' style='width:100%;max-height:16rem;object-fit:cover;border-radius:var(--pico-border-radius);background:var(--pico-muted-border-color)'>" : '') +
-          '<p style="margin:.25rem 0">' + esc(e.desc) + "</p><a href='#' data-borrar='" + esc(e.id) + "'><small>borrar</small></a></article>";
-      }).join('');
+    entradas.forEach(function (e) { (porDia[e.fecha] = porDia[e.fecha] || []).push(e); });
+    return Object.keys(porDia).sort().reverse().slice(0, 14).map(function (f, i) {
+      var es = porDia[f].slice().sort(function (a, b) { return a.hora < b.hora ? 1 : -1; });   // más reciente arriba
+      var dow = App.fmt.DOW[App.date.dowMon0(App.date.d(f))] || '';
+      var titulo = dow + ' · ' + App.fmt.fechaLarga(f) + ' · ' + es.length + (es.length === 1 ? ' registro' : ' registros');
+      return U.acc(titulo, "<div class='cols reg-grid'>" + es.map(tarjeta).join('') + '</div>', i === 0);   // el día más reciente, abierto
     }).join('');
   }
 
@@ -67,7 +80,8 @@
       "<div class='grid'><select name='comida'>" + opts + "</select><input name='fecha' type='date' value='" + hoyISO() + "'><input name='hora' type='time' value='" + horaAhora() + "'></div>" +
       "<button>Registrar</button> <small id='regMsg'></small></form>" +
       '<div id="regLista">' + (estado.error ? U.note('No se pudo cargar', esc(estado.error), 'bad') : estado.entradas ? lista(estado.entradas) : '<p aria-busy="true">Cargando…</p>') + '</div>' +
-      "<p><small><a href='#' id='regSalir'>Cambiar token</a></small></p>";
+      "<p><small><a href='#' id='regSalir'>Cambiar token</a></small></p>" +
+      "<dialog id='regModal' class='reg-modal'><img alt='Foto de la comida'></dialog>";
   }
 
   function cargarFotos(el) {
@@ -98,8 +112,14 @@
         .then(function () { f.reset(); f.fecha.value = hoyISO(); f.hora.value = horaAhora(); msg.textContent = 'Registrado ✓'; recargar(el); })
         .catch(function (e) { msg.textContent = e.message; });
     });
+    var modal = el.querySelector('#regModal'), modalImg = modal.querySelector('img');
+    modal.addEventListener('click', function () { modal.close(); });
+    modal.addEventListener('close', function () { modalImg.removeAttribute('src'); });
     el.addEventListener('click', function (ev) {
-      var a = ev.target.closest && ev.target.closest('[data-borrar]');
+      if (!ev.target.closest) return;
+      var im = ev.target.closest('img.reg-foto');
+      if (im) { var full = im.getAttribute('data-full') || im.getAttribute('src'); if (full) { modalImg.src = full; modal.showModal(); } return; }
+      var a = ev.target.closest('[data-borrar]');
       if (!a) return;
       ev.preventDefault();
       if (!confirm('¿Borrar esta comida?')) return;

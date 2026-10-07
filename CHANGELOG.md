@@ -13,6 +13,12 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Registro de comidas reorganizado** (`assets/modules/registro.js`, `assets/app.css`): el listado agrupa por
+  día en bloques plegables (`<details>`), con el día más reciente abierto y el título en fecha larga (día de la
+  semana + «7 de octubre de 2026» + nº de registros). Cada día muestra sus comidas en una rejilla de tarjetas
+  compactas (dos por fila en pantalla ancha) con el tipo de comida como chip de color. Al tocar una foto se abre
+  a tamaño completo en un `<dialog>` (lightbox nativo, se cierra tocando fuera); usa la imagen original de
+  Cloudinary cuando existe. Reutiliza `U.acc`, `U.chip`, `U.note` y la rejilla `.cols`, sin dependencias nuevas.
 - **Fotos del registro de comidas en Cloudinary** (`registro/api.php`, `assets/modules/registro.js`,
   `connector/comidas.mjs`). Si existe `mistrava-store/.env` con las claves de Cloudinary
   (`CLOUDINARY_CLOUD_NAME` / `API_KEY` / `API_SECRET`, ver `registro/store.env.example`), la subida se firma
