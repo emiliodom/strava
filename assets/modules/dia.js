@@ -152,28 +152,29 @@
   }
 
   /* ---------- comparación con el plan del día ---------- */
-  function contraPlan(iso, acts, D) {
+  function contraPlan(iso, D) {
     if (!App.calExport) return '';
     var pid = App.data.pref('calPlan', 'estructurado');
     var NOMBRE = { estructurado: 'Normal', intermedio: 'Intermedio', brutal: 'Brutal' };
     var dia = App.calExport.dias(pid).filter(function (d) { return d.fecha === iso; })[0];
     if (!dia) return U.note('Sin plan para este día (' + esc(NOMBRE[pid]) + ')', 'Este día queda fuera del bloque octubre–noviembre, así que no hay sesión programada con la que comparar.', 'warn');
 
-    var kmRun = acts.filter(function (a) { return a.grupo === 'running'; }).reduce(function (s, a) { return s + a.km; }, 0);
-    var minBici = acts.filter(function (a) { return a.grupo === 'ruta' || a.grupo === 'mtb'; }).reduce(function (s, a) { return s + a.min; }, 0);
-    var minFuerza = acts.filter(function (a) { return a.grupo === 'fuerza' || a.grupo === 'otros'; }).reduce(function (s, a) { return s + a.min; }, 0);
     var tipo = (P.TIPOS && P.TIPOS[dia.tipo]) || {};
-
-    var req = [], ok = [], det = [];
-    if (dia.km >= 1) { req.push(1); var cRun = kmRun >= 0.8 * dia.km; if (cRun) ok.push(1); det.push((cRun ? '✓' : '✗') + ' correr ' + F.num(kmRun, 1) + ' / ' + F.num(dia.km, 1) + ' km'); }
-    if (dia.minBici >= 20) { req.push(1); var cBici = minBici >= 0.8 * dia.minBici; if (cBici) ok.push(1); det.push((cBici ? '✓' : '✗') + ' bici ' + F.num(minBici, 0) + ' / ' + F.num(dia.minBici, 0) + ' min'); }
-    if (/fuerza [ABC]/.test(dia.sesion)) { req.push(1); var cFz = minFuerza >= 15; if (cFz) ok.push(1); det.push((cFz ? '✓' : '✗') + ' fuerza ' + F.num(minFuerza, 0) + ' min'); }
-
-    var nivel = !req.length ? 'ok' : ok.length === req.length ? 'ok' : ok.length ? 'warn' : 'bad';
-    var titulo = !req.length ? 'Día sin exigencia concreta en el plan «' + NOMBRE[pid] + '»'
-      : ok.length === req.length ? 'Sesión «' + NOMBRE[pid] + '» cumplida' : ok.length ? 'Sesión «' + NOMBRE[pid] + '» cumplida a medias' : 'Sesión «' + NOMBRE[pid] + '» sin cumplir';
+    var evaluacion = App.calExport.evaluarDia(dia, D);
+    var componentes = evaluacion.componentes.map(function (c) {
+      var marca = c.estado === 'ok' ? '✓' : c.estado === 'parcial' ? '≈' : '✗';
+      var cantidad = c.manual ? 'registro manual' : c.cantidad + (c.cantidad === 1 ? ' actividad' : ' actividades');
+      return marca + ' ' + c.nombre + ' — ' + cantidad + ' · ' +
+        F.num(c.valor, c.unidad === 'km' ? 1 : 0) + ' / ' + F.num(c.objetivo, c.unidad === 'km' ? 1 : 0) + ' ' + c.unidad;
+    });
+    var nivel = !evaluacion.total ? 'ok' : evaluacion.cumplidas === evaluacion.total ? 'ok'
+      : evaluacion.cumplidas || evaluacion.parciales ? 'warn' : 'bad';
+    var titulo = !evaluacion.total ? 'Día sin exigencia concreta en el plan «' + NOMBRE[pid] + '»'
+      : 'Plan «' + NOMBRE[pid] + '» — ' + evaluacion.cumplidas + ' / ' + evaluacion.total + ' actividades cumplidas' +
+        (evaluacion.parciales ? ', ' + evaluacion.parciales + ' parciales' : '');
     var cuerpo = '<b>' + esc(tipo.nom ? tipo.nom + ' · ' : '') + esc(dia.sesion) + '</b>' +
-      (det.length ? '<br>' + esc(det.join(' · ')) : '<br>Sin requisitos mínimos: cualquier movimiento suma.');
+      (componentes.length ? '<br>' + esc(componentes.join(' · ')) : '<br>Sin componentes puntuables: cualquier movimiento suma.') +
+      '<br><small>Cuenta como cumplida una actividad con al menos el 80% del volumen previsto (fuerza: 15 min). Se comparan deportes por separado.</small>';
     return U.note(titulo, cuerpo, nivel);
   }
 
@@ -239,7 +240,7 @@
       selector(lista, iso, ultimo) +
       '<h3>' + esc(fechaLarga(iso)) + '</h3>' +
       resumen + aviso +
-      contraPlan(iso, limpias, D) +
+      contraPlan(iso, D) +
       tarjetas;
   }
 
