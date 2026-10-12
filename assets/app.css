@@ -173,7 +173,10 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 .cal .c .obj{color:var(--k);font-weight:600;font-size:.63rem}
 .cal .c .det{color:var(--pico-muted-color);font-size:.6rem;text-decoration:underline}
 .cal .c.hecho{box-shadow:inset 0 0 0 1px var(--ok)}
-.cal .c .ok{position:absolute;top:3px;left:3px;color:var(--ok);font-size:.7rem;font-weight:700}
+.cal .c.parcial{box-shadow:inset 0 0 0 1px var(--warn)}
+.cal .c.fallo{box-shadow:inset 0 0 0 1px var(--bad)}
+.cal .c .score{position:absolute;top:3px;left:3px;color:var(--pico-muted-color);font-size:.6rem;font-weight:700}
+.cal .c.hecho .score{color:var(--ok)}.cal .c.parcial .score{color:var(--warn)}.cal .c.fallo .score{color:var(--bad)}
 /* detalle de la actividad (modal) */
 .act{border-left:3px solid var(--pico-muted-border-color);padding:.1rem 0 .1rem .7rem;margin:.6rem 0}
 .act h5{margin:0 0 .25rem;font-size:.95rem}

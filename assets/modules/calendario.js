@@ -30,9 +30,59 @@
   }
   function realDe(fecha) {
     var auto = realStravaDe(fecha), manual = reales()[fecha];
-    if (!auto) return manual || null;
+    if (!auto) return manual ? Object.assign({ manual: true }, manual) : null;
     Object.keys(manual || {}).forEach(function (k) { auto[k] = manual[k]; });
+    auto.manual = !!manual;
+    auto.manualData = manual || null;
     return auto;
+  }
+
+  function componentesPlan(d) {
+    var tipo = TIPOS[d.tipo] || {};
+    var ev = d.evento ? EVT[d.evento] : null;
+    var corridaBrick = /off-bike|brick/i.test(d.sesion || '');
+    var componentes = [];
+    if (d.km >= 1 && (d.km >= 3 || tipo.deporte === 'run' || (ev && /trail|atletismo/.test(ev.deporte)))) {
+      var nombreRun = corridaBrick ? 'Correr (brick)' : tipo.nom && tipo.nom !== 'Fácil' ? 'Correr · ' + tipo.nom : 'Correr fácil';
+      componentes.push({ deporte: 'running', nombre: nombreRun, objetivo: d.km, unidad: 'km' });
+    }
+    if (d.minBici >= 20) componentes.push({ deporte: 'bici', nombre: 'Bici', objetivo: d.minBici, unidad: 'min' });
+    var fuerza = /fuerza ([ABC])/i.exec(d.sesion || '');
+    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
+    return componentes;
+  }
+
+  function kmRunPlan(d) {
+    return componentesPlan(d).filter(function (c) { return c.deporte === 'running'; })
+      .reduce(function (s, c) { return s + c.objetivo; }, 0);
+  }
+
+  function evaluarDia(d, D) {
+    var dia = D.dias.filter(function (x) { return x.iso === d.fecha; })[0];
+    var acts = dia && dia.acts ? dia.acts.filter(function (a) { return !a.anomalia; }) : [];
+    var componentes = componentesPlan(d).map(function (c) {
+      var candidatas = acts.filter(function (a) {
+        return c.deporte === 'bici' ? a.grupo === 'ruta' || a.grupo === 'mtb' : a.grupo === c.deporte;
+      });
+      var cantidad = candidatas.length;
+      var valor = candidatas.reduce(function (s, a) { return s + (c.unidad === 'km' ? a.km || 0 : a.min || 0); }, 0);
+      var manual = false, entrada = d.real && (d.real.manualData || (d.real.manual ? d.real : null));
+      if (!cantidad && entrada) {
+        var manualValor = c.deporte === 'running' ? entrada.km : c.deporte === 'bici' ? entrada.minBici : entrada.minFuerza;
+        if (manualValor != null && manualValor > 0) { valor = manualValor; manual = true; }
+      }
+      var minimo = c.deporte === 'fuerza' ? c.objetivo : c.objetivo * 0.8;
+      return {
+        deporte: c.deporte, nombre: c.nombre, unidad: c.unidad, objetivo: c.objetivo, valor: valor, cantidad: cantidad, manual: manual,
+        estado: (cantidad || manual) && valor + 1e-9 >= minimo ? 'ok' : cantidad || manual ? 'parcial' : 'miss'
+      };
+    });
+    return {
+      componentes: componentes,
+      cumplidas: componentes.filter(function (c) { return c.estado === 'ok'; }).length,
+      parciales: componentes.filter(function (c) { return c.estado === 'parcial'; }).length,
+      total: componentes.length
+    };
   }
 
   function resumenReciente(D, lista) {
@@ -54,10 +104,18 @@
     var porFecha = {};
     dias.forEach(function (d) { porFecha[d.iso] = true; });
     var plan = lista.filter(function (d) { return porFecha[d.fecha]; }).reduce(function (s, d) {
-      s.km += d.km || 0;
-      s.minBici += d.minBici || 0;
+      var componentes = componentesPlan(d);
+      s.km += componentes.filter(function (c) { return c.deporte === 'running'; }).reduce(function (n, c) { return n + c.objetivo; }, 0);
+      s.minBici += componentes.filter(function (c) { return c.deporte === 'bici'; }).reduce(function (n, c) { return n + c.objetivo; }, 0);
       return s;
     }, { km: 0, minBici: 0 });
+    var puntos = lista.filter(function (d) { return porFecha[d.fecha]; }).reduce(function (s, d) {
+      var evalDia = evaluarDia(d, D);
+      s.cumplidas += evalDia.cumplidas;
+      s.parciales += evalDia.parciales;
+      s.total += evalDia.total;
+      return s;
+    }, { cumplidas: 0, parciales: 0, total: 0 });
     function comparacion(real, objetivo, unidad) {
       var texto = 'Plan: ' + F.num(objetivo, unidad === 'km' ? 1 : 0) + ' ' + unidad;
       if (objetivo > 0) {
@@ -69,9 +127,12 @@
     return "<article><h4>Últimos 7 días con datos · hasta " + esc(F.fecha(fin)) + '</h4>' +
       U.kpis([
         U.kpi('Carrera real', F.num(actual.km, 1) + ' km', comparacion(actual.km, plan.km, 'km')),
-        U.kpi('Bici real', F.num(actual.minBici, 0) + ' min', comparacion(actual.minBici, plan.minBici, 'min'))
-      ], 'k2') +
-      '<small>Se calcula automáticamente con Strava. No ajusta el plan: muestra la diferencia para que puedas valorar la carga reciente antes de seguirlo.</small></article>';
+        U.kpi('Bici real', F.num(actual.minBici, 0) + ' min', comparacion(actual.minBici, plan.minBici, 'min')),
+        U.kpi('Actividades cumplidas', puntos.total ? puntos.cumplidas + ' / ' + puntos.total : '—',
+          puntos.total ? puntos.parciales + ' parciales · una por cada componente previsto' : 'sin componentes previstos',
+          puntos.total && puntos.cumplidas === puntos.total ? 'ok' : puntos.total ? 'warn' : '')
+      ], 'k3') +
+      '<small>Se calcula automáticamente con Strava. Cada componente (carrera, bici o fuerza) aporta un punto sólo al alcanzar el mínimo; 80% del volumen previsto, o 15 min de fuerza. No ajusta el plan automáticamente.</small></article>';
   }
 
   // El plan ya no se edita: los km e intensidades son la referencia. Cada día lleva su registro real.
@@ -109,9 +170,10 @@
     return z.facil;
   }
   function cargaDia(d, z, calib) {
-    var minRun = d.km > 0 ? d.km * ritmoDe(d.tipo, z) / 60 : 0;
+    var kmRun = kmRunPlan(d);
+    var minRun = kmRun > 0 ? kmRun * ritmoDe(d.tipo, z) / 60 : 0;
     var kBici = calib.mtb || 1.5;
-    return { min: minRun + d.minBici, carga: minRun * (calib.running || 0.8) + d.minBici * kBici };
+    return { min: minRun + d.minBici, minRun: minRun, kmRun: kmRun, carga: minRun * (calib.running || 0.8) + d.minBici * kBici };
   }
 
   // Serie diaria sintética: historia real + plan, para poder calcular ACWR del plan.
@@ -122,7 +184,7 @@
       if (ultimo && d.fecha <= ultimo) return;
       var c = cargaDia(d, D.zonas, D.calib), t = DT.d(d.fecha);
       hist.push({ iso: d.fecha, carga: c.carga, min: c.min, semana: DT.isoWeek(t), dt: t, dow: DT.dowMon0(t),
-        acts: [], km: d.km, kmRun: d.km, kmBici: 0, elev: 0, minRun: c.min - d.minBici, grupos: {}, plan: true });
+        acts: [], km: c.kmRun, kmRun: c.kmRun, kmBici: 0, elev: 0, minRun: c.minRun, grupos: {}, plan: true });
     });
     return M.semanas(M.acwr(hist));
   }
@@ -142,11 +204,16 @@
         celdas += "<div class='c e'></div>";
       } else {
         var t = TIPOS[d.tipo] || TIPOS.E, ev = d.evento ? EVT[d.evento] : null;
-        var obj = App.actividad.corto(d, D), hecho = !!d.real;
-        totSem += d.km;
-        celdas += "<div class='c " + t.cls + (hecho ? ' hecho' : '') + "' data-f='" + esc(k) + "' tabindex='0' role='button' " +
-          "aria-label='" + esc(F.fechaLarga(k) + ': ' + d.sesion + '. Ver detalles de la actividad, por deporte') + "'>" +
-          (hecho ? "<span class='ok' aria-hidden='true'>✓</span>" : '') +
+        var obj = App.actividad.corto(d, D), evalDia = evaluarDia(d, D);
+        var ultimoDato = D.dias.length ? D.dias[D.dias.length - 1].iso : null;
+        var pasado = ultimoDato && k <= ultimoDato;
+        var tienePuntuacion = evalDia.total > 0 && (pasado || !!d.real);
+        var estadoCelda = evalDia.total > 0 && evalDia.cumplidas === evalDia.total ? 'hecho'
+          : evalDia.cumplidas || evalDia.parciales ? 'parcial' : tienePuntuacion ? 'fallo' : '';
+        totSem += kmRunPlan(d);
+        celdas += "<div class='c " + t.cls + (estadoCelda ? ' ' + estadoCelda : '') + "' data-f='" + esc(k) + "' tabindex='0' role='button' " +
+          "aria-label='" + esc(F.fechaLarga(k) + ': ' + d.sesion + (tienePuntuacion ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte') + "'>" +
+          (tienePuntuacion ? "<span class='score' aria-hidden='true'>" + evalDia.cumplidas + '/' + evalDia.total + '</span>' : '') +
           "<span class='tg'>" + esc(t.k) + '</span>' +
           '<b>' + DT.d(k).getUTCDate() + '</b>' +
           '<small>' + esc(d.sesion) + '</small>' +
@@ -269,7 +336,7 @@
       caption: 'Monotonía semanal proyectada del camino brutal.'
     });
 
-    var kmTot = lista.reduce(function (s, d) { return s + d.km; }, 0);
+    var kmTot = lista.reduce(function (s, d) { return s + kmRunPlan(d); }, 0);
     var pico = futuras.reduce(function (m, w) { return Math.max(m, w.acwr || 0); }, 0);
 
     /* ---- competencias ---- */
@@ -453,5 +520,5 @@
   }
 
   App.mods.push({ id: 'calendario', nom: 'Calendario', tab: 'Plan', icono: 'M3 9h18M7 3v4M17 3v4M4 5h16v16H4z', render: render, montar: montar });
-  App.calExport = { ics: ics, enlaceGoogle: enlaceGoogle, dias: dias };
+  App.calExport = { ics: ics, enlaceGoogle: enlaceGoogle, dias: dias, evaluarDia: evaluarDia };
 })(this);
