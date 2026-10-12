@@ -13,6 +13,10 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Selector de fecha en «Sesión del día»** (`assets/modules/dia.js`): además del último día con datos, ahora puedes
+  revisar el análisis de cualquier día pasado con actividad. Los botones ◀ ▶ saltan al día anterior/siguiente con datos y una
+  lista desplegable muestra todos los días (el más reciente marcado «último»). Usa el hook `montar` y `App.refrescar`
+  para repintar sólo ese módulo; la elección vive en memoria (al recargar vuelve al último día). Sin dependencias nuevas.
 - **Registro de comidas reorganizado** (`assets/modules/registro.js`, `assets/app.css`): el listado agrupa por
   día en bloques plegables (`<details>`), con el día más reciente abierto y el título en fecha larga (día de la
   semana + «7 de octubre de 2026» + nº de registros). Cada día muestra sus comidas en una rejilla de tarjetas
