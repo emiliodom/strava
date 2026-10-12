@@ -42,6 +42,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   barra inferior. El análisis histórico (año, running, bici…) sigue en sus módulos.
 
 ### Documentación
+- **Documentación del seguimiento plan vs. Strava en el README**: sección detallada que explica el cruce automático con Strava, la puntuación por componentes (umbrales del 80% y 15 min), insignias de cumplimiento en el calendario y el cálculo del balance rodante de 7 días.
 - **Despliegue en Hostinger con cron**, documentado con diagramas Mermaid en el README: topología de las tres
   carpetas (public_html + `mistrava-store` + `mistrava-cron`), la autenticación headless con Strava (autorizas
   una vez en local, el servidor sólo refresca por HTTPS) y el ciclo del cron (`git pull` → sync → build →
