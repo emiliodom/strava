@@ -16,7 +16,63 @@
 
   /* ---------- registro real (lo que pasó de verdad, independiente del plan) ---------- */
   function reales() { return App.data.pref(CLAVE_REAL, {}); }
-  function realDe(fecha) { return reales()[fecha] || null; }
+  function realStravaDe(fecha) {
+    if (!D0) return null;
+    var dia = D0.dias.filter(function (d) { return d.iso === fecha; })[0];
+    var acts = dia && dia.acts ? dia.acts.filter(function (a) { return !a.anomalia; }) : [];
+    if (!acts.length) return null;
+    return acts.reduce(function (r, a) {
+      if (a.grupo === 'running') r.km += a.km || 0;
+      if (a.grupo === 'ruta' || a.grupo === 'mtb') r.minBici += a.min || 0;
+      r.min += a.min || 0;
+      return r;
+    }, { km: 0, min: 0, minBici: 0, strava: true });
+  }
+  function realDe(fecha) {
+    var auto = realStravaDe(fecha), manual = reales()[fecha];
+    if (!auto) return manual || null;
+    Object.keys(manual || {}).forEach(function (k) { auto[k] = manual[k]; });
+    return auto;
+  }
+
+  function resumenReciente(D, lista) {
+    var conDatos = D.dias.filter(function (d) {
+      return d.acts && d.acts.some(function (a) { return !a.anomalia; });
+    });
+    if (!conDatos.length) return '';
+    var fin = conDatos[conDatos.length - 1].iso;
+    var inicio = DT.iso(DT.addDays(DT.d(fin), -6));
+    var dias = D.dias.filter(function (d) { return d.iso >= inicio && d.iso <= fin; });
+    var actual = dias.reduce(function (s, d) {
+      (d.acts || []).forEach(function (a) {
+        if (a.anomalia) return;
+        if (a.grupo === 'running') s.km += a.km || 0;
+        if (a.grupo === 'ruta' || a.grupo === 'mtb') s.minBici += a.min || 0;
+      });
+      return s;
+    }, { km: 0, minBici: 0 });
+    var porFecha = {};
+    dias.forEach(function (d) { porFecha[d.iso] = true; });
+    var plan = lista.filter(function (d) { return porFecha[d.fecha]; }).reduce(function (s, d) {
+      s.km += d.km || 0;
+      s.minBici += d.minBici || 0;
+      return s;
+    }, { km: 0, minBici: 0 });
+    function comparacion(real, objetivo, unidad) {
+      var texto = 'Plan: ' + F.num(objetivo, unidad === 'km' ? 1 : 0) + ' ' + unidad;
+      if (objetivo > 0) {
+        var pct = Math.round((real - objetivo) / objetivo * 100);
+        texto += ' · ' + (pct > 0 ? '+' : '') + pct + '%';
+      }
+      return texto;
+    }
+    return "<article><h4>Últimos 7 días con datos · hasta " + esc(F.fecha(fin)) + '</h4>' +
+      U.kpis([
+        U.kpi('Carrera real', F.num(actual.km, 1) + ' km', comparacion(actual.km, plan.km, 'km')),
+        U.kpi('Bici real', F.num(actual.minBici, 0) + ' min', comparacion(actual.minBici, plan.minBici, 'min'))
+      ], 'k2') +
+      '<small>Se calcula automáticamente con Strava. No ajusta el plan: muestra la diferencia para que puedas valorar la carga reciente antes de seguirlo.</small></article>';
+  }
 
   // El plan ya no se edita: los km e intensidades son la referencia. Cada día lleva su registro real.
   function dias(plan) {
@@ -35,10 +91,12 @@
       out.push('Correr — plan ' + F.num(d.km, 1) + ' km · real ' + F.num(r.km, 1) + ' km <b class="' + claseDif(pct) + '">' + (pct > 0 ? '+' : '') + pct + '%</b>');
     }
     if (d.minBici >= 10 && r.min != null) {
-      var p2 = d.minBici ? Math.round((r.min - d.minBici) / d.minBici * 100) : 0;
-      out.push('Bici — plan ' + F.num(d.minBici, 0) + " min · real " + F.num(r.min, 0) + ' min <b class="' + claseDif(p2) + '">' + (p2 > 0 ? '+' : '') + p2 + '%</b>');
+      var minBici = r.minBici != null ? r.minBici : r.min;
+      var p2 = d.minBici ? Math.round((minBici - d.minBici) / d.minBici * 100) : 0;
+      out.push('Bici — plan ' + F.num(d.minBici, 0) + " min · real " + F.num(minBici, 0) + ' min <b class="' + claseDif(p2) + '">' + (p2 > 0 ? '+' : '') + p2 + '%</b>');
     }
     if (r.ritmo) out.push('Ritmo / intensidad real: <b>' + esc(r.ritmo) + '</b>');
+    if (r.strava) out.push('Datos importados automáticamente de Strava');
     return out.length ? "<div class='difP'><small>" + out.join('<br>') + '</small></div>' : '';
   }
 
@@ -251,12 +309,13 @@
         U.kpi('ACWR máximo proyectado', F.num(pico, 2), pico > 1.5 ? 'zona de riesgo alto' : pico > 1.3 ? 'vigilar' : 'dentro de rango',
           pico > 1.5 ? 'bad' : pico > 1.3 ? '' : 'ok'),
         U.kpi('Días libres', F.num(lista.filter(function (d) { return d.tipo === 'D'; }).length, 0), 'descanso real programado'),
-        U.kpi('Días registrados', F.num(lista.filter(function (d) { return d.real; }).length, 0), 'lo que ya anotaste de verdad')
+        U.kpi('Días con actividad', F.num(lista.filter(function (d) { return d.real; }).length, 0), 'Strava o registro manual')
       ]))}
 
+      ${raw(resumenReciente(D, lista))}
       ${raw(leyenda())}
       <div id='calGrid'>${raw(rejilla(plan, lista, D))}</div>
-      <p><small>Toca cualquier día para ver el detalle de la actividad por deporte y anotar lo que hiciste. El registro se guarda sólo en este navegador.</small></p>
+      <p><small>Las actividades de Strava marcan automáticamente los días pasados y completan el plan vs. real. Toca cualquier día para ver el detalle o añadir una nota; el registro manual se guarda sólo en este navegador.</small></p>
 
       <div id='calExp' role='group'>
         <button type='button' data-exp='ics'>Descargar .ics</button>
