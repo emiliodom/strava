@@ -13,6 +13,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Seguimiento automático de plan vs. realidad en el calendario** (`assets/modules/calendario.js`): los días pasados enlazan las actividades importadas desde Strava, marcan su actividad y comparan kilómetros de carrera y minutos de bici; un resumen muestra los últimos siete días con datos frente al plan activo. Se conserva el registro manual, que prevalece sobre los valores importados cuando se edita un día. El plan no se modifica automáticamente.
 - **Selector de fecha en «Sesión del día»** (`assets/modules/dia.js`): además del último día con datos, ahora puedes
   revisar el análisis de cualquier día pasado con actividad. Los botones ◀ ▶ saltan al día anterior/siguiente con datos y una
   lista desplegable muestra todos los días (el más reciente marcado «último»). Usa el hook `montar` y `App.refrescar`
