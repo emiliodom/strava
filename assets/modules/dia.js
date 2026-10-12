@@ -14,6 +14,13 @@
     return DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + F.mesLargo(iso);
   }
 
+  var SEL = null; // día elegido (ISO); null = el último con datos
+
+  /* Días con al menos una actividad, del más antiguo al más reciente. */
+  function diasConDatos(D) {
+    return D.dias.filter(function (d) { return d.acts && d.acts.length; }).map(function (d) { return d.iso; });
+  }
+
   /* El último día que tenga actividad real (no el calendario vacío de hoy). */
   function ultimoDiaISO(D) {
     for (var i = D.dias.length - 1; i >= 0; i--) {
@@ -170,10 +177,40 @@
     return U.note(titulo, cuerpo, nivel);
   }
 
+  /* ---------- selector de fecha ---------- */
+  function selector(lista, iso, ultimo) {
+    var i = lista.indexOf(iso);
+    var opts = lista.slice().reverse().map(function (d) {
+      return '<option value="' + d + '"' + (d === iso ? ' selected' : '') + '>' + esc(fechaLarga(d)) + (d === ultimo ? ' (último)' : '') + '</option>';
+    }).join('');
+    return '<div class="dia-sel" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem">' +
+      '<button type="button" data-dia="prev"' + (i <= 0 ? ' disabled' : '') + ' aria-label="Día anterior">◀</button>' +
+      '<select data-dia="sel" aria-label="Elegir día" style="flex:1;min-width:12rem;margin:0">' + opts + '</select>' +
+      '<button type="button" data-dia="next"' + (i >= lista.length - 1 ? ' disabled' : '') + ' aria-label="Día siguiente">▶</button>' +
+      '</div>';
+  }
+
+  function montar(el, D) {
+    var lista = diasConDatos(D);
+    function ir(iso) { SEL = iso; App.refrescar('dia'); }
+    function actual() { return (SEL && lista.indexOf(SEL) >= 0) ? SEL : ultimoDiaISO(D); }
+    var sel = el.querySelector('select[data-dia]');
+    if (sel) sel.addEventListener('change', function () { ir(sel.value); });
+    [['prev', -1], ['next', 1]].forEach(function (p) {
+      var b = el.querySelector('[data-dia="' + p[0] + '"]');
+      if (b) b.addEventListener('click', function () {
+        var j = lista.indexOf(actual()) + p[1];
+        if (j >= 0 && j < lista.length) ir(lista[j]);
+      });
+    });
+  }
+
   /* ---------- render ---------- */
   function render(D) {
-    var head = U.modhead('', 'Sesión del día', 'El desglose de lo que hiciste el último día con datos: cada actividad por separado, kilómetro a kilómetro, y cómo cuadra con el plan.');
-    var iso = ultimoDiaISO(D);
+    var head = U.modhead('', 'Sesión del día', 'El desglose de lo que hiciste el último día con datos (o el día que elijas del histórico): cada actividad por separado, kilómetro a kilómetro, y cómo cuadra con el plan.');
+    var ultimo = ultimoDiaISO(D);
+    var lista = diasConDatos(D);
+    var iso = (SEL && lista.indexOf(SEL) >= 0) ? SEL : ultimo;
     if (!iso) return head + U.note('Todavía no hay actividades', 'Sincroniza con <code>node connector/sync.mjs &amp;&amp; node connector/build.mjs --js</code> y vuelve.', 'warn');
 
     var acts = D.acts.filter(function (a) { return a.fechaISO === iso; }).sort(function (x, y) { return x.hora - y.hora; });
@@ -194,11 +231,12 @@
 
     var ultimoDato = D.dias.length ? D.dias[D.dias.length - 1].iso : null;
     var hoyISO = (function () { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; })();
-    var aviso = (iso < hoyISO) ? U.note('Mostrando el ' + esc(fechaLarga(iso)), 'Es el último día con datos en Strava. Si ya entrenaste hoy (' + esc(hoyISO) + '), sincroniza para verlo aquí.', 'warn') : '';
+    var aviso = (iso === ultimo && iso < hoyISO) ? U.note('Mostrando el ' + esc(fechaLarga(iso)), 'Es el último día con datos en Strava. Si ya entrenaste hoy (' + esc(hoyISO) + '), sincroniza para verlo aquí.', 'warn') : '';
 
     var tarjetas = acts.map(function (a) { return tarjeta(a, D, f); }).join('');
 
     return head +
+      selector(lista, iso, ultimo) +
       '<h3>' + esc(fechaLarga(iso)) + '</h3>' +
       resumen + aviso +
       contraPlan(iso, limpias, D) +
@@ -208,6 +246,6 @@
   App.mods.push({
     id: 'dia', nom: 'Sesión del día', tab: 'Sesión',
     icono: 'M13 2 3 14h7l-1 8 10-12h-7l1-8z',
-    render: render
+    render: render, montar: montar
   });
 })(this);
