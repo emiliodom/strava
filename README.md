@@ -219,6 +219,22 @@ Dentro del módulo **Calendario** tienes dos salidas, para el camino que tengas 
   en Apple Calendar o en Outlook. Crea los 57 días como eventos de todo el día.
 - **Añadir a Google Calendar** — un enlace por día, por si sólo quieres meter las carreras.
 
+## Calendario y seguimiento frente al plan (Strava)
+
+El calendario analiza continuamente el cumplimiento de tu entrenamiento cruzando lo programado con lo registrado en Strava:
+
+- **Tres caminos personalizables**: Estructurado, Intermedio y Brutal, ajustados a tus competencias y con soporte de **entrenamiento híbrido** (carrera + bici el mismo día, dobles AM/PM y bricks).
+- **Cruce automático con Strava**: Los días pasados detectan automáticamente tus actividades registradas en Strava (carrera, ciclismo, fuerza u otros entrenamientos) sin necesidad de captura manual. Si añades notas o ajustas un día manualmente, tu registro prevalece sobre los valores automáticos.
+- **Puntuación rigurosa por componente**:
+  - Cada sesión planificada se descompone en sus disciplinas previstas: carrera (km), ciclismo (minutos) y fuerza (rutinas A/B/C).
+  - Cada componente exige un umbral mínimo de volumen (≥80% de la distancia o tiempo previsto; mínimo 15 minutos en fuerza) para considerarse cumplido (`✓`).
+  - Actividades incompletas o de duración residual (por ejemplo, 1–3 minutos de rodaje suave o transferencias breves) se clasifican como parciales (`≈`) y no inflan el puntaje de cumplimiento.
+  - La ausencia de actividad en el deporte programado se clasifica como no realizada (`✗`).
+  - Los deportes distintos no se intercambian: una actividad de bici no convalida una sesión de fuerza o carrera.
+- **Insignias y estado visual diario**: Cada celda del calendario muestra una insignia compacta con el recuento de componentes cumplidos frente a los previstos (`cumplidas/previstas`, ej. `2/2` o `1/2`), con bordes codificados por color (verde para día completo, ámbar para parcial, rojo para día no realizado).
+- **Balance rodante de los últimos 7 días**: Una tarjeta resumen compara los km de carrera y minutos de bici acumulados en la última semana frente al plan activo, calculando una **puntuación global** (`X/Y cumplidas` y porcentaje de adherencia real).
+- **Consistencia en carga y descanso**: Los días de descanso o eventos en bicicleta con distancias nominales no distorsionan el volumen de carrera planificado ni inflan falsamente la carga proyectada (ACWR).
+
 ## Estructura
 
 | Ruta | Qué es |
