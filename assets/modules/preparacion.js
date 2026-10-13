@@ -58,7 +58,7 @@
     sanfelipe: { 5: ['Corres el 5K sólo a ritmo de 15K (no de 5K) o no corres: dos días antes de la Guatemágica no vale la pena un esfuerzo máximo.'] },
     senderos: { 5: ['Seis días antes de la A: baja el ritmo, no compitas. Si llegas con fatiga, cámbialo por una rodada corta.'] },
     campana: { 10: ['Última semana para entrenar en altura o con mucho desnivel antes de la Guatemágica: no la recortes por miedo, pero tampoco le añadas carga nueva.'] },
-    trail15: { 15: ['Es la primera carrera y estás a 8 días. Los 15 y 10 días ya pasaron: concéntrate en el bloque de 5 días y en una salida de 8–10 km con desnivel.'] },
+    colomba: { 5: ['Travesía de ~800 m D+: sal con agua y comida para todo el recorrido, sube a ritmo conversacional y guarda las piernas para la bajada. No es carrera.'] },
     capis: { 5: ['Rodada de grupo: ve a ritmo conversacional y no persigas a nadie; es salida larga, no carrera.'] }
   };
 

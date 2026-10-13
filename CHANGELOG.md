@@ -6,6 +6,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ## [No publicado]
 
 ### Corregido
+- **15K Trail Milpas Altas eliminado**: no se corrió. Se quitó el evento, su preparación, el conflicto «llega muy pronto» y la fila de hidratación; el 11 oct queda como rodaje suave en los tres planes.
 - **Fecha del 15K Trail de San Bartolomé Milpas Altas**: es el **domingo 11 de octubre a las 8:00**, no el 14.
   Se corrigió el evento (`assets/plan.js`, con hora de salida) y se re-escaló el *taper* en los tres caminos para
   que la carrera caiga el 11: el sábado 10 pasa a ser rodaje corto con rectas (pre-carrera), el largo de esa semana
@@ -13,6 +14,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Ida a Colomba (18 oct)**: nueva travesía de ~800 m de desnivel (`assets/plan.js`, con nota de preparación en `preparacion.js`).
 - **Seguimiento automático de plan vs. realidad en el calendario** (`assets/modules/calendario.js`): los días pasados enlazan las actividades importadas desde Strava, marcan su actividad y comparan kilómetros de carrera y minutos de bici; un resumen muestra los últimos siete días con datos frente al plan activo. Se conserva el registro manual, que prevalece sobre los valores importados cuando se edita un día. El plan no se modifica automáticamente.
 - **Puntuación por actividad planificada** (`assets/modules/calendario.js`, `assets/modules/dia.js`): carrera, bici y fuerza se evalúan por separado; cada componente suma un punto sólo si aparece al menos una actividad de ese deporte y alcanza el mínimo de volumen (80% de lo previsto; fuerza, 15 minutos). Los detalles muestran cuántas actividades reales se registraron, el calendario marca `cumplidas/previstas` y el resumen semanal añade el total global. Los minutos manuales sin deporte identificado no se atribuyen a bici ni a fuerza. Los km planeados y la carga proyectada ya no cuentan como carrera los valores de relleno de los días de descanso o de bici. Las actividades de otros deportes ya no pueden hacer pasar una sesión de fuerza ni una bici breve como cumplidas.
 - **Selector de fecha en «Sesión del día»** (`assets/modules/dia.js`): además del último día con datos, ahora puedes

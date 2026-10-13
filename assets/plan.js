@@ -6,9 +6,9 @@
 
   /* ---------- Competencias confirmadas ---------- */
   var EVENTOS = [
-    { id: 'trail15', fecha: '2026-10-11', hora: '08:00', nombre: '15K Trail San Bartolomé Milpas Altas', deporte: 'trail',
-      km: 15, prioridad: 'C', lugar: 'San Bartolomé Milpas Altas, Sacatepéquez',
-      nota: 'Trail de montaña a ~2.100 m, salida a las 8:00. Seis días después de empezar el bloque y tu salida más larga de las últimas 6 semanas fue de 6 km.' },
+    { id: 'colomba', fecha: '2026-10-18', nombre: 'Ida a Colomba (travesía)', deporte: 'mtb',
+      km: null, prioridad: 'C', lugar: 'Colomba', desnivel: 800,
+      nota: 'Travesía con ~800 m de desnivel positivo. Es salida larga con montaña: ritmo constante, hidratación y comida desde el inicio, sin competir.' },
     { id: 'capis', fecha: '2026-10-18', nombre: 'Rodada con los Capis', deporte: 'mtb',
       km: null, prioridad: 'C', lugar: 'Por confirmar', nota: 'Rodada de grupo. Sirve como salida larga en bici.' },
     { id: 'campana', fecha: '2026-11-08', nombre: 'Campanabaj, Totonicapán', deporte: 'mtb',
@@ -57,7 +57,7 @@
     ['2026-10-08', 'E', 'E + fuerza A', 5, 0, null],
     ['2026-10-09', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-10', 'E', 'E corto + 4 rectas (pre-carrera)', 4, 0, null],
-    ['2026-10-11', 'C', 'C — Trail Milpas Altas (8:00)', 15, 0, 'trail15'],
+    ['2026-10-11', 'E', 'E suave (el 15K Trail se canceló)', 5, 0, null],
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 4, 0, null],
     ['2026-10-14', 'Q', 'Q', 6, 0, null],
@@ -117,7 +117,7 @@
     ['2026-10-08', 'E', 'E AM + bici Z2 + fuerza A PM', 6, 40, null],
     ['2026-10-09', 'R', 'R AM + bici suave + fuerza B PM', 3, 30, null],
     ['2026-10-10', 'E', 'E corto + rectas + bici suave (pre-carrera)', 4, 20, null],
-    ['2026-10-11', 'T', 'Trail Milpas Altas — fuerte pero con cabeza (8:00)', 15, 0, 'trail15'],
+    ['2026-10-11', 'E', 'E suave (el 15K Trail se canceló)', 5, 0, null],
     ['2026-10-12', 'R', 'R AM + bici suave + fuerza C PM', 3, 30, null],
     ['2026-10-13', 'E', 'E AM + bici Z2 PM', 5, 40, null],
     ['2026-10-14', 'Q', 'Q AM + bici suave PM', 7, 30, null],
@@ -179,7 +179,7 @@
     ['2026-10-08', 'E', 'E + fuerza A', 6, 0, null],
     ['2026-10-09', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-10', 'E', 'E corto + 4 rectas (pre-carrera)', 4, 0, null],
-    ['2026-10-11', 'T', 'Trail Milpas Altas — a tempo (8:00)', 15, 0, 'trail15'],
+    ['2026-10-11', 'E', 'E suave (el 15K Trail se canceló)', 5, 0, null],
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 5, 0, null],
     ['2026-10-14', 'Q', 'Q', 7, 0, null],
@@ -263,9 +263,7 @@
     { nivel: 'bad', titulo: 'Entre Senderos cae 6 días antes de la Guatemágica',
       texto: 'Una MTB a fondo el domingo 15 deja las piernas cargadas para el sábado 21. En la ruta estructurada va en Z2 y sin disputar nada; si la vas a competir, acepta que la Guatemágica se convierte en carrera B.' },
     { nivel: 'warn', titulo: 'San Felipe es 48 horas antes de la carrera A',
-      texto: 'Un 10K a fondo el jueves 19 te quita entre 20 y 40 segundos por kilómetro el sábado. Si vas, corre sólo el 5K a ritmo de 15K y trátalo como activación.' },
-    { nivel: 'warn', titulo: 'El 15K Trail llega muy pronto',
-      texto: 'Es este domingo 11 de octubre a las 8:00, con una salida más larga de 6 km en las últimas 6 semanas y 15 km de trail en altura. A ritmo controlado es un gran largo; a fondo es la lesión más probable del bloque.' }
+      texto: 'Un 10K a fondo el jueves 19 te quita entre 20 y 40 segundos por kilómetro el sábado. Si vas, corre sólo el 5K a ritmo de 15K y trátalo como activación.' }
   ];
 
   /* Disponibilidad real de Emilio (horarios-preferidos.txt): entre semana desde las 18:00, sábado desde las 14:00, domingo desde las 05:00. */

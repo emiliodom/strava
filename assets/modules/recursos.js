@@ -91,7 +91,6 @@
       ${raw(U.tabla(
         [{ t: 'Carrera' }, { t: 'Condición' }, { t: 'Qué hacer' }],
         [
-          ['15K Trail San Bartolomé', 'Altiplano, unos 2.100 m', 'El aire seco deshidrata más de lo que crees. Lleva 500 ml y bebe a sorbos desde el inicio. El ritmo a esa altura es naturalmente más lento: no pelees contra el reloj.'],
           ['Campanabaj, Totonicapán', 'Altura, unos 2.500 m, salida larga', 'Sube el carbohidrato a 70–90 g/h. En altura el cuerpo depende más del glucógeno y se vacía antes.'],
           ['Guatemágica 15K, Retalhuleu', 'Costa, calor y humedad altos', 'Es el escenario opuesto al que entrenas. Hidrátate la víspera, sal con 400–500 ml, usa gorra y acepta que tu ritmo será 10–20 s/km más lento que en el altiplano al mismo esfuerzo.']
         ],
