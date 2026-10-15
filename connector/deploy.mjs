@@ -45,7 +45,7 @@ try {
   }
   for (const c of CARPETAS) {
     gcloud('storage', 'rsync', c, `gs://${BUCKET}/${c}`, '--recursive', '--delete-unmatched-destination-objects',
-      '--cache-control=public, max-age=3600');
+      '--cache-control=no-cache, max-age=0');
   }
 } catch (e) {
   console.error('\n✗ gcloud fallo. Comprueba que esta instalado y con sesion iniciada:');
