@@ -89,7 +89,7 @@ incluidas las privadas"**: sin ese permiso faltarán entrenamientos.
 
 ```bash
 node connector/sync.mjs          # descarga incremental (la 1.ª vez tarda; después, segundos)
-node connector/build.mjs --js    # genera ano2026_datos.min.json y datos.js
+node connector/build.mjs --js    # genera ano2026_datos.min.json, datos.js y ano2026_datos.json (copia indentada, sólo local)
 ```
 
 ### 5. Ver la página

@@ -13,6 +13,8 @@ node_modules/
 Thumbs.db
 
 ano2026_datos.min.anterior.json
+# Copia indentada y legible del JSON (la genera build.mjs; la app usa la .min).
+ano2026_datos.json
 ano2026_datos.min copy.json
 
 # El JSON generado (ano2026_datos.min.json) SI se publica a proposito: es la referencia de ejemplo.

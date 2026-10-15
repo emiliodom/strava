@@ -6,6 +6,7 @@ import { RAIZ } from './strava.mjs';
 
 const CRUDO = path.join(RAIZ, 'data', 'raw');
 const SALIDA = path.join(RAIZ, 'ano2026_datos.min.json');
+const SALIDA_LEGIBLE = path.join(RAIZ, 'ano2026_datos.json');
 const SALIDA_JS = path.join(RAIZ, 'datos.js');
 const OVERRIDES = path.join(RAIZ, 'connector', 'anomalias.json');
 
@@ -381,6 +382,12 @@ function construir() {
     },
     actividades
   };
+
+  // Copia legible (indentada) para leer o abrir a mano; la app sigue usando la .min. Está en .gitignore.
+  // Los arreglos de números (splits) se recogen en una sola línea para que no ocupen una línea por cifra.
+  const legible = JSON.stringify(salida, null, 2).replace(/\[\s+(-?\d[^\[\]{}"]*?)\s+\]/g, (_, n) => '[' + n.replace(/\s+/g, ' ') + ']');
+  fs.writeFileSync(SALIDA_LEGIBLE, legible);
+  console.log(`✓ ${path.relative(RAIZ, SALIDA_LEGIBLE)} — misma información, indentada y legible`);
 
   if (fs.existsSync(SALIDA)) fs.copyFileSync(SALIDA, SALIDA.replace(/\.json$/, '.anterior.json'));
   fs.writeFileSync(SALIDA, JSON.stringify(salida));

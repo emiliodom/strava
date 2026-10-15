@@ -14,6 +14,13 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Copia legible del JSON de datos** (`connector/build.mjs`): además de `ano2026_datos.min.json` (el que usa la app, no cambia),
+  cada build escribe `ano2026_datos.json`, la misma información indentada (los arreglos de `splits` quedan en una línea).
+  Está en `.gitignore`: se genera en local con `npm run build` / `npm run actualizar`.
+- **Semana 15–21 oct reconstruida para la nueva rutina** (`assets/plan.js`): cada día, ventana de 5:30–7:30 para un solo
+  deporte (bici, correr, trail o HIIT) y desde las 18:00 lo pendiente o pesas. Se recuperó la calidad que no se hizo el
+  miércoles 14, la Ida a Colomba (18 oct) sustituye a la rodada de los Capis en los tres planes y `HORARIO` refleja la
+  nueva disponibilidad.
 - **Ida a Colomba (18 oct)**: nueva travesía de ~800 m de desnivel (`assets/plan.js`, con nota de preparación en `preparacion.js`).
 - **Seguimiento automático de plan vs. realidad en el calendario** (`assets/modules/calendario.js`): los días pasados enlazan las actividades importadas desde Strava, marcan su actividad y comparan kilómetros de carrera y minutos de bici; un resumen muestra los últimos siete días con datos frente al plan activo. Se conserva el registro manual, que prevalece sobre los valores importados cuando se edita un día. El plan no se modifica automáticamente.
 - **Puntuación por actividad planificada** (`assets/modules/calendario.js`, `assets/modules/dia.js`): carrera, bici y fuerza se evalúan por separado; cada componente suma un punto sólo si aparece al menos una actividad de ese deporte y alcanza el mínimo de volumen (80% de lo previsto; fuerza, 15 minutos). Los detalles muestran cuántas actividades reales se registraron, el calendario marca `cumplidas/previstas` y el resumen semanal añade el total global. Los minutos manuales sin deporte identificado no se atribuyen a bici ni a fuerza. Los km planeados y la carga proyectada ya no cuentan como carrera los valores de relleno de los días de descanso o de bici. Las actividades de otros deportes ya no pueden hacer pasar una sesión de fuerza ni una bici breve como cumplidas.

@@ -61,13 +61,13 @@
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 4, 0, null],
     ['2026-10-14', 'Q', 'Q', 6, 0, null],
-    ['2026-10-15', 'D', 'D', 1.6, 0, null],
-    ['2026-10-16', 'R', 'R + fuerza B', 3, 0, null],
-    ['2026-10-17', 'E', 'E', 4, 0, null],
-    ['2026-10-18', 'B', 'B', 1.6, 180, 'capis'],
-    ['2026-10-19', 'R', 'R', 2, 0, null],
-    ['2026-10-20', 'E', 'E + fuerza A', 5, 0, null],
-    ['2026-10-21', 'B', '4 km fácil AM + bici Z2 PM', 4, 75, null],
+    ['2026-10-15', 'Q', 'Q AM (calentamiento largo) + trote de la racha PM', 6, 0, null],
+    ['2026-10-16', 'R', 'R AM + fuerza B PM', 3, 0, null],
+    ['2026-10-17', 'E', 'E AM + 4 rectas (víspera de Colomba)', 4, 0, null],
+    ['2026-10-18', 'B', 'Ida a Colomba: travesía ~800 m D+ (sale a las 5:30)', 1.6, 180, 'colomba'],
+    ['2026-10-19', 'R', 'R AM + trote de la racha PM', 2, 0, null],
+    ['2026-10-20', 'E', 'E AM + fuerza A PM', 5, 0, null],
+    ['2026-10-21', 'B', 'Bici Z2 AM + 4 km fácil PM', 4, 75, null],
     ['2026-10-22', 'Q', 'Q', 9, 0, null],
     ['2026-10-23', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-24', 'B', 'Bici fondo + 3 km off-bike (brick)', 3, 120, null],
@@ -121,10 +121,10 @@
     ['2026-10-12', 'R', 'R AM + bici suave + fuerza C PM', 3, 30, null],
     ['2026-10-13', 'E', 'E AM + bici Z2 PM', 5, 40, null],
     ['2026-10-14', 'Q', 'Q AM + bici suave PM', 7, 30, null],
-    ['2026-10-15', 'R', 'R', 3, 0, null],
+    ['2026-10-15', 'R', 'R AM + bici suave PM', 3, 30, null],
     ['2026-10-16', 'Q', 'Q AM + bici suave PM', 7, 30, null],
     ['2026-10-17', 'E', 'E AM + bici Z2 + fuerza B PM', 5, 50, null],
-    ['2026-10-18', 'M', 'Montaña dura', 2, 210, 'capis'],
+    ['2026-10-18', 'M', 'Ida a Colomba: travesía ~800 m D+ (sale a las 5:30)', 2, 210, 'colomba'],
     ['2026-10-19', 'R', 'R AM + bici suave PM', 3, 30, null],
     ['2026-10-20', 'H', 'HIIT AM + bici suave PM', 10, 30, null],
     ['2026-10-21', 'F', 'FTP PM + 3 km off-bike (brick)', 3, 75, null],
@@ -183,13 +183,13 @@
     ['2026-10-12', 'R', 'R', 2, 0, null],
     ['2026-10-13', 'E', 'E', 5, 0, null],
     ['2026-10-14', 'Q', 'Q', 7, 0, null],
-    ['2026-10-15', 'D', 'D', 1.6, 0, null],
-    ['2026-10-16', 'R', 'R + fuerza B', 3, 0, null],
-    ['2026-10-17', 'E', 'E', 4, 0, null],
-    ['2026-10-18', 'B', 'B', 1.6, 195, 'capis'],
-    ['2026-10-19', 'R', 'R', 2, 0, null],
-    ['2026-10-20', 'S', 'Sprints', 6, 0, null],
-    ['2026-10-21', 'F', 'FTP PM + 3 km off-bike (brick)', 3, 75, null],
+    ['2026-10-15', 'Q', 'Q AM (calentamiento largo) + trote de la racha PM', 7, 0, null],
+    ['2026-10-16', 'R', 'R AM + fuerza B PM', 3, 0, null],
+    ['2026-10-17', 'E', 'E AM + bici suave PM', 5, 30, null],
+    ['2026-10-18', 'M', 'Ida a Colomba: travesía ~800 m D+ (sale a las 5:30)', 2, 210, 'colomba'],
+    ['2026-10-19', 'R', 'R AM + trote de la racha PM', 3, 0, null],
+    ['2026-10-20', 'H', 'HIIT AM + fuerza A PM', 8, 0, null],
+    ['2026-10-21', 'F', 'FTP AM + 3 km off-bike PM', 3, 75, null],
     ['2026-10-22', 'Q', 'Q', 9, 0, null],
     ['2026-10-23', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-24', 'B', 'Bici fondo + 4 km off-bike (brick)', 4, 135, null],
@@ -266,8 +266,9 @@
       texto: 'Un 10K a fondo el jueves 19 te quita entre 20 y 40 segundos por kilómetro el sábado. Si vas, corre sólo el 5K a ritmo de 15K y trátalo como activación.' }
   ];
 
-  /* Disponibilidad real de Emilio (horarios-preferidos.txt): entre semana desde las 18:00, sábado desde las 14:00, domingo desde las 05:00. */
-  var HORARIO = { semana: 'desde las 18:00 (máx. 75 min)', sabado: 'desde las 14:00', domingo: 'desde las 05:00 (aquí van los largos y las carreras)' };
+  /* Disponibilidad real de Emilio: cada día, una ventana de 5:30 a 7:30 para UN deporte (bici, correr, trail, HIIT);
+     desde las 18:00, lo que no se hizo por la mañana o pesas. Los domingos largos salen a las 5:30 y pueden pasar de las 7:30. */
+  var HORARIO = { semana: 'mañana 5:30–7:30 (un deporte) · noche desde las 18:00 (pesas o lo pendiente)', sabado: 'mañana 5:30–7:30 (un deporte) · noche desde las 18:00', domingo: 'desde las 5:30 (aquí van los largos y las travesías)' };
 
   App.plan = { HORARIO: HORARIO, EVENTOS: EVENTOS, PLANES: PLANES, TIPOS: TIPOS, RUTINAS: RUTINAS, CONFLICTOS: CONFLICTOS };
 })(this);
