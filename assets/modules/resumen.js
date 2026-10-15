@@ -115,15 +115,30 @@
         ' es trabajo duro. Con ' + F.num(hb.maxRachaSinDescanso, 0) + ' días seguidos sin descansar y ' + F.num(hb.diasMinimos, 0) +
         ' días de menos de 20 minutos, el calendario está lleno y el estímulo vacío.', 'bad')));
 
+    var cambios = App.calExport && App.calExport.cambios ? App.calExport.cambios(H.pid) : [];
+    var saltadoHoy = !!(H.hoyDia && H.hoyDia.saltado);
+    var puedeSaltar = !!(H.hoyDia && (saltadoHoy || H.hoyDia.tipo !== 'D'));
+    if (cambios.length) {
+      modales.push(plantilla('ajustes', 'Plan reorganizado',
+        '<p>Las sesiones que marcaste como «no la hice» se movieron con reglas fijas, sin IA: una sesión dura pasa al primer día suave sin dos duros seguidos ni competencia cerca; el volumen fácil se reparte con tope de +25 % por día; lo que no cabe se descarta.</p>' +
+        '<ul class="ajustes-l">' + cambios.map(function (x) {
+          return "<li class='" + esc(x.nivel) + "'><b>" + esc(App.hoy.fecha(x.fecha)) + '</b> ' + esc(x.texto) + '</li>';
+        }).join('') + '</ul>' +
+        "<button type='button' class='secondary outline' data-reset-saltos>Restablecer plan original</button>"));
+    }
+
     var heroHtml = "<div class='hero' data-tipo='" + esc(H.hoyDia ? H.hoyDia.tipo : '-') + "'>" +
       "<div class='hero-top'><span class='hero-fecha'>" + esc(App.hoy.fecha(H.hoyISO)) + "</span>" +
       (H.hoyDia ? "<span class='hero-chip'>" + esc(H.tipo.nom || 'Sesión') + "</span>" : '') + '</div>' +
-      "<p class='hero-k'>Hoy toca</p>" +
-      "<h2 class='hero-t'>" + (H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
-      "<p class='hero-s'>" + (H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
+      "<p class='hero-k'>" + (saltadoHoy ? 'Hoy' : 'Hoy toca') + '</p>' +
+      "<h2 class='hero-t'>" + (saltadoHoy ? 'Sesión saltada' : H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
+      "<p class='hero-s'>" + (saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
         (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
       "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>Ver sesión ›</button>" +
       "<div class='hero-race'><b>" + dias15 + "</b><span>días a la<br>Guatemágica 15K</span></div></div>" +
+      (puedeSaltar || cambios.length ? "<div class='hero-acts'>" +
+        (puedeSaltar ? "<button type='button' class='hero-skip' data-saltar='" + esc(H.hoyISO) + "'>" + (saltadoHoy ? 'Sí la hice · deshacer' : 'No la hice · reorganizar') + '</button>' : '') +
+        (cambios.length ? "<button type='button' class='hero-chg' data-modal='ajustes'>Plan reorganizado · " + cambios.length + ' cambios ›</button>' : '') + '</div>' : '') +
       "<button type='button' class='hero-week' data-modal='semana' aria-label='Ver la semana'>" +
       "<span class='hero-wl'>Esta semana · " + pendientes + " días por delante</span><span class='strip'>" + chipSem + '</span></button>' +
       '</div>';
@@ -162,8 +177,20 @@
     Array.prototype.forEach.call(el.querySelectorAll('[data-modal]'), function (b) {
       b.addEventListener('click', function () { abrir(b.getAttribute('data-modal')); });
     });
+    var CE = App.calExport;
+    var sk = el.querySelector('[data-saltar]');
+    if (sk && CE) sk.addEventListener('click', function () {
+      var f = sk.getAttribute('data-saltar');
+      if (!CE.estaSaltado(f) && !confirm('¿Marcar la sesión de hoy como no hecha? El plan se reorganiza con reglas fijas y puedes deshacerlo.')) return;
+      CE.alternarSalto(f);
+      ['resumen', 'dia', 'calendario', 'cuerpo', 'proyeccion'].forEach(function (id) { App.refrescar(id); });
+    });
     dlg.addEventListener('click', function (ev) {
       if (ev.target === dlg || ev.target.closest('[data-cerrar]')) dlg.close();
+      if (CE && ev.target.closest('[data-reset-saltos]')) {
+        CE.restablecerSaltos(); dlg.close();
+        ['resumen', 'dia', 'calendario', 'cuerpo', 'proyeccion'].forEach(function (id) { App.refrescar(id); });
+      }
     });
   }
 

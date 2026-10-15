@@ -329,3 +329,16 @@ header.top .brand a{background:linear-gradient(90deg,var(--pico-color),var(--pic
 .note{border-radius:0 .85rem .85rem 0}
 .coach{border-radius:1rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---------- reorganizacion del plan (No la hice) ---------- */
+.hero-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem}
+.hero-skip,.hero-chg{margin:0;width:auto;padding:.45rem .9rem;font-size:.78rem;background:transparent;color:#e8ecf4;border:1px solid rgba(255,255,255,.3)}
+.hero-skip:hover,.hero-chg:hover{background:rgba(255,255,255,.1)}
+.hero-chg{border-color:#fbb73a;color:#fbb73a}
+.ajustes{border:1px solid var(--pico-muted-border-color);border-left:3px solid var(--warn);margin:1rem 0}
+.ajustes>header{font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--warn)}
+.ajustes ul,.ajustes-l{list-style:none;padding:0;margin:.4rem 0 .8rem}
+.ajustes li,.ajustes-l li{font-size:.85rem;padding:.3rem 0;border-bottom:1px solid var(--pico-muted-border-color)}
+.ajustes li.ok,.ajustes-l li.ok{border-left:3px solid var(--ok);padding-left:.5rem}
+.ajustes li.warn,.ajustes-l li.warn{border-left:3px solid var(--warn);padding-left:.5rem}
+.ajustes button{margin:0;width:auto;font-size:.8rem}

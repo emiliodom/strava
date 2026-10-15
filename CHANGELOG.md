@@ -5,6 +5,15 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 
 ## [No publicado]
 
+### Añadido
+- **«No la hice · reorganizar»** (`assets/replan.js`, `calendario.js`, `resumen.js`): si no se hizo la sesión de la mañana, un botón en el hero y en el detalle de cada día
+  marca la sesión como no realizada y el calendario se reorganiza con **reglas fijas, sin IA**: una sesión dura (Q, H, S, T, F, V, M, L) pasa al primer día suave
+  de los próximos 4 sin dejar dos días duros seguidos ni caer cerca de una competencia (≤2 días de una A/B); si no hay hueco, baja a volumen fácil al 70 %;
+  el volumen fácil (km y minutos de bici) se reparte con tope de +25 % por día (máx. +2 km y +20 min) y lo que no cabe se descarta; la fuerza pasa al primer día
+  suave sin fuerza. Si Strava ya trae algo ese día, sólo se reprograma lo que falta. Una competencia no se reprograma. Hay bitácora de cambios (modal del hero y panel
+  en el calendario) y «Restablecer plan original». Los días saltados se guardan en `localStorage` (`calSaltos`); `App.calExport.dias()` ya devuelve el plan reorganizado,
+  así que hero, día, calendario y proyecciones lo usan sin cambios.
+
 ### Cambiado
 - **Rediseño visual** (`app.css`, `resumen.js`, `index.html`): paleta nueva pensada para apps de ejercicio (naranja energía como acento,
   azul marino profundo en oscuro, fondo cálido en claro, verde/ámbar/rojo sólo con significado de estado), tipografía más fuerte con

@@ -135,11 +135,36 @@
       '<small>Se calcula automáticamente con Strava. Cada componente (carrera, bici o fuerza) aporta un punto sólo al alcanzar el mínimo; 80% del volumen previsto, o 15 min de fuerza. No ajusta el plan automáticamente.</small></article>';
   }
 
-  // El plan ya no se edita: los km e intensidades son la referencia. Cada día lleva su registro real.
+  // El plan base no se edita; lo único que lo mueve son los días «no la hice», que App.replan reorganiza con reglas fijas.
+  var CLAVE_SALTOS = 'calSaltos', ULT_CAMBIOS = {};
+  function saltos() { return App.data.pref(CLAVE_SALTOS, {}) || {}; }
+  function estaSaltado(f) { return !!saltos()[f]; }
+  function isoHoy() { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
   function dias(plan) {
-    return P.PLANES[plan].dias.map(function (d) {
+    var base = P.PLANES[plan].dias.map(function (d) {
       return { fecha: d.fecha, tipo: d.tipo, sesion: d.sesion, km: d.km, minBici: d.minBici, evento: d.evento, real: realDe(d.fecha) };
     });
+    if (!App.replan) { ULT_CAMBIOS[plan] = []; return base; }
+    var r = App.replan.reorganizar(base, saltos(), isoHoy());
+    ULT_CAMBIOS[plan] = r.cambios;
+    return r.dias;
+  }
+  function cambios(plan) { dias(plan); return ULT_CAMBIOS[plan] || []; }
+  function alternarSalto(f) {
+    var s = saltos();
+    if (s[f]) delete s[f]; else s[f] = 1;
+    App.data.setPref(CLAVE_SALTOS, s);
+  }
+  function restablecerSaltos() { App.data.setPref(CLAVE_SALTOS, {}); }
+  function refrescarPlan() {
+    ['resumen', 'dia', 'calendario', 'cuerpo', 'proyeccion'].forEach(function (id) { if (App.refrescar) App.refrescar(id); });
+  }
+  function panelAjustes(plan) {
+    var c = cambios(plan);
+    if (!c.length) return '';
+    return "<article class='ajustes'><header>Plan reorganizado · " + c.length + " cambios</header><ul>" + c.map(function (x) {
+      return "<li class='" + esc(x.nivel) + "'><b>" + esc(x.fecha.slice(5)) + "</b> " + esc(x.texto) + '</li>';
+    }).join('') + "</ul><button type='button' class='secondary outline' data-reset-saltos>Restablecer plan original</button></article>";
   }
 
   /* comparación plan vs realidad: dónde estamos fallando */
@@ -369,6 +394,7 @@
         }).join(''))}
       </div>
       <p class='lede'>${esc(info.resumen)}</p>
+      ${raw(panelAjustes(plan))}
 
       ${raw(U.kpis([
         U.kpi('Kilómetros del bloque', F.num(kmTot, 0), 'corriendo, del 5 oct al 30 nov'),
@@ -428,6 +454,7 @@
             <div id='calDif'></div>
             <footer>
               <button type='button' class='secondary outline' data-act='cancelar'>Cerrar</button>
+              <button type='button' class='secondary' data-act='saltar'>No la hice · reorganizar</button>
               <button type='button' class='secondary' data-act='borrar'>Borrar registro</button>
               <button type='submit'>Guardar</button>
             </footer>
@@ -457,6 +484,9 @@
       App.refrescar ? App.refrescar('calendario') : repintar();
     });
 
+    var rs = root.querySelector('[data-reset-saltos]');
+    if (rs) rs.addEventListener('click', function () { restablecerSaltos(); refrescarPlan(); });
+
     root.querySelector('#calGrid').addEventListener('click', abrir);
     root.querySelector('#calGrid').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abrir(ev); }
@@ -473,6 +503,9 @@
       form.min.value = r.min != null ? r.min : '';
       form.ritmo.value = r.ritmo || '';
       form.nota.value = r.nota || '';
+      var bs = form.querySelector('[data-act=saltar]');
+      bs.textContent = estaSaltado(f) ? 'Sí la hice · deshacer' : 'No la hice · reorganizar';
+      bs.hidden = d.tipo === 'D' && !estaSaltado(f);
       root.querySelector('#calDlgT').textContent = F.fechaLarga(f);
       root.querySelector('#calDet').innerHTML = App.actividad.detalle(d, D0);
       root.querySelector('#calDif').innerHTML = difHtml(d);
@@ -493,7 +526,9 @@
     });
     form.addEventListener('click', function (ev) {
       var b = ev.target.closest('button[data-act]'); if (!b) return;
-      if (b.getAttribute('data-act') === 'cancelar') { dlg.close(); return; }
+      var act = b.getAttribute('data-act');
+      if (act === 'cancelar') { dlg.close(); return; }
+      if (act === 'saltar') { alternarSalto(form.fecha.value); dlg.close(); refrescarPlan(); return; }
       var r = reales(); delete r[form.fecha.value];
       App.data.setPref(CLAVE_REAL, r);
       dlg.close(); repintar();
@@ -520,5 +555,6 @@
   }
 
   App.mods.push({ id: 'calendario', nom: 'Calendario', tab: 'Plan', icono: 'M3 9h18M7 3v4M17 3v4M4 5h16v16H4z', render: render, montar: montar });
-  App.calExport = { ics: ics, enlaceGoogle: enlaceGoogle, dias: dias, evaluarDia: evaluarDia };
+  App.calExport = { ics: ics, enlaceGoogle: enlaceGoogle, dias: dias, evaluarDia: evaluarDia, cambios: cambios,
+    estaSaltado: estaSaltado, alternarSalto: alternarSalto, restablecerSaltos: restablecerSaltos };
 })(this);

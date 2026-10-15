@@ -235,6 +235,18 @@ El calendario analiza continuamente el cumplimiento de tu entrenamiento cruzando
 - **Balance rodante de los últimos 7 días**: Una tarjeta resumen compara los km de carrera y minutos de bici acumulados en la última semana frente al plan activo, calculando una **puntuación global** (`X/Y cumplidas` y porcentaje de adherencia real).
 - **Consistencia en carga y descanso**: Los días de descanso o eventos en bicicleta con distancias nominales no distorsionan el volumen de carrera planificado ni inflan falsamente la carga proyectada (ACWR).
 
+## Reorganizar el plan cuando no se hizo una sesión
+
+En el hero de la portada y en el detalle de cada día del calendario hay un botón **«No la hice · reorganizar»**. Al usarlo, `assets/replan.js` reacomoda los días siguientes con reglas fijas (sin IA, sin red):
+
+1. Las competencias y los descansos no se reprograman.
+2. Si Strava ya trae algo ese día, sólo se reprograma lo que faltó (plan − real).
+3. **Sesión dura** (Q, H, S, T, F, V, M, L): pasa entera al primer día suave (E/R/D) de los próximos 4 que no deje dos días duros seguidos y no caiga a ≤2 días de una competencia A/B (≤1 de cualquier otra). Sin hueco seguro, baja a volumen fácil al 70 %.
+4. **Volumen fácil** (km de carrera y minutos de bici): se reparte en los próximos 4 días con tope de +25 % por día (máx. +2 km, +20 min). Lo que no cabe se descarta; no se «cobra» el atraso de golpe.
+5. **Fuerza**: pasa al primer día suave sin fuerza; si no hay, se descarta.
+
+Todo queda en una bitácora (modal «Plan reorganizado» en el hero y panel en el calendario) y se puede deshacer día por día o con «Restablecer plan original». Los días saltados se guardan sólo en el navegador (`calSaltos`). `App.calExport.dias(plan)` ya devuelve el plan reorganizado, así que todos los módulos lo usan.
+
 ## Diseño
 
 Móvil primero, sin dependencias nuevas (ni fuentes ni librerías de UI): todo vive en `assets/app.css` sobre Pico.
