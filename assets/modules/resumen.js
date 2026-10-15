@@ -28,15 +28,13 @@
     /* ---- Hoy ---- */
     if (H.hoyDia) {
       var d = H.hoyDia;
-      fichas.push(ficha('hoy', 'Hoy · ' + (H.tipo.nom || 'Sesión'), esc(H.resumenTxt || 'Descanso activo'),
-        esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + d.sesion), d.tipo === 'C' ? 'warn' : 'ok', 'ancho'));
+      /* la sesión de hoy se pinta en el hero */
       modales.push(plantilla('hoy', 'Lo que te toca hoy',
         U.note(esc(H.tipo.nom || 'Sesión') + ' · ' + esc(App.hoy.fecha(H.hoyISO)),
           '<b>' + esc(d.sesion) + '</b><br>' + (H.resumenTxt ? esc(H.resumenTxt) + '. ' : '') +
           (H.obj ? 'Objetivo: <b>' + esc(H.obj) + '</b>. ' : '') + 'Ventana: ' + esc(H.ventana) + '.', d.tipo === 'C' ? 'warn' : 'ok') +
         H.detalleHtml));
     } else {
-      fichas.push(ficha('hoy', 'Hoy', 'Sin sesión', H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov', 'warn', 'ancho'));
       modales.push(plantilla('hoy', 'Lo que te toca hoy',
         U.note('Hoy no hay sesión en el plan', H.sig ? 'Lo siguiente es el ' + esc(App.hoy.fecha(H.sig.fecha)) + ': ' + esc(H.sig.sesion) + '.' :
           'Pide el bloque de diciembre y lo armamos con lo que pase en la Guatemágica.', 'warn')));
@@ -66,8 +64,7 @@
       return "<span class='dia " + c + "' title='" + esc(x.sesion) + "'><b>" + x.dow + '</b><i>' + esc(x.tipo) + '</i><u>' + s + '</u></span>';
     }).join('');
     var pendientes = H.semana.filter(function (x) { return x.estado === 'pend' || x.estado === 'hoy'; }).length;
-    fichas.push("<button type='button' class='tile ancho semana' data-modal='semana'><span class='lbl'>Esta semana · " + pendientes + ' días por delante</span>' +
-      "<span class='strip'>" + chipSem + "</span><span class='mas' aria-hidden='true'>ver más ›</span></button>");
+    /* la tira semanal se pinta dentro del hero */
     modales.push(plantilla('semana', 'Esta semana y los últimos días',
       U.tabla([{ t: 'Día' }, { t: 'Tipo' }, { t: 'Plan' }, { t: '' }], H.semana.map(function (x) {
         return [esc(App.hoy.fecha(x.iso)), esc(x.tipo), esc(x.sesion), x.estado === 'pend' ? '○' : x.estado === 'hoy' ? '●' : x.estado];
@@ -118,10 +115,23 @@
         ' es trabajo duro. Con ' + F.num(hb.maxRachaSinDescanso, 0) + ' días seguidos sin descansar y ' + F.num(hb.diasMinimos, 0) +
         ' días de menos de 20 minutos, el calendario está lleno y el estímulo vacío.', 'bad')));
 
-    return "<div class='port'>" +
-      "<div class='port-top'><div><h2>Portada</h2><p class='lede'>" + esc(App.hoy.fecha(H.hoyISO)) + ' · plan activo</p></div>' +
+    var heroHtml = "<div class='hero' data-tipo='" + esc(H.hoyDia ? H.hoyDia.tipo : '-') + "'>" +
+      "<div class='hero-top'><span class='hero-fecha'>" + esc(App.hoy.fecha(H.hoyISO)) + "</span>" +
+      (H.hoyDia ? "<span class='hero-chip'>" + esc(H.tipo.nom || 'Sesión') + "</span>" : '') + '</div>' +
+      "<p class='hero-k'>Hoy toca</p>" +
+      "<h2 class='hero-t'>" + (H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
+      "<p class='hero-s'>" + (H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
+        (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
+      "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>Ver sesión ›</button>" +
+      "<div class='hero-race'><b>" + dias15 + "</b><span>días a la<br>Guatemágica 15K</span></div></div>" +
+      "<button type='button' class='hero-week' data-modal='semana' aria-label='Ver la semana'>" +
+      "<span class='hero-wl'>Esta semana · " + pendientes + " días por delante</span><span class='strip'>" + chipSem + '</span></button>' +
+      '</div>';
+
+    return "<div class='port'>" + heroHtml +
+      "<div class='port-top'><div><h3>Tu tablero</h3><p class='lede'>Desliza las fichas · plan activo</p></div>" +
       App.hoy.botonesPlan(H.pid) + '</div>' +
-      "<div class='tiles'>" + fichas.join('') + '</div>' + modales.join('') +
+      "<div class='tiles slider' id='slider'>" + fichas.join('') + "</div><div class='dots' id='dots' aria-hidden='true'></div>" + modales.join('') +
       "<dialog id='portDlg' class='port-dlg'><article><header><b id='portDlgT'></b>" +
       "<button type='button' class='close-x' aria-label='Cerrar' data-cerrar>✕</button></header><div id='portDlgB'></div></article></dialog>" +
       "<p class='lede'>Abajo tienes el análisis completo: carga y riesgo, el motor de carrera, la bici, las proyecciones, los calendarios editables, los sueños y el material de estudio.</p></div>";
@@ -129,6 +139,17 @@
 
   function montar(el) {
     if (App.hoy) App.hoy.montar(el);
+    var sl = el.querySelector('#slider'), dots = el.querySelector('#dots');
+    if (sl && dots) {
+      var cards = sl.children;
+      dots.innerHTML = Array.prototype.map.call(cards, function () { return '<i></i>'; }).join('');
+      var pintarDots = function () {
+        var w = cards[0] ? cards[0].offsetWidth + 12 : 1, k = Math.round(sl.scrollLeft / w);
+        Array.prototype.forEach.call(dots.children, function (d, i) { d.className = i === k ? 'on' : ''; });
+      };
+      sl.addEventListener('scroll', function () { requestAnimationFrame(pintarDots); }, { passive: true });
+      pintarDots();
+    }
     var dlg = el.querySelector('#portDlg');
     if (!dlg) return;
     function abrir(id) {

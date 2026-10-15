@@ -223,3 +223,109 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 .port-dlg .close-x{all:unset;cursor:pointer;padding:.2rem .5rem;border-radius:6px;color:var(--pico-muted-color)}
 .port-dlg .close-x:hover{background:var(--pico-muted-border-color)}
 .tile.semana{padding-bottom:1.4rem}
+
+/* =====================================================================
+   TEMA v2 - color psychology for fitness apps
+   - Energy orange (action, motivation) = primary accent
+   - Deep navy (focus, trust, calm) = dark base
+   - Teal-green = recovery/ok; amber = caution; red = risk (alerts only)
+   - Warm light background, blue-tinted ink instead of pure black
+   ===================================================================== */
+:root,[data-theme=light]{
+  --pico-font-family:"Inter","SF Pro Text",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --pico-font-family-sans-serif:var(--pico-font-family);
+  --pico-border-radius:.85rem;
+  --pico-background-color:#faf7f3; --pico-color:#1a2233; --pico-muted-color:#5f6779;
+  --pico-muted-border-color:#e8e2da; --pico-card-background-color:#fff;
+  --pico-card-sectioning-background-color:#fff;
+  --pico-primary:#c93f0c; --pico-primary-background:#e0541b; --pico-primary-hover-background:#c94710;
+  --pico-primary-hover:#a93408; --pico-primary-underline:rgba(201,63,12,.4);
+  --pico-primary-focus:rgba(224,84,27,.14); --pico-primary-inverse:#fff;
+  --pico-h1-color:#111827; --pico-h2-color:#111827; --pico-h3-color:#1a2233; --pico-h4-color:#1a2233;
+  --ok:#0f9f78; --warn:#d98a00; --bad:#d93a3a; --info:#2f6fe0; --accent:#e0541b;
+  --elev:0 1px 2px rgba(26,34,51,.06),0 6px 18px -8px rgba(26,34,51,.14);
+  --hero-a:#16213a; --hero-b:#2a1a3d; --glow:#ff7a3d;
+}
+[data-theme=dark]{
+  --pico-background-color:#0b1120; --pico-color:#e8ecf4; --pico-muted-color:#97a1b6;
+  --pico-muted-border-color:#202a40; --pico-card-background-color:#131b2e;
+  --pico-card-sectioning-background-color:#131b2e;
+  --pico-primary:#ff8a4f; --pico-primary-background:#ff6a2b; --pico-primary-hover-background:#ff7f45;
+  --pico-primary-hover:#ffa176; --pico-primary-underline:rgba(255,138,79,.4);
+  --pico-primary-focus:rgba(255,106,43,.18); --pico-primary-inverse:#1a0b02;
+  --pico-h1-color:#f4f6fb; --pico-h2-color:#f4f6fb; --pico-h3-color:#e8ecf4; --pico-h4-color:#e8ecf4;
+  --ok:#2dd4a3; --warn:#fbb73a; --bad:#ff6b6b; --info:#6aa2ff; --accent:#ff7a3d;
+  --elev:0 1px 2px rgba(0,0,0,.4),0 8px 22px -10px rgba(0,0,0,.6);
+  --hero-a:#18264a; --hero-b:#2d1b45; --glow:#ff7a3d;
+}
+html{font-feature-settings:"cv11","ss01"}
+body{line-height:1.55}
+h1,h2,h3{font-weight:800;letter-spacing:-.03em}
+h4,h5{font-weight:700;letter-spacing:-.01em}
+.lede,.kpi .sub,.tile .sub{line-height:1.45}
+.kpi .val,.tile .val,.hero-t,.hero-race b{font-variant-numeric:tabular-nums}
+
+/* superficies con profundidad suave */
+article,.kpi,.tile,.tw,details.acc{box-shadow:var(--elev)}
+article{border-radius:1rem}
+.kpi,.tile{background:var(--pico-card-background-color);border:1px solid var(--pico-muted-border-color)}
+.kpi .val{font-weight:800}
+.tile .val{font-weight:800}
+.tile:hover{transform:translateY(-1px);transition:transform .15s ease,border-color .15s}
+button,[role=button]{border-radius:999px;font-weight:700;letter-spacing:-.01em;transition:transform .12s ease,background .15s}
+button:active{transform:scale(.97)}
+.modhead .num{background:linear-gradient(135deg,var(--pico-primary-background),#f59e0b);color:#fff;font-weight:800}
+[data-theme=dark] .modhead .num{color:#1a0b02}
+.modhead h2{font-weight:800}
+header.top{box-shadow:0 1px 0 var(--pico-muted-border-color)}
+header.top .brand a{background:linear-gradient(90deg,var(--pico-color),var(--pico-primary));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tabbar a[aria-current=true]{background:var(--pico-primary-focus);font-weight:700}
+.tabbar{border-radius:1.1rem 1.1rem 0 0;box-shadow:0 -6px 20px -10px rgba(0,0,0,.35)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;color:#f4f6fb;border-radius:1.4rem;padding:1.15rem 1.1rem 1rem;margin:.4rem 0 1.1rem;
+  background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--glow) 38%,transparent),transparent 60%),
+             linear-gradient(145deg,var(--hero-a),var(--hero-b));box-shadow:0 18px 40px -20px rgba(10,16,35,.7)}
+.hero[data-tipo=C]{--glow:#ffb020}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.hero-fecha{font-size:.78rem;text-transform:capitalize;color:#c5cde0;letter-spacing:.02em}
+.hero-chip{font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:999px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+.hero-k{margin:1.1rem 0 0;font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:#ffb48a;font-weight:700}
+.hero-t{margin:.15rem 0 .3rem;color:#fff;font-size:clamp(2rem,10vw,3.5rem);line-height:1.02;font-weight:900;letter-spacing:-.04em}
+.hero-s{margin:0 0 1rem;color:#d3daea;font-size:.92rem;max-width:34rem}
+.hero-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+.hero-cta{margin:0;width:auto;padding:.7rem 1.3rem;font-size:.95rem;background:#ff6a2b;border:0;color:#1a0b02;box-shadow:0 8px 20px -8px #ff6a2b}
+.hero-cta:hover{background:#ff8450}
+.hero-race{display:flex;align-items:center;gap:.55rem;font-size:.7rem;line-height:1.2;color:#c5cde0}
+.hero-race b{font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1}
+.hero-week{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;padding:.65rem .6rem .55rem;border-radius:1rem;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.hero-week:focus-visible,.hero-cta:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.hero-wl{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:#c5cde0;margin-bottom:.4rem}
+.hero .strip .dia{background:rgba(255,255,255,.1);color:#e8ecf4}
+.hero .strip .dia i{color:#aeb8d0}
+.hero .strip .dia.hoy{outline-color:#ff8a4f;background:rgba(255,138,79,.22)}
+.hero .strip .dia.ok u{color:#2dd4a3}.hero .strip .dia.bad u{color:#ff8a8a}.hero .strip .dia.warn u{color:#fbb73a}
+@media(min-width:760px){.hero{padding:1.8rem 2rem 1.4rem}.hero-s{font-size:1.02rem}}
+
+/* ---------- SLIDER (m--vil): fichas deslizables con snap ---------- */
+.port-top h3{margin:0}
+@media(max-width:699px){
+  .tiles.slider{display:flex;gap:.75rem;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;margin-inline:-.9rem;padding:.2rem .9rem .6rem;scroll-padding-inline:.9rem}
+  .tiles.slider::-webkit-scrollbar{display:none}
+  .tiles.slider .tile{flex:0 0 74%;scroll-snap-align:start;min-height:7.2rem}
+  .tiles.slider .tile .val{font-size:1.6rem}
+  .tiles.slider .tile.ancho{flex-basis:84%}
+}
+.dots{display:flex;justify-content:center;gap:.35rem;margin:.1rem 0 1rem}
+.dots i{width:.4rem;height:.4rem;border-radius:99px;background:var(--pico-muted-border-color);transition:width .2s,background .2s}
+.dots i.on{width:1.2rem;background:var(--pico-primary-background)}
+@media(min-width:700px){.dots{display:none}}
+
+/* ---------- barras / notas con la nueva paleta ---------- */
+.hbar .r i,svg .b{background:linear-gradient(90deg,var(--pico-primary-background),#f59e0b);fill:var(--pico-primary-background)}
+.note{border-radius:0 .85rem .85rem 0}
+.coach{border-radius:1rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
