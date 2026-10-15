@@ -77,6 +77,7 @@
         U.kpi('Carbohidrato', F.num(n.carbG, 0) + ' g', esc(n.carbTxt))
       ], 'k3') + '<p><small>' + esc(n.nota) + '</small></p>';
     }
+    if (App.cuerpo && App.cuerpo.metaTalla) html += App.cuerpo.metaTalla(pid, hoyDia);
 
     /* ---- cumplimiento contra Strava ---- */
     var rHoy = real(D, hoyISO);

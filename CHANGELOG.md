@@ -14,6 +14,10 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **«Meta de talla» en la portada** (`cuerpo.js` → `App.cuerpo.metaTalla`, usada por `hoy.js` bajo las kcal del día): cintura actual contra la meta
+  (0,5 × estatura), reducción estimada hasta el 15 nov según el plan activo y semanas restantes tras la Guatemágica; aclara que la grasa
+  de pecho, costados y panza no se quita por zona sino con déficit sostenido; lista qué evitar (líquidos azucarados, pan dulce, fritanga,
+  alcohol, picoteo nocturno) y un menú chapino del día que cambia según sea día largo, de fuerza o de descanso.
 - **Copia legible del JSON de datos** (`connector/build.mjs`): además de `ano2026_datos.min.json` (el que usa la app, no cambia),
   cada build escribe `ano2026_datos.json`, la misma información indentada (los arreglos de `splits` quedan en una línea).
   Está en `.gitignore`: se genera en local con `npm run build` / `npm run actualizar`.

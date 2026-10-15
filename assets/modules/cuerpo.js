@@ -135,7 +135,57 @@
       carbTxt: duro ? 'día largo: carbohidrato antes y durante' : 'reparte con el entreno',
       nota: 'Estimación (Mifflin–St Jeor ×1,55). Grasa ≈ ' + F.num(grasa, 0) + ' g. Ajusta con tu peso y cintura cada 2–4 semanas.' };
   }
-  App.cuerpo = { metaDia: metaDia, analizar: analizar };
+  /* Meta de talla del día: cintura, qué evitar y qué comer (comida chapina) según la fase del calendario y el tipo de sesión. */
+  function metaTalla(pid, dia) {
+    var B = global.__BODY360__, at = B && Object.keys(B)[0], e = at && B[at][B[at].length - 1];
+    if (!e) return '';
+    var A = analizar(e.medidas), n = metaDia(pid, dia), brutal = pid === 'brutal';
+    var cinturaMeta = A.cm * 0.5, metaKg = A.pesoParaGrasa(17);
+    var defPost = brutal ? 750 : 400;
+
+    // Déficit acumulado desde hoy hasta el 15 nov (la semana de carrera no cuenta: sin déficit).
+    var d0 = new Date(dia.fecha + 'T12:00:00'), d1 = new Date('2026-11-15T12:00:00');
+    var diasDef = brutal ? 0 : Math.max(0, Math.round((d1 - d0) / 864e5) + 1);
+    var kgCarrera = diasDef * 300 / 7700, cmCarrera = kgCarrera / 1.2;       // ~1 cm de cintura por cada 1,2 kg: orientativo
+    var semPost = Math.ceil(Math.max(0, A.kg - kgCarrera - metaKg) / (defPost * 7 / 7700));
+    var cinturaHoy = A.cintura;
+
+    var duro = n && /día largo/.test(n.carbTxt), fuerza = /fuerza/i.test(dia.sesion), descanso = dia.tipo === 'D';
+    var kpis = U.kpis([
+      U.kpi('Cintura', F.num(cinturaHoy, 0) + ' cm', 'meta: ' + F.num(cinturaMeta, 0) + ' cm (' + F.num(cinturaHoy - cinturaMeta, 0) + ' menos)'),
+      U.kpi('Hasta el 15 nov', brutal ? 'mantenimiento' : '≈ −' + F.num(cmCarrera, 1) + ' cm', brutal ? 'el déficit empieza el 24 nov' : '≈ −' + F.num(kgCarrera, 1) + ' kg con −300 kcal'),
+      U.kpi('Después de la carrera', semPost + ' sem', 'a ' + F.num(metaKg, 0) + ' kg con −' + defPost + ' kcal')
+    ], 'k3');
+
+    var verdad = U.note('Dónde se pierde la grasa: pecho, «lovehandles» y panza',
+      'No se puede sacar la grasa de una zona con ejercicio local (ni abdominales ni flexiones «queman» el vientre): la grasa baja de todo el cuerpo a la vez con déficit calórico sostenido, y la genética decide el orden. ' +
+      'En hombres, el pecho y los costados bajos (lovehandles) suelen ser <b>de lo último en irse</b>; el vientre responde más rápido. Por eso la meta es la cintura total, medida cada 2 semanas con la misma cinta, y no una zona. ' +
+      'Lo que sí cambia la silueta de esas zonas: perder grasa en general, <b>flexiones y remo</b> (pecho y espalda más definidos) y <b>cargas anti-rotación</b> (plancha lateral, Pallof, marcha de maleta) para el core. Si el pecho no cambia aunque la cintura baje, consúltalo con un médico.', 'ok');
+
+    var evitar = '<ul>' +
+      '<li><b>Líquidos con azúcar:</b> gaseosa, jugos, té frío, licuados con azúcar y el café con 3 cucharadas (~400 kcal por litro sin saciar nada).</li>' +
+      '<li><b>Pan dulce, pan francés en cantidad, galletas y donas</b> (el «cafecito» de la tarde).</li>' +
+      '<li><b>Fritanga:</b> chicharrón, papas fritas, empanadas, tacos dorados, pollo frito; <b>snacks de bolsa</b> (Tortrix, Pringles).</li>' +
+      '<li><b>Alcohol</b>, sobre todo la cerveza del fin de semana: frena la oxidación de grasa y se suma a las calorías.</li>' +
+      '<li><b>Comer de noche por aburrimiento</b> después de las 21:00; la cena debe cerrar con proteína, no con pan dulce.</li>' +
+      (duro ? '<li><b>Hoy no «te compenses»</b> con pan dulce por haber hecho un largo: el carbohidrato va antes y durante, no después en exceso.</li>' : '') +
+      (descanso ? '<li><b>Día de descanso:</b> baja el carbohidrato (una tortilla menos) pero no la proteína.</li>' : '') +
+      '</ul>';
+
+    var menu = '<ul>' +
+      '<li><b>Desayuno (tras la sesión de 5:30–7:30):</b> huevos revueltos con tomate y cebolla, ½ taza de frijol volteado, ' + (duro || fuerza ? '3' : '2') + ' tortillas, papaya o piña' + (duro ? ', un banano y atol de avena sin azúcar' : '') + '.</li>' +
+      '<li><b>Almuerzo:</b> pollo sin piel en pepián o jocón (o res magra en caldo), ¼ de plato de arroz, verdura en abundancia (güisquil, ejotes, hierbamora, chipilín) y ensalada.</li>' +
+      '<li><b>Refacción:</b> yogur natural con pepitoria o fruta, jícama con limón, o un huevo cocido con tortilla.</li>' +
+      '<li><b>Cena (después de las 18:00' + (fuerza ? ', tras la fuerza' : '') + '):</b> cena chapina ligera —2 huevos, frijol colado, ¼ de aguacate, queso fresco, un trozo de plátano— o pescado/pollo a la plancha con tortillas y verdura.</li>' +
+      '</ul>' +
+      '<p><small>Meta de proteína: ' + (n ? F.num(n.prot, 0) + ' g (4 tomas de ' + F.num(n.prot / 4, 0) + ' g)' : '1,8 g/kg') + '. Regla 80/20: 5 de cada 6 comidas así y 1 «de las que te gustan», con porción medida.</small></p>';
+
+    return U.acc('Meta de talla: bajar cintura, pecho, costados y panza', kpis + verdad +
+      '<h4>Qué evitar</h4>' + evitar + '<h4>Qué comer hoy (nutrición guatemalteca)</h4>' + menu +
+      '<p><small>Estimación orientativa (±1 cm): ~1 cm de cintura por cada 1,2 kg de peso. Mide la cintura a la altura del ombligo, exhalando.</small></p>', true);
+  }
+
+  App.cuerpo = { metaDia: metaDia, metaTalla: metaTalla, analizar: analizar };
 
   App.mods.push({ id: 'cuerpo', nom: 'Cuerpo 360', tab: 'Cuerpo', icono: 'M12 4a2 2 0 100 4 2 2 0 000-4zM8 21l1.5-8L7 11l5-2 5 2-2.5 2L16 21', render: render });
 })(this);
