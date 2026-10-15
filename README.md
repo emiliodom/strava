@@ -235,6 +235,30 @@ El calendario analiza continuamente el cumplimiento de tu entrenamiento cruzando
 - **Balance rodante de los últimos 7 días**: Una tarjeta resumen compara los km de carrera y minutos de bici acumulados en la última semana frente al plan activo, calculando una **puntuación global** (`X/Y cumplidas` y porcentaje de adherencia real).
 - **Consistencia en carga y descanso**: Los días de descanso o eventos en bicicleta con distancias nominales no distorsionan el volumen de carrera planificado ni inflan falsamente la carga proyectada (ACWR).
 
+## Diseño
+
+Móvil primero, sin dependencias nuevas (ni fuentes ni librerías de UI): todo vive en `assets/app.css` sobre Pico.
+
+**Paleta (psicología del color para apps de ejercicio)**
+
+| Rol | Claro | Oscuro | Por qué |
+|---|---|---|---|
+| Acento primario (naranja) | `#e0541b` | `#ff6a2b` | Energía, acción y motivación: botones, pestaña activa, barras. |
+| Base | `#faf7f3` cálido | `#0b1120` azul marino | El azul profundo transmite enfoque y calma; el fondo cálido cansa menos la vista. |
+| Ok / recuperación | `#0f9f78` | `#2dd4a3` | Verde-turquesa: recuperado, cumplido. |
+| Precaución | `#d98a00` | `#fbb73a` | Ámbar: a medias, vigilar. |
+| Riesgo | `#d93a3a` | `#ff6b6b` | Rojo sólo para alertas reales. |
+
+Los tokens están al final de `app.css` (`:root` y `[data-theme=dark]`); cambiar el tema entero es editar esas variables. Los colores de Pico (`--pico-*`) se sobrescriben ahí mismo.
+
+**Tipografía**: pila de sistema (`Inter` si está instalada), títulos de peso 800–900 con interletrado cerrado y cifras tabulares para que las métricas no «bailen». El título del hero usa `clamp()` para escalar con la pantalla.
+
+**Portada**
+- **Hero**: la sesión de hoy en grande (tipo, distancia/minutos, objetivo), botón «Ver sesión», cuenta atrás a la Guatemágica y la tira de la semana. El brillo pasa a ámbar en días tipo `C`. Se pinta en `resumen.js` (clases `.hero*`).
+- **Slider**: bajo 700 px las fichas son una fila deslizable con *scroll-snap* y puntos de posición (`#slider`, `#dots`); desde 700 px vuelven a ser una cuadrícula. Los puntos se sincronizan en `montar()` de `resumen.js`.
+- Las fichas «Hoy» y «Esta semana» ya no existen como fichas: sus modales se abren desde el hero (`data-modal='hoy'` / `'semana'`).
+- Se respeta `prefers-reduced-motion`.
+
 ## Estructura
 
 | Ruta | Qué es |
@@ -242,7 +266,7 @@ El calendario analiza continuamente el cumplimiento de tu entrenamiento cruzando
 | `index.html` | El armazón: carga los estilos y los módulos. |
 | `index.original.html` | La versión estática original, guardada por si acaso. |
 | `assets/pico.css` | Pico.css, el framework de base. |
-| `assets/app.css` | La capa propia, móvil primero. |
+| `assets/app.css` | La capa propia, móvil primero: tokens de color, tipografía, hero y slider (ver «Diseño»). |
 | `assets/core.js` | Formato de números, fechas y estadística. |
 | `assets/charts.js` | Gráficas en SVG, sin librerías. |
 | `assets/metrics.js` | El motor: carga, ACWR, monotonía, VDOT, zonas. |

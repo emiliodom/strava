@@ -5,6 +5,13 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 
 ## [No publicado]
 
+### Cambiado
+- **Rediseño visual** (`app.css`, `resumen.js`, `index.html`): paleta nueva pensada para apps de ejercicio (naranja energía como acento,
+  azul marino profundo en oscuro, fondo cálido en claro, verde/ámbar/rojo sólo con significado de estado), tipografía más fuerte con
+  cifras tabulares, tarjetas con profundidad suave y botones redondeados. Nuevo **hero** en la portada (sesión de hoy, cuenta atrás a la
+  Guatemágica y tira semanal) y fichas como **slider** deslizable con *scroll-snap* y puntos en móvil (cuadrícula desde 700 px).
+  Las fichas «Hoy» y «Esta semana» pasan al hero. `theme-color` actualizado a `#0b1120`. Documentado en README, sección «Diseño».
+
 ### Corregido
 - **15K Trail Milpas Altas eliminado**: no se corrió. Se quitó el evento, su preparación, el conflicto «llega muy pronto» y la fila de hidratación; el 11 oct queda como rodaje suave en los tres planes.
 - **Fecha del 15K Trail de San Bartolomé Milpas Altas**: es el **domingo 11 de octubre a las 8:00**, no el 14.
