@@ -14,6 +14,11 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Actualizadas también las notas y el conflicto «El 15K Trail llega muy pronto».
 
 ### Añadido
+- **Portada rediseñada como tablero** (`resumen.js`, `hoy.js`, `app.css`): en lugar de un scroll largo, fichas con lo esencial —hoy, comer hoy,
+  cintura, semana en curso (lunes a domingo: hecho/pendiente), Strava hoy, cuenta atrás de la Guatemágica, próximo evento y forma (VDOT/ACWR)— y
+  el selector de plan arriba. Cada ficha abre un **modal** (`<dialog>` nativo, se cierra tocando fuera o con ✕) con el detalle completo: detalle por
+  deporte, macros y meta de talla, tabla plan-contra-Strava, las tres metas y los veredictos. `hoy.js` ahora expone `App.hoy.partes(D)` en vez de HTML
+  y `metaTalla` devuelve un objeto con cifras y `html`.
 - **«Meta de talla» en la portada** (`cuerpo.js` → `App.cuerpo.metaTalla`, usada por `hoy.js` bajo las kcal del día): cintura actual contra la meta
   (0,5 × estatura), reducción estimada hasta el 15 nov según el plan activo y semanas restantes tras la Guatemágica; aclara que la grasa
   de pecho, costados y panza no se quita por zona sino con déficit sostenido; lista qué evitar (líquidos azucarados, pan dulce, fritanga,

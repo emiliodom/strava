@@ -180,9 +180,10 @@
       '</ul>' +
       '<p><small>Meta de proteína: ' + (n ? F.num(n.prot, 0) + ' g (4 tomas de ' + F.num(n.prot / 4, 0) + ' g)' : '1,8 g/kg') + '. Regla 80/20: 5 de cada 6 comidas así y 1 «de las que te gustan», con porción medida.</small></p>';
 
-    return U.acc('Meta de talla: bajar cintura, pecho, costados y panza', kpis + verdad +
+    return { cintura: cinturaHoy, meta: cinturaMeta, cm: cmCarrera, kg: kgCarrera, semPost: semPost, metaKg: metaKg, defPost: defPost, brutal: brutal,
+      html: kpis + verdad +
       '<h4>Qué evitar</h4>' + evitar + '<h4>Qué comer hoy (nutrición guatemalteca)</h4>' + menu +
-      '<p><small>Estimación orientativa (±1 cm): ~1 cm de cintura por cada 1,2 kg de peso. Mide la cintura a la altura del ombligo, exhalando.</small></p>', true);
+      '<p><small>Estimación orientativa (±1 cm): ~1 cm de cintura por cada 1,2 kg de peso. Mide la cintura a la altura del ombligo, exhalando.</small></p>' };
   }
 
   App.cuerpo = { metaDia: metaDia, metaTalla: metaTalla, analizar: analizar };
