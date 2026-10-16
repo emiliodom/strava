@@ -48,16 +48,16 @@
       }
       return false;
     }
-    function ventana(i) {     // candidatos: los próximos días, siempre después de hoy
+    function ventana(i, n) {  // candidatos: los próximos n días, siempre después de hoy
       var out = [];
-      for (var j = i + 1; j < L.length && j <= i + VENTANA; j++) {
+      for (var j = i + 1; j < L.length && j <= i + (n || VENTANA); j++) {
         if (L[j].fecha > hoy && !L[j].evento) out.push(j);
       }
       return out;
     }
 
     function moverDura(i, kmPlan, biciPlan, sesion, tipo, fecha) {
-      var cand = ventana(i).filter(function (j) {
+      var cand = ventana(i, 6).filter(function (j) {
         var t = L[j];
         return SUAVES[t.tipo] && !t.movido && !protegido(j) && !duro(L[j - 1]) && !duro(L[j + 1]);
       });
@@ -109,9 +109,16 @@
       var i = -1;
       L.forEach(function (d, k) { if (d.fecha === f) i = k; });
       if (i < 0) return;
-      var d = L[i], real = d.real || {};
+      var d = L[i], real = d.real || {}, sinCalidad = saltos[f] === 2;
       var kmPlan = d.km || 0, biciPlan = d.minBici || 0, sesion = d.sesion || '', tipo = d.tipo;
       d.saltado = true;
+      if (sinCalidad && DUROS[d.tipo]) {   // se corrió, pero fácil: la calidad no se hizo
+        var kmR = real.km || 0, bR = real.minBici || 0, ses = d.sesion || '', tp = d.tipo, kmP = d.km || 0, bP = d.minBici || 0;
+        d.sesionOriginal = ses; d.tipoOriginal = tp; d.tipo = 'E'; d.km = kmR; d.minBici = bR; d.sesion = 'Hecho fácil, sin calidad: ' + ses;
+        nota(f, 'warn', 'Se hizo fácil (' + r05(kmR) + ' km): la calidad (' + ses + ') no se cumplió.');
+        if (!moverDura(i, kmP, bP, ses, tp, f)) nota(f, 'warn', 'La calidad no se recupera: en los próximos 6 días no hay un día suave sin dos duros seguidos ni competencia cerca. No se acumula; la siguiente calidad del plan sigue en pie.');
+        return;
+      }
 
       if (d.evento) { nota(f, 'warn', 'Una competencia no se reprograma: queda como no realizada.'); return; }
       if (tipo === 'D') { nota(f, 'ok', 'Era un día de descanso: no hay nada que reorganizar.'); d.saltado = false; return; }

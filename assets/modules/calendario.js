@@ -140,12 +140,27 @@
   function saltos() { return App.data.pref(CLAVE_SALTOS, {}) || {}; }
   function estaSaltado(f) { return !!saltos()[f]; }
   function isoHoy() { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
+  // Días de calidad ya pasados que Strava muestra corridos fáciles (FC media < 80 % de la máxima): valor 2 = «hecho, sin calidad».
+  function autoSinCalidad(base) {
+    var out = {}, hoy = isoHoy(), fcmax = +App.data.pref('fcmax', 0) || 186;
+    base.forEach(function (d) {
+      if (d.fecha >= hoy || !/^[QHST]$/.test(d.tipo) || d.evento || !D0) return;
+      var dia = D0.dias.filter(function (x) { return x.iso === d.fecha; })[0];
+      var runs = dia && dia.acts ? dia.acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia && a.hr; }) : [];
+      if (!runs.length) return;
+      var min = runs.reduce(function (s, a) { return s + (a.min || 0); }, 0);
+      var hr = runs.reduce(function (s, a) { return s + a.hr * (a.min || 0); }, 0) / (min || 1);
+      if (hr < 0.8 * fcmax) out[d.fecha] = 2;
+    });
+    return out;
+  }
   function dias(plan) {
     var base = P.PLANES[plan].dias.map(function (d) {
       return { fecha: d.fecha, tipo: d.tipo, sesion: d.sesion, km: d.km, minBici: d.minBici, evento: d.evento, real: realDe(d.fecha) };
     });
     if (!App.replan) { ULT_CAMBIOS[plan] = []; return base; }
-    var r = App.replan.reorganizar(base, saltos(), isoHoy());
+    var s = Object.assign(autoSinCalidad(base), saltos());
+    var r = App.replan.reorganizar(base, s, isoHoy());
     ULT_CAMBIOS[plan] = r.cambios;
     return r.dias;
   }

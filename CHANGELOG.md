@@ -6,6 +6,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ## [No publicado]
 
 ### Añadido
+- **Calidad no cumplida** (eplan.js, calendario.js): si una sesión Q/H/S/T ya pasada aparece en Strava corrida fácil (FC media < 80 % de la máxima), se marca sola como «hecho fácil, sin calidad» y la calidad se reubica en el primer día suave de los próximos 6 sin dos duros seguidos ni competencia cerca; si no hay hueco, no se acumula.
 - **«No la hice · reorganizar»** (`assets/replan.js`, `calendario.js`, `resumen.js`): si no se hizo la sesión de la mañana, un botón en el hero y en el detalle de cada día
   marca la sesión como no realizada y el calendario se reorganiza con **reglas fijas, sin IA**: una sesión dura (Q, H, S, T, F, V, M, L) pasa al primer día suave
   de los próximos 4 sin dejar dos días duros seguidos ni caer cerca de una competencia (≤2 días de una A/B); si no hay hueco, baja a volumen fácil al 70 %;
