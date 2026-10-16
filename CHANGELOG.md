@@ -6,7 +6,18 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ## [No publicado]
 
 ### Añadido
-- **Calidad no cumplida** (eplan.js, calendario.js): si una sesión Q/H/S/T ya pasada aparece en Strava corrida fácil (FC media < 80 % de la máxima), se marca sola como «hecho fácil, sin calidad» y la calidad se reubica en el primer día suave de los próximos 6 sin dos duros seguidos ni competencia cerca; si no hay hueco, no se acumula.
+- **Navegación por páginas** (`app.js`, `index.html`): los 14 módulos dejan de ser un único scroll de ~15 000 px y se agrupan en seis páginas
+  —Hoy, Calendario, Rendimiento, Metas, Cuerpo y ciencia, Registro— con URL propia (`#calendario`) y un índice interno sticky cuando una página agrupa varios módulos.
+  Los enlaces antiguos a un módulo (`#carga`, `#recursos`…) abren su página y bajan hasta él. Barra superior de seis entradas (antes dos filas) y barra inferior móvil con las seis.
+- **Calendario rehecho** (`calendario.js`, `icons.js`, `app.css`): cada día muestra **iconos** de lo que toca (correr, bici, fuerza, descanso, competencia; calidad, largo, trail, HIIT…).
+  En los días pasados, un **anillo de cumplimiento** (✓ / % / ✕) más una marca en cada icono (✓ hecho, ½ parcial, ✕ no hecho) y «real/plan» en el volumen: el estado se lee por forma, no sólo por color.
+  Tres **diseños** (Cuadrícula, Compacta, Agenda; la agenda es la de móvil por defecto) y seis **interruptores de datos** (Iconos, Sesión, Ritmo, Volumen, Cumplimiento, Competencias), guardados en el navegador.
+  Color por familia de sesión (6 en vez de 14) sólo en borde e icono; el texto va siempre en tinta normal. Se reordena la página: plan, vista y calendario arriba; KPIs, competencias y gráficas debajo; «Plan reorganizado» pasa a acordeón.
+- **Exportar a PDF**: botón «PDF» (esta página o todo el informe; fuerza tema claro, abre acordeones, oculta menús, el calendario sale apaisado) y `node connector/pdf.mjs` para generarlo sin abrir el navegador.
+- **Auditoría de contraste** `node connector/contraste.mjs`: mide WCAG AA (texto 4,5:1, gráficos 3:1) sobre la página real, en claro y oscuro y en las seis páginas, incluidas etiquetas SVG, iconos, anillos y el degradado del hero. Sale con código 1 si algo falla.
+
+- **Calidad no cumplida** (
+eplan.js, calendario.js): si una sesión Q/H/S/T ya pasada aparece en Strava corrida fácil (FC media < 80 % de la máxima), se marca sola como «hecho fácil, sin calidad» y la calidad se reubica en el primer día suave de los próximos 6 sin dos duros seguidos ni competencia cerca; si no hay hueco, no se acumula.
 - **«No la hice · reorganizar»** (`assets/replan.js`, `calendario.js`, `resumen.js`): si no se hizo la sesión de la mañana, un botón en el hero y en el detalle de cada día
   marca la sesión como no realizada y el calendario se reorganiza con **reglas fijas, sin IA**: una sesión dura (Q, H, S, T, F, V, M, L) pasa al primer día suave
   de los próximos 4 sin dejar dos días duros seguidos ni caer cerca de una competencia (≤2 días de una A/B); si no hay hueco, baja a volumen fácil al 70 %;
@@ -23,6 +34,11 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
   Las fichas «Hoy» y «Esta semana» pasan al hero. `theme-color` actualizado a `#0b1120`. Documentado en README, sección «Diseño».
 
 ### Corregido
+- **Tema claro mezclaba azul de Pico y naranja propio**: el selector claro de Pico (`:root:not([data-theme=dark])`) era más específico que el nuestro, así que enlaces, botones y foco salían azules. Ahora el tema usa un único juego de variables.
+- **Contraste**: el semáforo claro (`--ok/--warn/--bad/--info/--accent`) ahora es apto para texto (antes ámbar 2,7:1 y verde 3,4:1 sobre blanco); insignia de módulo y botones primarios con ≥ 5:1; las celdas del calendario ya no pintan texto en naranja sobre naranja.
+- **«App.hoy.render is not a function» / módulos mezclados tras desplegar**: los scripts se servían de caché (hasta 1 h) y una `resumen.js` antigua convivía con una `hoy.js` nueva. Los recursos llevan ahora `?v=<versión>`; sube el número en `index.html` en cada versión.
+- Calendario: el detalle de un día mostraba `99.53333333333333` minutos; ahora se redondea.
+
 - **15K Trail Milpas Altas eliminado**: no se corrió. Se quitó el evento, su preparación, el conflicto «llega muy pronto» y la fila de hidratación; el 11 oct queda como rodaje suave en los tres planes.
 - **Fecha del 15K Trail de San Bartolomé Milpas Altas**: es el **domingo 11 de octubre a las 8:00**, no el 14.
   Se corrigió el evento (`assets/plan.js`, con hora de salida) y se re-escaló el *taper* en los tres caminos para

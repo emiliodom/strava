@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.10.1** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.11.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -35,7 +35,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Running | VDOT de Daniels, ritmos de entrenamiento, metas, zonas por frecuencia cardiaca, eficiencia aeróbica y deriva |
 | Bici | VAM, desnivel, MTB frente a ruta |
 | Proyecciones | Corto, mediano y largo plazo |
-| Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias, ahora con **entrenamiento híbrido** (bici + correr el mismo día): dobles AM/PM y bricks bici→carrera dosificados por nivel. Las actividades de Strava marcan automáticamente los días pasados y puntúan cada componente del plan por separado (carrera, bici, fuerza), además de mostrar un total global y los últimos 7 días frente al plan. Cada día abre el **detalle por deporte** y permite añadir notas o ajustar el registro. Exportable a `.ics` |
+| Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias, ahora con **entrenamiento híbrido** (bici + correr el mismo día): dobles AM/PM y bricks bici→carrera dosificados por nivel. Las actividades de Strava marcan automáticamente los días pasados y puntúan cada componente del plan por separado (carrera, bici, fuerza), además de mostrar un total global y los últimos 7 días frente al plan. Cada día abre el **detalle por deporte** y permite añadir notas o ajustar el registro. Cada día muestra **iconos** de lo que toca y, en los días pasados, un **anillo de cumplimiento**; hay tres diseños (cuadrícula, compacta, agenda) e interruptores para elegir qué datos ver. Exportable a `.ics` |
 | Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
@@ -45,6 +45,18 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 
 La FC sólo existe en las actividades donde el dispositivo la registró; la página indica la cobertura real.
 Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
+
+## Páginas, PDF y contraste
+
+La página se organiza en seis **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…).
+
+```bash
+node connector/pdf.mjs [salida.pdf]   # informe completo en PDF (A4, tema claro, calendario apaisado)
+node connector/contraste.mjs          # auditoría WCAG AA de texto y gráficos, claro y oscuro (código 1 si falla)
+```
+
+Ambos usan Chrome sin interfaz (variable `CHROME` si no está en la ruta habitual). El botón «PDF» de la cabecera hace lo mismo desde el navegador.
+Al publicar una versión nueva, cambia `?v=…` de los `<script>`/`<link>` de `index.html` para que ningún navegador mezcle módulos viejos y nuevos.
 
 ## Versionado
 

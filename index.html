@@ -6,8 +6,8 @@
 <meta name="description" content="Análisis de entrenamiento 2026 y plan de octubre–noviembre a partir de los datos reales de Strava.">
 <meta name="theme-color" content="#0b1120">
 <title>Análisis 2026 · Emilio</title>
-<link rel="stylesheet" href="assets/pico.css">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/pico.css?v=0.11.0">
+<link rel="stylesheet" href="assets/app.css?v=0.11.0">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='19' font-size='20'>🏃</text></svg>">
 </head>
 <body>
@@ -15,15 +15,20 @@
 <header class="top">
   <nav class="container">
     <ul>
-      <li class="brand"><a href="#resumen">Análisis 2026<small>Emilio · Guatemala</small></a></li>
+      <li class="brand"><a href="#hoy">Análisis 2026<small>Emilio · Guatemala</small></a></li>
     </ul>
     <ul class="links" id="nav"></ul>
     <ul>
+      <li><button id="btnPdf" class="secondary outline" title="Exportar a PDF" aria-label="Exportar a PDF">PDF</button></li>
       <li><button id="btnPerfil" class="secondary outline" title="Perfil del atleta" aria-label="Perfil del atleta">Perfil</button></li>
       <li><button id="tm" class="contrast outline" aria-label="Cambiar tema">☾</button></li>
     </ul>
   </nav>
 </header>
+
+<nav class="subnav container" id="sub" aria-label="En esta página" hidden></nav>
+
+<div class="print-title"><b>Análisis 2026 · Emilio</b> <span id="pie-print"></span></div>
 
 <main class="container" id="main">
   <div class="skel" aria-live="polite">Cargando tus datos de entrenamiento…</div>
@@ -34,6 +39,18 @@
 </footer>
 
 <nav class="tabbar" id="tab" aria-label="Secciones"></nav>
+
+<dialog id="pdfDlg">
+  <article>
+    <header><b>Exportar a PDF</b></header>
+    <p><small>Se abre el diálogo de impresión: elige «Guardar como PDF». El PDF sale siempre en tema claro y sin menús.</small></p>
+    <div class="pdf-opts">
+      <button type="button" data-pdf="pagina">Esta página</button>
+      <button type="button" data-pdf="todo" class="secondary">Todo el informe</button>
+      <button type="button" data-pdf="cancelar" class="secondary outline">Cancelar</button>
+    </div>
+  </article>
+</dialog>
 
 <dialog id="perfil">
   <article>
@@ -55,31 +72,32 @@
 <script src="datos.js" onerror="this.dataset.missing=1"></script>
 <script src="body360.js" onerror="this.dataset.missing=1"></script>
 
-<script src="assets/core.js"></script>
-<script src="assets/ui.js"></script>
-<script src="assets/charts.js"></script>
-<script src="assets/metrics.js"></script>
-<script src="assets/plan.js"></script>
-<script src="assets/replan.js"></script>
-<script src="assets/actividad.js"></script>
-<script src="assets/data.js"></script>
+<script src="assets/core.js?v=0.11.0"></script>
+<script src="assets/ui.js?v=0.11.0"></script>
+<script src="assets/icons.js?v=0.11.0"></script>
+<script src="assets/charts.js?v=0.11.0"></script>
+<script src="assets/metrics.js?v=0.11.0"></script>
+<script src="assets/plan.js?v=0.11.0"></script>
+<script src="assets/replan.js?v=0.11.0"></script>
+<script src="assets/actividad.js?v=0.11.0"></script>
+<script src="assets/data.js?v=0.11.0"></script>
 
-<script src="assets/modules/hoy.js"></script>
-<script src="assets/modules/resumen.js"></script>
-<script src="assets/modules/dia.js"></script>
-<script src="assets/modules/ano.js"></script>
-<script src="assets/modules/carga.js"></script>
-<script src="assets/modules/running.js"></script>
-<script src="assets/modules/bici.js"></script>
-<script src="assets/modules/proyeccion.js"></script>
-<script src="assets/modules/calendario.js"></script>
-<script src="assets/modules/suenos.js"></script>
-<script src="assets/modules/cuerpo.js"></script>
-<script src="assets/modules/ciencia.js"></script>
-<script src="assets/modules/preparacion.js"></script>
-<script src="assets/modules/registro.js"></script>
-<script src="assets/modules/recursos.js"></script>
+<script src="assets/modules/hoy.js?v=0.11.0"></script>
+<script src="assets/modules/resumen.js?v=0.11.0"></script>
+<script src="assets/modules/dia.js?v=0.11.0"></script>
+<script src="assets/modules/ano.js?v=0.11.0"></script>
+<script src="assets/modules/carga.js?v=0.11.0"></script>
+<script src="assets/modules/running.js?v=0.11.0"></script>
+<script src="assets/modules/bici.js?v=0.11.0"></script>
+<script src="assets/modules/proyeccion.js?v=0.11.0"></script>
+<script src="assets/modules/calendario.js?v=0.11.0"></script>
+<script src="assets/modules/suenos.js?v=0.11.0"></script>
+<script src="assets/modules/cuerpo.js?v=0.11.0"></script>
+<script src="assets/modules/ciencia.js?v=0.11.0"></script>
+<script src="assets/modules/preparacion.js?v=0.11.0"></script>
+<script src="assets/modules/registro.js?v=0.11.0"></script>
+<script src="assets/modules/recursos.js?v=0.11.0"></script>
 
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=0.11.0"></script>
 </body>
 </html>

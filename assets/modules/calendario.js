@@ -81,7 +81,8 @@
       componentes: componentes,
       cumplidas: componentes.filter(function (c) { return c.estado === 'ok'; }).length,
       parciales: componentes.filter(function (c) { return c.estado === 'parcial'; }).length,
-      total: componentes.length
+      total: componentes.length,
+      pct: componentes.length ? componentes.reduce(function (a, c) { return a + Math.min(1, c.valor / (c.objetivo || 1)); }, 0) / componentes.length : null
     };
   }
 
@@ -177,9 +178,9 @@
   function panelAjustes(plan) {
     var c = cambios(plan);
     if (!c.length) return '';
-    return "<article class='ajustes'><header>Plan reorganizado · " + c.length + " cambios</header><ul>" + c.map(function (x) {
+    return "<details class='acc ajustes'><summary>Plan reorganizado · " + c.length + " cambios</summary><ul>" + c.map(function (x) {
       return "<li class='" + esc(x.nivel) + "'><b>" + esc(x.fecha.slice(5)) + "</b> " + esc(x.texto) + '</li>';
-    }).join('') + "</ul><button type='button' class='secondary outline' data-reset-saltos>Restablecer plan original</button></article>";
+    }).join('') + "</ul><button type='button' class='secondary outline' data-reset-saltos>Restablecer plan original</button></details>";
   }
 
   /* comparación plan vs realidad: dónde estamos fallando */
@@ -229,52 +230,154 @@
     return M.semanas(M.acwr(hist));
   }
 
+  /* ---------- vista: diseño y datos visibles (preferencia local) ---------- */
+  var CLAVE_VISTA = 'calVista';
+  var LAYOUTS = [['cuadricula', 'Cuadrícula'], ['compacta', 'Compacta'], ['agenda', 'Agenda']];
+  var CAMPOS = [['ico', 'Iconos'], ['ses', 'Sesión'], ['rit', 'Ritmo'], ['vol', 'Volumen'], ['cum', 'Cumplimiento'], ['evt', 'Competencias']];
+  var CAMPOS_DEF = { ico: 1, ses: 1, rit: 0, vol: 1, cum: 1, evt: 1 };
+  function vista() {
+    var v = App.data.pref(CLAVE_VISTA, null) || {};
+    var movil = global.matchMedia && global.matchMedia('(max-width:700px)').matches;
+    var lay = LAYOUTS.some(function (l) { return l[0] === v.layout; }) ? v.layout : (movil ? 'agenda' : 'cuadricula');
+    return { layout: lay, show: Object.assign({}, CAMPOS_DEF, v.show || {}) };
+  }
+  function guardarVista(v) { App.data.setPref(CLAVE_VISTA, v); }
+  function claseVista() {
+    var v = vista();
+    return 'vista v-' + v.layout + CAMPOS.map(function (c) { return v.show[c[0]] ? ' sh-' + c[0] : ''; }).join('');
+  }
+  function barraVista() {
+    var v = vista();
+    return "<div class='calbar'>" +
+      "<div class='seg' id='calLay' role='toolbar' aria-label='Diseño del calendario'>" + LAYOUTS.map(function (l) {
+        return "<button type='button' data-lay='" + l[0] + "' aria-pressed='" + (v.layout === l[0]) + "'>" + esc(l[1]) + '</button>';
+      }).join('') + '</div>' +
+      "<div class='seg tg' id='calTgl' role='toolbar' aria-label='Datos visibles'>" + CAMPOS.map(function (c) {
+        return "<button type='button' data-campo='" + c[0] + "' aria-pressed='" + !!v.show[c[0]] + "'>" + esc(c[1]) + '</button>';
+      }).join('') + '</div></div>';
+  }
+
+  /* ---------- piezas de una celda ---------- */
+  var SPORT_DEP = { run: 'running', bici: 'bici', fuerza: 'fuerza' };
+  function iconosDe(d, evalDia, puntuado) {
+    var I = App.icons, T = TIPOS[d.tipo] || TIPOS.E, comps = componentesPlan(d), out = [];
+    var estado = {};
+    evalDia.componentes.forEach(function (c) { estado[c.deporte] = c.estado; });
+    function dep(n) {
+      var k = SPORT_DEP[n];
+      return puntuado && k && estado[k] ? ' st-' + (estado[k] === 'miss' ? 'miss' : estado[k]) : '';
+    }
+    var main = I.TIPO_ICONO[d.tipo] || 'run';
+    var tiene = { run: comps.some(function (c) { return c.deporte === 'running'; }),
+      bici: comps.some(function (c) { return c.deporte === 'bici'; }),
+      fuerza: comps.some(function (c) { return c.deporte === 'fuerza'; }) };
+    var mainEsDeporte = SPORT_DEP[main] && tiene[main];
+    out.push({ n: main, t: T.nom, st: mainEsDeporte ? dep(main) : '', main: true });
+    ['run', 'bici', 'fuerza'].forEach(function (s) {
+      if (!tiene[s] || (s === main && mainEsDeporte)) return;
+      out.push({ n: s, t: s === 'run' ? 'Correr' : s === 'bici' ? 'Bici' : 'Fuerza', st: dep(s) });
+    });
+    return out.slice(0, 4).map(function (x) {
+      var txt = { ' st-ok': 'hecho', ' st-parcial': 'parcial', ' st-miss': 'no hecho' }[x.st];
+      return "<span class='ico " + I.TIPO_FAMILIA[d.tipo] + (x.main ? ' mn' : '') + x.st + "' title='" + esc(x.t + (txt ? ' · ' + txt : '')) + "'>" + I.svg(x.n) + '</span>';
+    }).join('');
+  }
+  function anillo(pct) {
+    var p = Math.round(pct * 100), cls = p >= 80 ? 'ok' : p >= 40 ? 'warn' : 'bad';
+    return "<span class='ring " + cls + "' style='--p:" + p + "' role='img' aria-label='Cumplimiento " + p + " por ciento'><b>" +
+      (p >= 80 ? '✓' : p === 0 ? '✕' : p) + '</b></span>';
+  }
+  function volumen(d, evalDia, puntuado) {
+    var partes = [];
+    var cr = evalDia.componentes.filter(function (c) { return c.deporte === 'running'; })[0];
+    var cb = evalDia.componentes.filter(function (c) { return c.deporte === 'bici'; })[0];
+    if (cr) partes.push((puntuado ? F.num(cr.valor, 1) + '/' : '') + F.num(cr.objetivo, 1) + ' km');
+    else if (d.km) partes.push(F.num(d.km, 1) + ' km');
+    if (cb) partes.push((puntuado ? F.num(cb.valor, 0) + '/' : '') + F.num(cb.objetivo, 0) + "'");
+    else if (d.minBici) partes.push(F.num(d.minBici, 0) + "'");
+    return partes.join(' · ');
+  }
+  function detalleComps(evalDia) {
+    return evalDia.componentes.map(function (c) {
+      var marca = c.estado === 'ok' ? '✓' : c.estado === 'parcial' ? '½' : '✕';
+      return "<span class='cp " + c.estado + "'>" + marca + ' ' + esc(c.nombre) + ' ' + F.num(c.valor, c.unidad === 'km' ? 1 : 0) + '/' + F.num(c.objetivo, c.unidad === 'km' ? 1 : 0) + ' ' + c.unidad + '</span>';
+    }).join('');
+  }
+
+  function celda(d, k, D, agenda, hoyIso) {
+    var t = TIPOS[d.tipo] || TIPOS.E, ev = d.evento ? EVT[d.evento] : null, I = App.icons;
+    var obj = App.actividad.corto(d, D), evalDia = evaluarDia(d, D);
+    var ultimoDato = D.dias.length ? D.dias[D.dias.length - 1].iso : null;
+    var pasado = !!ultimoDato && k <= ultimoDato;
+    var puntuado = evalDia.total > 0 && (pasado || !!d.real);
+    var pct = puntuado ? evalDia.pct : null;
+    var fam = I.TIPO_FAMILIA[d.tipo] || 'libre';
+    var aria = F.fechaLarga(k) + ': ' + d.sesion + (puntuado ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte';
+    var dia = DT.d(k).getUTCDate();
+    var cls = 'c f-' + fam + (k === hoyIso ? ' hoy' : '') + (puntuado ? ' pas' : '');
+    var tip = esc(t.nom + ' · ' + d.sesion);
+    var fecha = agenda ? "<span class='fe'><i>" + F.DOW[DT.dowMon0(DT.d(k))] + '</i><b>' + dia + '</b></span>' : "<b class='fe'>" + dia + '</b>';
+    var ico = "<span class='p-ico'>" + iconosDe(d, evalDia, puntuado) + '</span>';
+    var ses = "<span class='p-ses'>" + esc(d.sesion) + '</span>';
+    var rit = obj ? "<span class='p-rit'>" + esc(obj) + '</span>' : '';
+    var evt = ev ? "<span class='p-evt'>" + I.svg('carrera') + esc(ev.nombre) + '</span>' : '';
+    var vol = "<span class='p-vol'>" + volumen(d, evalDia, puntuado) + '</span>';
+    var cum = "<span class='p-cum'>" + (puntuado ? anillo(pct) : '') + '</span>';
+    var det = puntuado ? "<span class='p-det'>" + detalleComps(evalDia) + '</span>' : '';
+    var cuerpo = agenda
+      ? fecha + ico + "<span class='ag-tx'>" + ses + evt + rit + det + '</span>' + vol + cum
+      : fecha + cum + ico + ses + evt + rit + vol;
+    return "<div class='" + cls + "' data-f='" + esc(k) + "' tabindex='0' role='button' title='" + tip + "' aria-label='" + esc(aria) + "'>" + cuerpo + '</div>';
+  }
+
   /* ---------- rejilla ---------- */
-  function rejilla(plan, lista, D) {
+  function semanasDe(lista) {
     var ini = DT.d(lista[0].fecha), fin = DT.d(lista[lista.length - 1].fecha);
     var idx = {}; lista.forEach(function (d) { idx[d.fecha] = d; });
-    var cur = DT.addDays(ini, -DT.dowMon0(ini));
-    var tope = DT.addDays(fin, 6 - DT.dowMon0(fin));
-    var out = "<div class='cal'><div class='g8'>" +
-      F.DOW.map(function (x) { return "<div class='h'>" + x + '</div>'; }).join('') + "<div class='h'>km</div>";
-    var totSem = 0, celdas = '';
+    var cur = DT.addDays(ini, -DT.dowMon0(ini)), tope = DT.addDays(fin, 6 - DT.dowMon0(fin)), out = [];
     while (cur <= tope) {
-      var k = DT.iso(cur), d = idx[k];
-      if (!d) {
-        celdas += "<div class='c e'></div>";
-      } else {
-        var t = TIPOS[d.tipo] || TIPOS.E, ev = d.evento ? EVT[d.evento] : null;
-        var obj = App.actividad.corto(d, D), evalDia = evaluarDia(d, D);
-        var ultimoDato = D.dias.length ? D.dias[D.dias.length - 1].iso : null;
-        var pasado = ultimoDato && k <= ultimoDato;
-        var tienePuntuacion = evalDia.total > 0 && (pasado || !!d.real);
-        var estadoCelda = evalDia.total > 0 && evalDia.cumplidas === evalDia.total ? 'hecho'
-          : evalDia.cumplidas || evalDia.parciales ? 'parcial' : tienePuntuacion ? 'fallo' : '';
-        totSem += kmRunPlan(d);
-        celdas += "<div class='c " + t.cls + (estadoCelda ? ' ' + estadoCelda : '') + "' data-f='" + esc(k) + "' tabindex='0' role='button' " +
-          "aria-label='" + esc(F.fechaLarga(k) + ': ' + d.sesion + (tienePuntuacion ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte') + "'>" +
-          (tienePuntuacion ? "<span class='score' aria-hidden='true'>" + evalDia.cumplidas + '/' + evalDia.total + '</span>' : '') +
-          "<span class='tg'>" + esc(t.k) + '</span>' +
-          '<b>' + DT.d(k).getUTCDate() + '</b>' +
-          '<small>' + esc(d.sesion) + '</small>' +
-          (ev ? "<small style='color:var(--bad);font-weight:600'>" + esc(ev.nombre) + '</small>' : '') +
-          (obj ? "<small class='obj'>" + esc(obj) + '</small>' : '') +
-          '<em>' + (d.km ? F.num(d.km, 1) + ' km' : '') + (d.minBici ? (d.km ? ' · ' : '') + F.num(d.minBici, 0) + "'" : '') + '</em>' +
-          "<small class='det'>Ver detalles</small></div>";
+      var sem = { lunes: DT.iso(cur), num: String(DT.isoWeek(cur)).slice(-2), dias: [], plan: 0, real: 0 };
+      for (var i = 0; i < 7; i++) {
+        var k = DT.iso(cur), d = idx[k] || null;
+        sem.dias.push({ k: k, d: d });
+        if (d) {
+          sem.plan += kmRunPlan(d);
+          var r = realDe(k); if (r && r.km) sem.real += r.km;
+        }
+        cur = DT.addDays(cur, 1);
       }
-      if (DT.dowMon0(cur) === 6) {
-        out += celdas + "<div class='tt'>" + F.num(totSem, 0) + '</div>';
-        celdas = ''; totSem = 0;
-      }
-      cur = DT.addDays(cur, 1);
+      out.push(sem);
     }
+    return out;
+  }
+  function kmSemana(s) {
+    return "<span class='kmw'><b>" + F.num(s.plan, 0) + " km</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
+  }
+  function rejilla(plan, lista, D) {
+    var v = vista(), agenda = v.layout === 'agenda', hoy = isoHoy(), sems = semanasDe(lista);
+    if (agenda) {
+      return "<div class='ag'>" + sems.map(function (s) {
+        var filas = s.dias.filter(function (x) { return x.d; }).map(function (x) { return celda(x.d, x.k, D, true, hoy); }).join('');
+        if (!filas) return '';
+        return "<div class='ag-sem'><header><b>Semana " + esc(s.num) + '</b> <span>' + esc(F.fecha(s.dias[0].k)) + ' – ' + esc(F.fecha(s.dias[6].k)) + '</span>' + kmSemana(s) + '</header>' + filas + '</div>';
+      }).join('') + '</div>';
+    }
+    var out = "<div class='cal'><div class='g8'>" + F.DOW.map(function (x) { return "<div class='h'>" + x + '</div>'; }).join('') + "<div class='h'>km</div>";
+    sems.forEach(function (s) {
+      s.dias.forEach(function (x) { out += x.d ? celda(x.d, x.k, D, false, hoy) : "<div class='c e'></div>"; });
+      out += "<div class='tt'>" + kmSemana(s) + '</div>';
+    });
     return out + '</div></div>';
   }
 
   function leyenda() {
-    return "<div class='lg cal'>" + Object.keys(TIPOS).map(function (k) {
-      return "<span class='" + TIPOS[k].cls + "'><i>" + esc(TIPOS[k].k) + '</i>' + esc(TIPOS[k].nom) + '</span>';
-    }).join('') + '</div>';
+    var I = App.icons;
+    return "<div class='lgd cal' aria-label='Leyenda'>" +
+      I.FAMILIAS.map(function (f) { return "<span class='f-" + f[0] + "'><span class='ico " + f[0] + "'>" + I.svg({ suave: 'run', duro: 'rayo', monte: 'monte', bici: 'bici', carrera: 'carrera', libre: 'descanso' }[f[0]]) + '</span>' + esc(f[1]) + '</span>'; }).join('') +
+      "<span class='sep'></span>" +
+      "<span><span class='ring ok' style='--p:100'><b>✓</b></span>hecho (≥ 80 %)</span>" +
+      "<span><span class='ring warn' style='--p:55'><b>55</b></span>parcial</span>" +
+      "<span><span class='ring bad' style='--p:0'><b>✕</b></span>no hecho</span></div>";
   }
 
   /* ---------- exportación ---------- */
@@ -393,15 +496,7 @@
     });
 
     return h`
-      ${raw(U.modhead('3', 'Octubre y noviembre, día por día', 'Tres caminos sobre las mismas seis competencias. Toca cualquier día para ver el detalle por deporte —ritmo o intensidad objetivo y la rutina de fuerza— y registrar lo que hiciste de verdad. Ajustados a tu horario: entre semana desde las 18:00 (máx. 75 min), sábado desde las 14:00 y domingo desde las 05:00; las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360).'))}
-
-      ${raw(P.CONFLICTOS.map(function (c) { return U.note(c.titulo, esc(c.texto), c.nivel); }).join(''))}
-
-      <h3>Tus competencias</h3>
-      ${raw(U.tabla(
-        [{ t: 'Fecha' }, { t: 'Competencia' }, { t: 'Prioridad' }, { t: 'Lugar' }, { t: 'Qué dice el plan activo' }, { t: 'Añadir' }],
-        filasEv, { pie: 'Prioridad A es la carrera del año: todo lo demás se subordina a ella.' }
-      ))}
+      ${raw(U.modhead('3', 'Octubre y noviembre, día por día', 'Tres caminos sobre las mismas seis competencias. Toca un día para ver el detalle por deporte y registrar lo que hiciste de verdad.'))}
 
       <div id='calCtl' role='group' aria-label='Elegir plan'>
         ${raw(BOTONES.map(function (b) {
@@ -411,6 +506,12 @@
       <p class='lede'>${esc(info.resumen)}</p>
       ${raw(panelAjustes(plan))}
 
+      ${raw(barraVista())}
+      ${raw(leyenda())}
+      <div id='calGrid' class='${claseVista()}'>${raw(rejilla(plan, lista, D))}</div>
+      <p><small>Las actividades de Strava marcan automáticamente los días pasados y completan el plan vs. real. Toca cualquier día para ver el detalle o añadir una nota; el registro manual se guarda sólo en este navegador.</small></p>
+
+      ${raw(resumenReciente(D, lista))}
       ${raw(U.kpis([
         U.kpi('Kilómetros del bloque', F.num(kmTot, 0), 'corriendo, del 5 oct al 30 nov'),
         U.kpi('Semana más alta', F.num(Math.max.apply(null, futuras.map(function (w) { return w.kmRun; })), 1) + ' km', 'pico de volumen'),
@@ -419,11 +520,6 @@
         U.kpi('Días libres', F.num(lista.filter(function (d) { return d.tipo === 'D'; }).length, 0), 'descanso real programado'),
         U.kpi('Días con actividad', F.num(lista.filter(function (d) { return d.real; }).length, 0), 'Strava o registro manual')
       ]))}
-
-      ${raw(resumenReciente(D, lista))}
-      ${raw(leyenda())}
-      <div id='calGrid'>${raw(rejilla(plan, lista, D))}</div>
-      <p><small>Las actividades de Strava marcan automáticamente los días pasados y completan el plan vs. real. Toca cualquier día para ver el detalle o añadir una nota; el registro manual se guarda sólo en este navegador.</small></p>
 
       <div id='calExp' role='group'>
         <button type='button' data-exp='ics'>Descargar .ics</button>
@@ -434,6 +530,15 @@
         '<b>Google Calendar:</b> abre «Configuración → Importar y exportar», sube el archivo .ics y elige en qué calendario entra. ' +
         'Para un solo día, usa el enlace «Google» de la tabla de competencias. ' +
         '<b>Apple Calendar / Outlook:</b> abre el .ics con doble clic.'))}
+
+      ${raw(U.acc('Horario y rutinas en que se basa el plan', '<p>Ajustado a tu horario: entre semana desde las 18:00 (máx. 75 min), sábado desde las 14:00 y domingo desde las 05:00. Las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360).</p>'))}
+      <h3>Competencias del bloque</h3>
+      ${raw(P.CONFLICTOS.map(function (c) { return U.note(c.titulo, esc(c.texto), c.nivel); }).join(''))}
+
+      ${raw(U.tabla(
+        [{ t: 'Fecha' }, { t: 'Competencia' }, { t: 'Prioridad' }, { t: 'Lugar' }, { t: 'Qué dice el plan activo' }, { t: 'Añadir' }],
+        filasEv, { pie: 'Prioridad A es la carrera del año: todo lo demás se subordina a ella.' }
+      ))}
 
       <h3>Lo que cuesta cada camino</h3>
       ${raw(gAcwr)}
@@ -486,7 +591,9 @@
 
     function repintar() {
       var plan = planActivo();
-      root.querySelector('#calGrid').innerHTML = rejilla(plan, dias(plan), D0);
+      var g = root.querySelector('#calGrid');
+      g.className = claseVista();
+      g.innerHTML = rejilla(plan, dias(plan), D0);
       App.$$('#calCtl button', root).forEach(function (b) {
         b.className = b.getAttribute('data-plan') === plan ? '' : 'secondary outline';
       });
@@ -497,6 +604,19 @@
       var b = ev.target.closest('button[data-plan]'); if (!b) return;
       App.data.setPref(CLAVE_PLAN, b.getAttribute('data-plan'));
       App.refrescar ? App.refrescar('calendario') : repintar();
+    });
+
+    root.querySelector('#calLay').addEventListener('click', function (ev) {
+      var b = ev.target.closest('button[data-lay]'); if (!b) return;
+      var v = vista(); v.layout = b.getAttribute('data-lay'); guardarVista(v);
+      App.$$('#calLay button', root).forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      repintar();
+    });
+    root.querySelector('#calTgl').addEventListener('click', function (ev) {
+      var b = ev.target.closest('button[data-campo]'); if (!b) return;
+      var v = vista(), k = b.getAttribute('data-campo'); v.show[k] = v.show[k] ? 0 : 1; guardarVista(v);
+      b.setAttribute('aria-pressed', !!v.show[k]);
+      root.querySelector('#calGrid').className = claseVista();
     });
 
     var rs = root.querySelector('[data-reset-saltos]');
@@ -514,8 +634,8 @@
       if (!d) return;
       var r = d.real || {};
       form.fecha.value = f;
-      form.km.value = r.km != null ? r.km : '';
-      form.min.value = r.min != null ? r.min : '';
+      form.km.value = r.km != null ? Math.round(r.km * 100) / 100 : '';
+      form.min.value = r.min != null ? Math.round(r.min) : '';
       form.ritmo.value = r.ritmo || '';
       form.nota.value = r.nota || '';
       var bs = form.querySelector('[data-act=saltar]');
