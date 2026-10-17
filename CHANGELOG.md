@@ -6,6 +6,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ## [No publicado]
 
 ### Añadido
+- **Reacomodo de intervalos con datos reales** (`replan.js`, `calendario.js`): la calidad «hecha» se juzga por kilómetro (splits, FC por zonas, ritmo contra la mediana) y no por la FC media; sólo se recupera una sesión dura por semana (la más reciente); las calidades de los próximos 14 días se topan a 1,25 × la salida más larga de 28 días. La bitácora cita los datos (km, tiempo, ritmo, FC).
 - **Navegación por páginas** (`app.js`, `index.html`): los 14 módulos dejan de ser un único scroll de ~15 000 px y se agrupan en seis páginas
   —Hoy, Calendario, Rendimiento, Metas, Cuerpo y ciencia, Registro— con URL propia (`#calendario`) y un índice interno sticky cuando una página agrupa varios módulos.
   Los enlaces antiguos a un módulo (`#carga`, `#recursos`…) abren su página y bajan hasta él. Barra superior de seis entradas (antes dos filas) y barra inferior móvil con las seis.

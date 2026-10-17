@@ -30,7 +30,9 @@
   function r05(x) { return Math.round(x * 2) / 2; }
   function r5(x) { return Math.round(x / 5) * 5; }
 
-  function reorganizar(lista, saltos, hoy) {
+  function reorganizar(lista, saltos, hoy, ctx) {
+    ctx = ctx || {};
+    var INFO = ctx.info || {};
     var EVT = {}; ((App.plan && App.plan.EVENTOS) || []).forEach(function (e) { EVT[e.id] = e; });
     hoy = hoy || iso(new Date());
     var L = lista.map(function (d) { return Object.assign({}, d); });
@@ -105,6 +107,7 @@
       nota(t.fecha, 'ok', 'Pasa aquí la fuerza ' + letra + ' del ' + corta(fecha) + '.');
     }
 
+    var perdidas = Object.keys(saltos || {}).filter(function (f) { return saltos[f] === 2; }).sort();
     Object.keys(saltos || {}).sort().forEach(function (f) {
       var i = -1;
       L.forEach(function (d, k) { if (d.fecha === f) i = k; });
@@ -115,7 +118,9 @@
       if (sinCalidad && DUROS[d.tipo]) {   // se corrió, pero fácil: la calidad no se hizo
         var kmR = real.km || 0, bR = real.minBici || 0, ses = d.sesion || '', tp = d.tipo, kmP = d.km || 0, bP = d.minBici || 0;
         d.sesionOriginal = ses; d.tipoOriginal = tp; d.tipo = 'E'; d.km = kmR; d.minBici = bR; d.sesion = 'Hecho fácil, sin calidad: ' + ses;
-        nota(f, 'warn', 'Se hizo fácil (' + r05(kmR) + ' km): la calidad (' + ses + ') no se cumplió.');
+        nota(f, 'warn', 'Se hizo fácil (' + r05(kmR) + ' km): la calidad (' + ses + ') no se cumplió.' + (INFO[f] ? ' Datos: ' + INFO[f] + '.' : ''));
+        var posterior = perdidas.filter(function (g) { return g > f && (new Date(g) - new Date(f)) <= 7 * 864e5; })[0];
+        if (posterior) { nota(f, 'warn', 'No se recupera aparte: el ' + corta(posterior) + ' también quedó sin calidad y sólo se recupera una sesión dura por semana (la más reciente).'); return; }
         if (!moverDura(i, kmP, bP, ses, tp, f)) nota(f, 'warn', 'La calidad no se recupera: en los próximos 6 días no hay un día suave sin dos duros seguidos ni competencia cerca. No se acumula; la siguiente calidad del plan sigue en pie.');
         return;
       }
@@ -149,6 +154,16 @@
       }
       if (fz && !seMovio) moverFuerza(i, fz[1].toUpperCase(), f);
     });
+
+    // Tope de volumen en las calidades de los próximos 14 días: 1,25 × la salida más larga de los últimos 28 días (mín. 5 km).
+    if (ctx.kmMax > 0) {
+      var tope = r05(Math.max(5, ctx.kmMax * 1.25)), fin = iso(new Date(new Date(hoy + 'T12:00:00').getTime() + 14 * 864e5));
+      L.forEach(function (t) {
+        if (t.fecha <= hoy || t.fecha > fin || t.evento || !/^[QHST]$/.test(t.tipo) || !(t.km > tope)) return;
+        nota(t.fecha, 'warn', 'Calidad de ' + t.km + ' km bajada a ' + tope + ' km: tu salida más larga en 28 días fue de ' + r05(ctx.kmMax) + ' km y un salto mayor al 25 % sube el riesgo de lesión.');
+        t.kmOriginal = t.km; t.km = tope; t.sesion += ' (ajustada a ' + tope + ' km)';
+      });
+    }
 
     return { dias: L, cambios: cambios };
   }

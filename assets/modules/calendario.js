@@ -141,19 +141,53 @@
   function saltos() { return App.data.pref(CLAVE_SALTOS, {}) || {}; }
   function estaSaltado(f) { return !!saltos()[f]; }
   function isoHoy() { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
-  // Días de calidad ya pasados que Strava muestra corridos fáciles (FC media < 80 % de la máxima): valor 2 = «hecho, sin calidad».
+  // Días de calidad ya pasados que Strava muestra corridos fáciles: valor 2 = «hecho, sin calidad».
+  // Se juzga por kilómetro (splits): hay calidad si ≥ 2 km caen en Z3, o ≥ 2 km van ≥ 12 % más rápido que la mediana con FC en Z2+.
+  // Sin splits se usa la FC media (< 80 % de la máxima = fácil). ANALISIS guarda el porqué para la bitácora.
+  var ANALISIS = {};
+  function limitesFC() {
+    var f = D0 && M.fisiologia ? M.fisiologia(D0.acts, +App.data.pref('fcmax', 0) || null, (App.data.atleta() || {}).edad) : null;
+    return f && f.disponible ? { l1: f.lim.l1, l2: f.lim.l2, fcmax: f.fcmax } : { l1: 143, l2: 162, fcmax: 186 };
+  }
+  function mediana(v) { var s = v.slice().sort(function (a, b) { return a - b; }); return s[Math.floor(s.length / 2)]; }
+  function juzgarCorrida(runs, lim) {
+    var km = 0, seg = 0, hrSeg = 0, enteros = [];
+    runs.forEach(function (a) {
+      km += a.km || 0; seg += (a.min || 0) * 60; hrSeg += (a.hr || 0) * (a.min || 0) * 60;
+      (a.splits || []).forEach(function (s) { if (s && s[0] >= 150) enteros.push(s); });
+    });
+    var hr = seg ? hrSeg / seg : 0, ritmo = km ? seg / km : 0;
+    var texto = F.num(km, 1) + ' km en ' + F.hms(seg, false) + ', ' + F.paceKm(ritmo) + ', FC media ' + Math.round(hr) + ' (' + Math.round(100 * hr / lim.fcmax) + ' %)';
+    var calidad;
+    if (enteros.length >= 3) {
+      var med = mediana(enteros.map(function (s) { return s[0]; }));
+      var z3 = enteros.filter(function (s) { return s[1] >= lim.l2; }).length;
+      var rapidos = enteros.filter(function (s) { return s[0] <= med * 0.88 && s[1] >= lim.l1; }).length;
+      var maxHr = Math.max.apply(null, enteros.map(function (s) { return s[1] || 0; }));
+      calidad = z3 >= 2 || rapidos >= 2;
+      texto += '; ' + enteros.length + ' km: ' + z3 + ' en Z3, ' + rapidos + ' rápidos con FC alta, FC máx por km ' + maxHr + ' (Z2 desde ' + lim.l1 + ', Z3 desde ' + lim.l2 + ')';
+    } else calidad = hr >= 0.8 * lim.fcmax;
+    return { calidad: calidad, texto: texto };
+  }
   function autoSinCalidad(base) {
-    var out = {}, hoy = isoHoy(), fcmax = +App.data.pref('fcmax', 0) || 186;
+    var out = {}, hoy = isoHoy(), lim = limitesFC();
+    ANALISIS = {};
     base.forEach(function (d) {
       if (d.fecha >= hoy || !/^[QHST]$/.test(d.tipo) || d.evento || !D0) return;
       var dia = D0.dias.filter(function (x) { return x.iso === d.fecha; })[0];
       var runs = dia && dia.acts ? dia.acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia && a.hr; }) : [];
       if (!runs.length) return;
-      var min = runs.reduce(function (s, a) { return s + (a.min || 0); }, 0);
-      var hr = runs.reduce(function (s, a) { return s + a.hr * (a.min || 0); }, 0) / (min || 1);
-      if (hr < 0.8 * fcmax) out[d.fecha] = 2;
+      var j = juzgarCorrida(runs, lim);
+      if (!j.calidad) { out[d.fecha] = 2; ANALISIS[d.fecha] = j.texto; }
     });
     return out;
+  }
+  // Salida más larga de los últimos 28 días: ancla el volumen máximo razonable de las sesiones de calidad próximas.
+  function kmMaxReciente(hoy) {
+    if (!D0) return 0;
+    var ini = DT.iso(DT.addDays(DT.d(hoy), -28)), m = 0;
+    D0.acts.forEach(function (a) { if (a.grupo === 'running' && !a.anomalia && a.fechaISO >= ini && a.fechaISO < hoy) m = Math.max(m, a.km || 0); });
+    return m;
   }
   function dias(plan) {
     var base = P.PLANES[plan].dias.map(function (d) {
@@ -161,7 +195,8 @@
     });
     if (!App.replan) { ULT_CAMBIOS[plan] = []; return base; }
     var s = Object.assign(autoSinCalidad(base), saltos());
-    var r = App.replan.reorganizar(base, s, isoHoy());
+    var hoy = isoHoy();
+    var r = App.replan.reorganizar(base, s, hoy, { info: ANALISIS, kmMax: kmMaxReciente(hoy) });
     ULT_CAMBIOS[plan] = r.cambios;
     return r.dias;
   }

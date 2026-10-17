@@ -17,3 +17,5 @@ Static, no-build site (Spanish UI) analysing Emilio's Strava data; pushed as v0.
 
 **Why:** user wanted readable calendar, coherent theme, easier navigation, PDF, contrast analysis.
 **How to apply:** after any CSS/markup change run `node connector/contraste.mjs`; PDF could not be viewed locally (no poppler), only checked via print-media screenshots. Unverified/open: the "Tus competencias" table appears right-aligned in print preview (not investigated). Nothing deployed yet by me (deploy.mjs publishes to GCS; site also on Hostinger per CHEATSHEET).
+
+**Reacomodo de intervalos (v0.11.1, 2026-10-17):** `replan.js` recibe `ctx {info, kmMax}`; `calendario.js` juzga calidad por splits/zonas FC (≥2 km en Z3 o ≥2 km 12 % más rápidos que la mediana con FC ≥ Z2), recupera sólo una dura por semana (la más reciente) y topa las calidades de los próximos 14 días a 1,25 × la salida más larga de 28 días (mín. 5 km). Scripts de `connector/` que usan Chrome necesitan `node --experimental-websocket` en Node 20. `datos.js` está en .gitignore; tras `sync.mjs` hay que correr `build.mjs --js`.
