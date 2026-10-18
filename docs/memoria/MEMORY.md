@@ -1,3 +1,3 @@
 - [Git identity: emiliodom](git-identity-emiliodom.md) — commit/push this repo as emiliodom, verify `gh auth status` first
-- [Strava project state](strava-project-state.md) — v0.11.0 architecture, tooling, gotchas, open items
+- [Strava project state](strava-project-state.md) — v0.12.0 architecture, tooling, gotchas, open items
 - [User preferences](user-preferences.md) — language split, workflow expectations

@@ -114,11 +114,16 @@
       if (i < 0) return;
       var d = L[i], real = d.real || {}, sinCalidad = saltos[f] === 2;
       var kmPlan = d.km || 0, biciPlan = d.minBici || 0, sesion = d.sesion || '', tipo = d.tipo;
+      if (saltos[f] === 3) {   // calidad parcial: hubo esfuerzo real, se anota y no se reprograma
+        d.parcial = true;
+        nota(f, 'warn', 'Calidad parcial (' + d.sesion + '): hubo esfuerzo sostenido pero por debajo de lo que pedía la sesión. No se reprograma; ' + (INFO[f] ? INFO[f].replace(/\.\s*$/, '') + '.' : 'el volumen cuenta.'));
+        return;
+      }
       d.saltado = true;
       if (sinCalidad && DUROS[d.tipo]) {   // se corrió, pero fácil: la calidad no se hizo
         var kmR = real.km || 0, bR = real.minBici || 0, ses = d.sesion || '', tp = d.tipo, kmP = d.km || 0, bP = d.minBici || 0;
         d.sesionOriginal = ses; d.tipoOriginal = tp; d.tipo = 'E'; d.km = kmR; d.minBici = bR; d.sesion = 'Hecho fácil, sin calidad: ' + ses;
-        nota(f, 'warn', 'Se hizo fácil (' + r05(kmR) + ' km): la calidad (' + ses + ') no se cumplió.' + (INFO[f] ? ' Datos: ' + INFO[f] + '.' : ''));
+        nota(f, 'warn', 'Se hizo fácil (' + r05(kmR) + ' km): la calidad (' + ses + ') no se cumplió.' + (INFO[f] ? ' Datos: ' + INFO[f].replace(/\.\s*$/, '') + '.' : ''));
         var posterior = perdidas.filter(function (g) { return g > f && (new Date(g) - new Date(f)) <= 7 * 864e5; })[0];
         if (posterior) { nota(f, 'warn', 'No se recupera aparte: el ' + corta(posterior) + ' también quedó sin calidad y sólo se recupera una sesión dura por semana (la más reciente).'); return; }
         if (!moverDura(i, kmP, bP, ses, tp, f)) nota(f, 'warn', 'La calidad no se recupera: en los próximos 6 días no hay un día suave sin dos duros seguidos ni competencia cerca. No se acumula; la siguiente calidad del plan sigue en pie.');
@@ -139,7 +144,7 @@
         d.km = kmHecho; d.minBici = biciHecha;
         d.sesion = sesion.replace(/\s*\+\s*fuerza [ABC](\s*PM)?/i, '') + ' (parcial)';
       } else {
-        d.tipo = 'D'; d.km = 0; d.minBici = 0; d.sesion = 'Saltada: ' + sesion;
+        d.tipo = 'R'; d.km = 1.6; d.minBici = 0; d.sesion = 'Saltada: ' + sesion + ' · sólo la milla de la racha';
       }
 
       var seMovio = false;

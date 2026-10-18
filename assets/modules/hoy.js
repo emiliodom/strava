@@ -79,6 +79,13 @@
 
     var tipo = P.TIPOS[hoyDia.tipo] || {}, dow = new Date(hoyISO + 'T12:00:00').getDay();
     var ventana = dow === 6 ? P.HORARIO.sabado : dow === 0 ? P.HORARIO.domingo : P.HORARIO.semana;
+    var H = P.horarioDe ? P.horarioDe(hoyISO, hoyDia) : null;
+    if (H) {
+      ventana = (H.despertar ? 'despierta ' + H.despertar + ' · ' : '') + H.bloques.filter(function (b) { return b.t === 'sesion' || b.t === 'noche'; }).map(function (b) {
+        var f = function (x) { var h = Math.floor(x), m = Math.round((x - h) * 60); return h + ':' + (m < 10 ? '0' : '') + m; };
+        return f(b.h0) + '–' + f(b.h1) + ' ' + b.txt.toLowerCase();
+      }).join(' · ') + (hoyDia.recordatorio ? ' · ⏰ ' + hoyDia.recordatorio : '') + (hoyDia.racha ? ' · mínimo de la racha: 1 milla' : '');
+    }
     var partesTxt = [];
     if (hoyDia.km >= 1) partesTxt.push(F.num(hoyDia.km, 1) + ' km');
     if (hoyDia.minBici) partesTxt.push(hoyDia.minBici + ' min de bici');

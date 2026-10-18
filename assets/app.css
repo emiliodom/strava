@@ -142,9 +142,9 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 /* calendario ------------------------------------------------------------
    Color = familia de sesión (borde + icono); el TEXTO siempre va en tinta normal, nunca en color de acento.
    El cumplimiento se lee por forma (✓ · % · ✕) además de por color. */
-.cal,.lgd,.vista{--kv-suave:#0b7a55;--kv-duro:#b3400a;--kv-monte:#6b46c1;--kv-bici:#1d5fbf;--kv-carrera:#c0262d;--kv-libre:#5f6779;
+.cal,.lgd,.vista,#calDlg,.racha,.hitos{--kv-suave:#0b7a55;--kv-duro:#b3400a;--kv-monte:#6b46c1;--kv-bici:#1d5fbf;--kv-carrera:#c0262d;--kv-libre:#5f6779;
   --st-ok:#0b7a55;--st-warn:#946200;--st-bad:#c0262d;--track:#e3dcd2}
-[data-theme=dark] .cal,[data-theme=dark] .lgd,[data-theme=dark] .vista{--kv-suave:#34d399;--kv-duro:#ff9a5c;--kv-monte:#b49cff;--kv-bici:#6aa2ff;--kv-carrera:#ff7b7b;--kv-libre:#97a1b6;
+[data-theme=dark] .cal,[data-theme=dark] .lgd,[data-theme=dark] .vista,[data-theme=dark] #calDlg,[data-theme=dark] .racha,[data-theme=dark] .hitos{--kv-suave:#34d399;--kv-duro:#ff9a5c;--kv-monte:#b49cff;--kv-bici:#6aa2ff;--kv-carrera:#ff7b7b;--kv-libre:#97a1b6;
   --st-ok:#34d399;--st-warn:#fbb73a;--st-bad:#ff7b7b;--track:#2a3550}
 .f-suave{--k:var(--kv-suave)}.f-duro{--k:var(--kv-duro)}.f-monte{--k:var(--kv-monte)}
 .f-bici{--k:var(--kv-bici)}.f-carrera{--k:var(--kv-carrera)}.f-libre{--k:var(--kv-libre)}
@@ -461,3 +461,62 @@ section{scroll-margin-top:calc(var(--hh,3.6rem) + 3rem)}
   .tiles.slider .tile{flex:none!important}
   .hero{break-inside:avoid;box-shadow:none}
 }
+
+/* ---- v0.12: pestañas del detalle, veredictos, horario, racha, hitos ---- */
+#calDlg article{max-width:44rem;width:calc(100vw - 1.5rem)}
+#calDlg header{position:relative;padding-right:3rem}
+#calDlg .x{position:absolute;top:.6rem;right:.7rem;margin:0;width:2rem;height:2rem;padding:0;border-radius:50%;font-size:1.25rem;line-height:1;
+  background:transparent;color:var(--ink);border:1px solid var(--pico-muted-border-color);box-shadow:none}
+.mtabs{display:flex;margin:.2rem 0 .8rem}
+.mtabs button{flex:1;text-align:center;font-size:.82rem;padding:.4rem .6rem}
+.mtabs .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;margin-left:.3rem;vertical-align:middle;background:var(--st-ok)}
+.mtabs .dot.warn{background:var(--st-warn)}.mtabs .dot.bad{background:var(--st-bad)}
+.vd{display:inline-block;padding:.12rem .6rem;border-radius:999px;font-size:.74rem;font-weight:700;color:var(--ink);border:1px solid transparent;white-space:nowrap}
+.vd.ok{background:color-mix(in srgb,var(--ok) 22%,var(--pico-card-background-color));border-color:var(--ok)}
+.vd.warn{background:color-mix(in srgb,var(--warn) 26%,var(--pico-card-background-color));border-color:var(--warn)}
+.vd.bad{background:color-mix(in srgb,var(--bad) 20%,var(--pico-card-background-color));border-color:var(--bad)}
+.vd.futuro{background:var(--track);border-color:var(--pico-muted-border-color)}
+.an-cab{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.5rem}
+#calAn h5,#calHr h5{margin:.9rem 0 .3rem;font-size:.9rem}
+#calAn ul{margin:.2rem 0 .6rem;padding-left:1.2rem;font-size:.88rem}
+#calAn li{margin:.2rem 0}
+.ok-tx{font-weight:600}
+.vacio{font-size:.9rem;color:var(--pico-color)}
+.an-sc{overflow-x:auto}
+.an-km{font-size:.8rem;margin:.4rem 0;width:100%}
+.an-km th,.an-km td{padding:.25rem .5rem;text-align:right}
+.an-km tr.pausa td{opacity:.6;font-style:italic}
+#calAn details{margin:.4rem 0}
+/* horario */
+.hr-cab{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.4rem;align-items:center}
+.hr-up{padding:.12rem .6rem;border-radius:999px;font-size:.78rem;font-weight:700;background:color-mix(in srgb,var(--warn) 24%,var(--pico-card-background-color));color:var(--ink);border:1px solid var(--warn)}
+.hr-z{margin:.2rem 0 .5rem}
+.hr-rec{display:flex;gap:.5rem;align-items:flex-start;padding:.5rem .7rem;border-radius:.6rem;background:color-mix(in srgb,var(--warn) 16%,var(--pico-card-background-color));border:1px solid var(--warn);font-size:.86rem;color:var(--ink)}
+.hr-rec .ic{flex:none;width:1.1rem;height:1.1rem}
+.hr-tl{position:relative;height:1.6rem;border-radius:.5rem;background:var(--track);overflow:hidden;margin-top:.6rem}
+.hr-b{position:absolute;top:0;bottom:0;border-radius:.3rem;background:var(--kv-suave)}
+.hr-b.sesion,.hr-ls i.sesion{background:var(--kv-duro)}
+.hr-b.trabajo,.hr-ls i.trabajo{background:var(--kv-libre)}
+.hr-b.noche,.hr-ls i.noche{background:var(--kv-bici)}
+.hr-b.viaje,.hr-ls i.viaje{background:var(--kv-carrera)}
+.hr-ax{position:relative;height:1rem;font-size:.68rem;color:var(--pico-color)}
+.hr-ax i{position:absolute;transform:translateX(-50%);font-style:normal}
+.hr-ls{list-style:none;padding:0;margin:.6rem 0;font-size:.86rem}
+.hr-ls li{display:flex;gap:.5rem;align-items:baseline;margin:.25rem 0}
+.hr-ls i{flex:none;width:.7rem;height:.7rem;border-radius:50%;background:var(--kv-suave);transform:translateY(.05rem)}
+.hr-nt{font-size:.8rem;padding-left:1.1rem;color:var(--pico-color)}
+/* racha e hitos */
+.racha{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:center;padding:.8rem 1rem;margin:.6rem 0;border-radius:.9rem;
+  background:color-mix(in srgb,var(--ok) 12%,var(--pico-card-background-color));border:1px solid color-mix(in srgb,var(--ok) 45%,var(--pico-card-background-color));color:var(--ink)}
+.rc-n b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.rc-n span{font-size:.75rem}
+.rc-m{flex:1;min-width:14rem}
+.rc-bar{height:.6rem;border-radius:999px;background:var(--track);overflow:hidden;margin-bottom:.35rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rc-bar i{display:block;height:100%;background:var(--st-ok);border-radius:999px}
+.rc-m small{font-size:.78rem}
+.hitos{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.6rem;margin:.4rem 0 .8rem}
+.hito{display:flex;gap:.6rem;align-items:flex-start;padding:.6rem .75rem;border-radius:.8rem;border:1px solid var(--pico-muted-border-color);background:var(--pico-card-background-color);color:var(--ink)}
+.hito b{display:block;font-size:.88rem}
+.hito small{font-size:.76rem;line-height:1.35}
+.c.viaje{box-shadow:inset 0 -3px 0 var(--kv-carrera)}
+@media print{.mtabs,#calDlg .x{display:none}.racha,.hito{break-inside:avoid}}

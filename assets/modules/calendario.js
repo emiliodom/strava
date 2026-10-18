@@ -42,13 +42,15 @@
     var ev = d.evento ? EVT[d.evento] : null;
     var corridaBrick = /off-bike|brick/i.test(d.sesion || '');
     var componentes = [];
-    if (d.km >= 1 && (d.km >= 3 || tipo.deporte === 'run' || (ev && /trail|atletismo/.test(ev.deporte)))) {
-      var nombreRun = corridaBrick ? 'Correr (brick)' : tipo.nom && tipo.nom !== 'Fácil' ? 'Correr · ' + tipo.nom : 'Correr fácil';
+    var milla = d.racha && d.km < 3 && tipo.deporte !== 'run';
+    if (d.km >= 1 && (d.km >= 3 || milla || tipo.deporte === 'run' || (ev && /trail|atletismo/.test(ev.deporte)))) {
+      var nombreRun = milla ? 'Milla de la racha' : corridaBrick ? 'Correr (brick)' : tipo.nom && tipo.nom !== 'Fácil' ? 'Correr · ' + tipo.nom : 'Correr fácil';
       componentes.push({ deporte: 'running', nombre: nombreRun, objetivo: d.km, unidad: 'km' });
     }
     if (d.minBici >= 20) componentes.push({ deporte: 'bici', nombre: 'Bici', objetivo: d.minBici, unidad: 'min' });
     var fuerza = /fuerza ([ABC])/i.exec(d.sesion || '');
-    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
+    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: fuerza[1].toUpperCase() === 'C' ? 'Boxeo' : 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
+    if (d.nat) componentes.push({ deporte: 'nado', nombre: 'Natación (opcional)', objetivo: d.nat, unidad: 'min', opcional: true });
     return componentes;
   }
 
@@ -73,10 +75,11 @@
       }
       var minimo = c.deporte === 'fuerza' ? c.objetivo : c.objetivo * 0.8;
       return {
-        deporte: c.deporte, nombre: c.nombre, unidad: c.unidad, objetivo: c.objetivo, valor: valor, cantidad: cantidad, manual: manual,
+        deporte: c.deporte, nombre: c.nombre, unidad: c.unidad, objetivo: c.objetivo, valor: valor, cantidad: cantidad, manual: manual, opcional: !!c.opcional,
         estado: (cantidad || manual) && valor + 1e-9 >= minimo ? 'ok' : cantidad || manual ? 'parcial' : 'miss'
       };
     });
+    componentes = componentes.filter(function (c) { return !(c.opcional && !c.cantidad && !c.manual); });   // lo opcional no hecho no penaliza
     return {
       componentes: componentes,
       cumplidas: componentes.filter(function (c) { return c.estado === 'ok'; }).length,
@@ -141,44 +144,112 @@
   function saltos() { return App.data.pref(CLAVE_SALTOS, {}) || {}; }
   function estaSaltado(f) { return !!saltos()[f]; }
   function isoHoy() { var d = new Date(), m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
-  // Días de calidad ya pasados que Strava muestra corridos fáciles: valor 2 = «hecho, sin calidad».
-  // Se juzga por kilómetro (splits): hay calidad si ≥ 2 km caen en Z3, o ≥ 2 km van ≥ 12 % más rápido que la mediana con FC en Z2+.
-  // Sin splits se usa la FC media (< 80 % de la máxima = fácil). ANALISIS guarda el porqué para la bitácora.
-  var ANALISIS = {};
+  // Los días de calidad pasados se juzgan por kilómetro (splits), con tres veredictos y no con un sí/no:
+  //   ok = cumplida · parcial = esfuerzo real pero por debajo de lo que pedía la sesión · sin = no hubo calidad.
+  // Valor en `saltos`: 2 = sin calidad (se reprograma), 3 = parcial (no se reprograma; el volumen cuenta).
+  var ANALISIS = {}, ANALISIS_FULL = {};
   function limitesFC() {
     var f = D0 && M.fisiologia ? M.fisiologia(D0.acts, +App.data.pref('fcmax', 0) || null, (App.data.atleta() || {}).edad) : null;
-    return f && f.disponible ? { l1: f.lim.l1, l2: f.lim.l2, fcmax: f.fcmax } : { l1: 143, l2: 162, fcmax: 186 };
+    return f && f.disponible ? { l1: f.lim.l1, l2: f.lim.l2, med: Math.round((f.lim.l1 + f.lim.l2) / 2), fcmax: Math.round(f.fcmax) } : { l1: 143, l2: 162, med: 152, fcmax: 186 };
   }
   function mediana(v) { var s = v.slice().sort(function (a, b) { return a - b; }); return s[Math.floor(s.length / 2)]; }
-  function juzgarCorrida(runs, lim) {
-    var km = 0, seg = 0, hrSeg = 0, enteros = [];
+  function zonaRitmo(z, spk) {
+    if (!z || !spk) return '';
+    return spk < z.intervalo ? 'Repetición' : spk < z.umbral ? 'Intervalo' : spk < z.maraton ? 'Umbral' : spk < z.facilRapido ? 'Maratón' : spk <= z.facilLento ? 'Fácil' : 'Recuperación';
+  }
+  function zonaFc(lim, hr) { return !hr ? '' : hr >= lim.l2 ? 'Z3' : hr >= lim.l1 ? 'Z2' : 'Z1'; }
+  var OBJETIVO = {
+    Q: 'Tempo o umbral: un bloque sostenido (≈ 12–20 min seguidos) con FC en Z2 alta o Z3, a ritmo de umbral.',
+    H: 'HIIT (VO₂máx): repeticiones de 2–3 min con FC en Z3 y ritmo de intervalo, con trote entre cada una.',
+    S: 'Sprints: repeticiones cortas y muy rápidas; la FC máxima debe tocar Z3.',
+    T: 'Trail duro: esfuerzo sostenido en Z2–Z3 con desnivel; el ritmo del reloj no cuenta.',
+    L: 'Largo: volumen. Lo que cuenta es acercarse a los km del plan a ritmo fácil y constante.'
+  };
+
+  /* Analiza la salida a pie de un día del plan: veredicto, razones, lo que faltó y los kilómetros uno a uno. */
+  function analizarSesion(d) {
+    if (!D0) return null;
+    var dia = D0.dias.filter(function (x) { return x.iso === d.fecha; })[0];
+    var runs = dia && dia.acts ? dia.acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia; }) : [];
+    if (!runs.length) return null;
+    var lim = limitesFC(), z = D0.zonas, tipo = d.tipoOriginal || d.tipo;
+    var km = 0, seg = 0, hrSeg = 0, hrMax = 0, filas = [];
     runs.forEach(function (a) {
-      km += a.km || 0; seg += (a.min || 0) * 60; hrSeg += (a.hr || 0) * (a.min || 0) * 60;
-      (a.splits || []).forEach(function (s) { if (s && s[0] >= 150) enteros.push(s); });
+      km += a.km || 0; seg += (a.min || 0) * 60; hrSeg += (a.hr || 0) * (a.min || 0) * 60; hrMax = Math.max(hrMax, a.hrMax || 0);
+      (a.splits || []).forEach(function (s) { if (s && s[0] >= 150) filas.push({ spk: s[0], hr: s[1] || 0 }); });
     });
     var hr = seg ? hrSeg / seg : 0, ritmo = km ? seg / km : 0;
-    var texto = F.num(km, 1) + ' km en ' + F.hms(seg, false) + ', ' + F.paceKm(ritmo) + ', FC media ' + Math.round(hr) + ' (' + Math.round(100 * hr / lim.fcmax) + ' %)';
-    var calidad;
-    if (enteros.length >= 3) {
-      var med = mediana(enteros.map(function (s) { return s[0]; }));
-      var z3 = enteros.filter(function (s) { return s[1] >= lim.l2; }).length;
-      var rapidos = enteros.filter(function (s) { return s[0] <= med * 0.88 && s[1] >= lim.l1; }).length;
-      var maxHr = Math.max.apply(null, enteros.map(function (s) { return s[1] || 0; }));
-      calidad = z3 >= 2 || rapidos >= 2;
-      texto += '; ' + enteros.length + ' km: ' + z3 + ' en Z3, ' + rapidos + ' rápidos con FC alta, FC máx por km ' + maxHr + ' (Z2 desde ' + lim.l1 + ', Z3 desde ' + lim.l2 + ')';
-    } else calidad = hr >= 0.8 * lim.fcmax;
-    return { calidad: calidad, texto: texto };
+    var med = filas.length ? mediana(filas.map(function (f) { return f.spk; })) : 0;
+    filas.forEach(function (f, i) {
+      f.n = i + 1; f.pausa = !!med && f.spk > med * 1.6;           // un km muy lento = parada o caminata: no cuenta como esfuerzo
+      f.zr = f.pausa ? 'Parada' : zonaRitmo(z, f.spk); f.zf = zonaFc(lim, f.hr);
+    });
+    var utiles = filas.filter(function (f) { return !f.pausa; });
+    var z2min = 0, z3min = 0, bloque = 0, mejor = 0, rapidos = 0, kmUmbral = 0, maxHrKm = 0;
+    utiles.forEach(function (f) {
+      var mn = f.spk / 60;
+      if (f.hr >= lim.l1) z2min += mn;
+      if (f.hr >= lim.l2) z3min += mn;
+      if (f.hr >= lim.med) { bloque += mn; mejor = Math.max(mejor, bloque); } else bloque = 0;
+      if (med && f.spk <= med * 0.88 && f.hr >= lim.l1) rapidos++;
+      if (/Umbral|Intervalo|Repetición/.test(f.zr)) kmUmbral++;
+      maxHrKm = Math.max(maxHrKm, f.hr);
+    });
+    var sinSplits = utiles.length < 3;
+    var m = { km: km, seg: seg, ritmo: ritmo, hr: hr, hrMax: hrMax, z2min: z2min, z3min: z3min, bloque: mejor, rapidos: rapidos, kmUmbral: kmUmbral, maxHrKm: maxHrKm, n: utiles.length, pausas: filas.length - utiles.length };
+    var nivel, razones = [], falto = [], planKm = d.km || 0;
+    razones.push('Corriste <b>' + F.num(km, 1) + ' km</b> en ' + F.hms(seg, false) + ' (' + F.paceKm(ritmo) + ') con FC media <b>' + Math.round(hr) + '</b> (' + Math.round(100 * hr / lim.fcmax) + ' % de la máxima).');
+    if (!sinSplits) {
+      razones.push('Por kilómetro: <b>' + F.num(z2min, 0) + ' min</b> con FC en Z2 o más (desde ' + lim.l1 + ' lpm), <b>' + F.num(z3min, 0) + ' min</b> en Z3 (desde ' + lim.l2 + '). El bloque continuo más largo con FC ≥ ' + lim.med + ' fue de <b>' + F.num(mejor, 0) + ' min</b>. FC máxima por km: ' + maxHrKm + ' lpm.');
+      if (m.pausas) razones.push(m.pausas + ' km muy lento' + (m.pausas > 1 ? 's' : '') + ' (parada o caminata) no se cuenta' + (m.pausas > 1 ? 'n' : '') + ' como esfuerzo.');
+    } else razones.push('Strava no trae kilómetros uno a uno de esta salida: se juzga sólo por la FC media.');
+    var ref = z && z.umbral ? F.pace(z.umbral) + '/km' : 'ritmo de umbral';
+    if (tipo === 'Q') {
+      nivel = mejor >= 12 || z3min >= 10 || kmUmbral >= 3 ? 'ok' : (z2min >= 8 || (sinSplits && hr >= lim.l1)) ? 'parcial' : 'sin';
+      if (nivel === 'parcial') razones.push('Fue un <b>esfuerzo aeróbico sostenido</b> (Z2), no tempo: sirve como volumen de calidad moderada, pero queda por debajo del umbral (FC ' + lim.l2 + ' lpm, ' + ref + ').');
+      if (nivel !== 'ok') {
+        falto.push('Subir la FC al rango de umbral (≥ ' + lim.med + ' lpm; Z3 desde ' + lim.l2 + ') durante un bloque de 12–20 min seguidos.');
+        falto.push('Ese bloque a ritmo de umbral (' + ref + ' o más rápido); tu ritmo medio fue ' + F.paceKm(ritmo) + '.');
+        if (z2min >= 8) falto.push('Juntar los tramos en Z2 en uno solo y empujar los últimos 10 min.');
+      }
+    } else if (tipo === 'H') {
+      nivel = z3min >= 6 || rapidos >= 3 ? 'ok' : (z3min >= 2 || rapidos >= 1 || hrMax >= lim.l2) ? 'parcial' : 'sin';
+      if (nivel !== 'ok') { falto.push('5–6 repeticiones de 3 min con FC en Z3 (≥ ' + lim.l2 + ' lpm) y ritmo de intervalo (' + (z && z.intervalo ? F.pace(z.intervalo) + '/km' : '—') + ').'); falto.push('Trote de recuperación de 3 min entre repeticiones, no caminata.'); }
+    } else if (tipo === 'S') {
+      nivel = hrMax >= lim.l2 && rapidos >= 1 ? 'ok' : hrMax >= lim.l2 ? 'parcial' : 'sin';
+      if (nivel !== 'ok') falto.push('8–10 × 20 s a máxima velocidad con 60–90 s de pausa; la FC máxima debe pasar de ' + lim.l2 + ' lpm (llegaste a ' + (hrMax || '—') + ').');
+    } else if (tipo === 'T') {
+      nivel = z2min >= 20 ? 'ok' : z2min >= 10 ? 'parcial' : 'sin';
+      if (nivel !== 'ok') falto.push('Más tiempo en Z2–Z3 con desnivel: al menos 20 min con FC ≥ ' + lim.l1 + ' lpm.');
+    } else if (tipo === 'L') {
+      var r = planKm ? km / planKm : 1;
+      nivel = r >= 0.85 ? 'ok' : r >= 0.6 ? 'parcial' : 'sin';
+      razones.push('Volumen: <b>' + Math.round(r * 100) + ' %</b> de los ' + F.num(planKm, 0) + ' km del plan.');
+      if (nivel !== 'ok') falto.push('Faltaron ' + F.num(Math.max(0, planKm - km), 1) + ' km para el largo completo.');
+    } else {
+      nivel = hr && hr >= lim.l1 ? 'fuerte' : 'ok';
+      razones.push(nivel === 'fuerte' ? 'Era un día fácil y la FC media quedó en Z2: más intenso de lo previsto, resta frescura para la siguiente calidad.' : 'Día fácil bien ejecutado: FC media en Z1.');
+    }
+    var objetivo = OBJETIVO[tipo] || (tipo === 'E' || tipo === 'R' ? 'Rodaje suave: FC media en Z1 (bajo ' + lim.l1 + ' lpm), sin mirar el reloj.' : '');
+    return { nivel: nivel, tipo: tipo, objetivo: objetivo, razones: razones, falto: falto, m: m, filas: filas, lim: lim, sinSplits: sinSplits };
+  }
+  var VEREDICTO = { ok: ['Cumplida', 'ok'], parcial: ['Parcial', 'warn'], sin: ['Sin calidad', 'bad'], fuerte: ['Más fuerte de lo previsto', 'warn'] };
+  function veredictoTexto(a) {
+    if (a.tipo === 'E' || a.tipo === 'R') return a.nivel === 'ok' ? ['Fácil bien hecha', 'ok'] : VEREDICTO.fuerte;
+    if (a.tipo === 'L') return a.nivel === 'ok' ? ['Largo cumplido', 'ok'] : a.nivel === 'parcial' ? ['Largo parcial', 'warn'] : ['Largo corto', 'bad'];
+    return VEREDICTO[a.nivel];
   }
   function autoSinCalidad(base) {
-    var out = {}, hoy = isoHoy(), lim = limitesFC();
-    ANALISIS = {};
+    var out = {}, hoy = isoHoy();
+    ANALISIS = {}; ANALISIS_FULL = {};
     base.forEach(function (d) {
-      if (d.fecha >= hoy || !/^[QHST]$/.test(d.tipo) || d.evento || !D0) return;
-      var dia = D0.dias.filter(function (x) { return x.iso === d.fecha; })[0];
-      var runs = dia && dia.acts ? dia.acts.filter(function (a) { return a.grupo === 'running' && !a.anomalia && a.hr; }) : [];
-      if (!runs.length) return;
-      var j = juzgarCorrida(runs, lim);
-      if (!j.calidad) { out[d.fecha] = 2; ANALISIS[d.fecha] = j.texto; }
+      if (d.fecha >= hoy || d.evento || !D0) return;
+      var a = analizarSesion(d);
+      if (!a) return;
+      ANALISIS_FULL[d.fecha] = a;
+      if (!/^[QHST]$/.test(d.tipo) || (a.nivel !== 'sin' && a.nivel !== 'parcial')) return;
+      out[d.fecha] = a.nivel === 'sin' ? 2 : 3;
+      ANALISIS[d.fecha] = (a.razones[0] + ' ' + (a.razones[1] || '')).replace(/<[^>]+>/g, '');
     });
     return out;
   }
@@ -191,7 +262,7 @@
   }
   function dias(plan) {
     var base = P.PLANES[plan].dias.map(function (d) {
-      return { fecha: d.fecha, tipo: d.tipo, sesion: d.sesion, km: d.km, minBici: d.minBici, evento: d.evento, real: realDe(d.fecha) };
+      return Object.assign({}, d, { real: realDe(d.fecha) });
     });
     if (!App.replan) { ULT_CAMBIOS[plan] = []; return base; }
     var s = Object.assign(autoSinCalidad(base), saltos());
@@ -203,6 +274,7 @@
   function cambios(plan) { dias(plan); return ULT_CAMBIOS[plan] || []; }
   function alternarSalto(f) {
     var s = saltos();
+    if (!s[f] && f < isoHoy()) return;   // los días pasados se detectan solos con Strava
     if (s[f]) delete s[f]; else s[f] = 1;
     App.data.setPref(CLAVE_SALTOS, s);
   }
@@ -293,7 +365,7 @@
   }
 
   /* ---------- piezas de una celda ---------- */
-  var SPORT_DEP = { run: 'running', bici: 'bici', fuerza: 'fuerza' };
+  var SPORT_DEP = { run: 'running', bici: 'bici', fuerza: 'fuerza', nado: 'nado' };
   function iconosDe(d, evalDia, puntuado) {
     var I = App.icons, T = TIPOS[d.tipo] || TIPOS.E, comps = componentesPlan(d), out = [];
     var estado = {};
@@ -305,14 +377,17 @@
     var main = I.TIPO_ICONO[d.tipo] || 'run';
     var tiene = { run: comps.some(function (c) { return c.deporte === 'running'; }),
       bici: comps.some(function (c) { return c.deporte === 'bici'; }),
-      fuerza: comps.some(function (c) { return c.deporte === 'fuerza'; }) };
+      fuerza: comps.some(function (c) { return c.deporte === 'fuerza'; }),
+      nado: comps.some(function (c) { return c.deporte === 'nado'; }) };
     var mainEsDeporte = SPORT_DEP[main] && tiene[main];
     out.push({ n: main, t: T.nom, st: mainEsDeporte ? dep(main) : '', main: true });
-    ['run', 'bici', 'fuerza'].forEach(function (s) {
+    ['run', 'bici', 'fuerza', 'nado'].forEach(function (s) {
       if (!tiene[s] || (s === main && mainEsDeporte)) return;
-      out.push({ n: s, t: s === 'run' ? 'Correr' : s === 'bici' ? 'Bici' : 'Fuerza', st: dep(s) });
+      out.push({ n: s, t: s === 'run' ? 'Correr' : s === 'bici' ? 'Bici' : s === 'nado' ? 'Natación (opcional)' : 'Fuerza', st: dep(s) });
     });
-    return out.slice(0, 4).map(function (x) {
+    if (d.hito) out.push({ n: d.hito === 'hora' ? 'reloj' : 'avion', t: d.hito === 'vuelo' ? 'Vuelo a Charlotte' : d.hito === 'regreso' ? 'Regreso a Guatemala' : 'Termina el horario de verano de EE. UU.', st: '' });
+    else if (d.recordatorio) out.push({ n: 'campana', t: d.recordatorio, st: '' });
+    return out.slice(0, 5).map(function (x) {
       var txt = { ' st-ok': 'hecho', ' st-parcial': 'parcial', ' st-miss': 'no hecho' }[x.st];
       return "<span class='ico " + I.TIPO_FAMILIA[d.tipo] + (x.main ? ' mn' : '') + x.st + "' title='" + esc(x.t + (txt ? ' · ' + txt : '')) + "'>" + I.svg(x.n) + '</span>';
     }).join('');
@@ -349,7 +424,7 @@
     var fam = I.TIPO_FAMILIA[d.tipo] || 'libre';
     var aria = F.fechaLarga(k) + ': ' + d.sesion + (puntuado ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte';
     var dia = DT.d(k).getUTCDate();
-    var cls = 'c f-' + fam + (k === hoyIso ? ' hoy' : '') + (puntuado ? ' pas' : '');
+    var cls = 'c f-' + fam + (k === hoyIso ? ' hoy' : '') + (puntuado ? ' pas' : '') + (d.viaje ? ' viaje' : '');
     var tip = esc(t.nom + ' · ' + d.sesion);
     var fecha = agenda ? "<span class='fe'><i>" + F.DOW[DT.dowMon0(DT.d(k))] + '</i><b>' + dia + '</b></span>' : "<b class='fe'>" + dia + '</b>';
     var ico = "<span class='p-ico'>" + iconosDe(d, evalDia, puntuado) + '</span>';
@@ -430,6 +505,8 @@
       if (d.km) desc.push(F.num(d.km, 1) + ' km corriendo');
       if (d.minBici) desc.push(F.num(d.minBici, 0) + ' min de bici');
       if (ev) desc.push(ev.nota);
+      if (d.recordatorio) desc.push('⏰ ' + d.recordatorio);
+      if (d.nat) desc.push('Natación opcional ' + d.nat + ' min');
       L.push('BEGIN:VEVENT',
         'UID:' + plan + '-' + d.fecha + '@strava-analyzer',
         'DTSTAMP:' + stamp,
@@ -479,10 +556,97 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
+  /* ---------- análisis, horario y racha (pestañas del detalle y paneles) ---------- */
+  function vd(a) { var v = veredictoTexto(a); return "<span class='vd " + v[1] + "'>" + esc(v[0]) + '</span>'; }
+  function hora(x) { var h0 = Math.floor(x + 1e-9), m = Math.round((x - h0) * 60); return h0 + ':' + (m < 10 ? '0' : '') + m; }
+  function refsHtml(lim, z) {
+    return "<ul class='an-ref'><li><b>Z1</b> FC bajo " + lim.l1 + ' lpm: fácil y recuperación.</li>' +
+      '<li><b>Z2</b> FC ' + lim.l1 + '–' + lim.l2 + ' lpm: aeróbico sostenido.</li>' +
+      '<li><b>Z3</b> FC desde ' + lim.l2 + ' lpm: umbral y VO₂máx.</li>' +
+      (z ? '<li><b>Ritmos:</b> intervalo ' + F.pace(z.intervalo) + ' · umbral ' + F.pace(z.umbral) + ' · maratón ' + F.pace(z.maraton) + ' · fácil ' + F.pace(z.facilRapido) + '–' + F.pace(z.facilLento) + ' /km.</li>' : '') + '</ul>';
+  }
+  function analisisHtml(d) {
+    var f = d.fecha, a = ANALISIS_FULL[f], tipo = d.tipoOriginal || d.tipo, T = TIPOS[tipo] || {}, lim = limitesFC(), z = D0 && D0.zonas;
+    var plan = d.sesionOriginal || d.sesion;
+    if (f < isoHoy()) {
+      if (!a) return "<p class='vacio'>No hay una salida a pie en Strava este día (plan: " + esc(plan) + '). Si corriste y no se sincronizó, anótalo en «Sesión» y se cuenta como hecho.</p>';
+      var out = "<div class='an-cab'>" + vd(a) + ' <span>' + esc(T.nom || '') + ' · ' + esc(plan) + '</span></div>';
+      if (a.objetivo) out += "<p><b>Qué pedía la sesión:</b> " + esc(a.objetivo) + '</p>';
+      out += '<h5>Qué pasó</h5><ul>' + a.razones.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>';
+      if (a.falto.length) out += '<h5>Qué faltó para cumplirla</h5><ul>' + a.falto.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      else out += "<p class='ok-tx'>No faltó nada: la sesión cumplió lo que pedía.</p>";
+      if (a.nivel === 'parcial') out += "<p><small>Parcial no es fallo: el esfuerzo fue real, y por eso no se reprograma. Sólo cuenta como calidad completa si llegas al bloque o la zona que pedía.</small></p>";
+      if (!a.sinSplits) out += '<details><summary>Kilómetro por kilómetro</summary><div class="an-sc"><table class="an-km"><thead><tr><th>km</th><th>Ritmo</th><th>FC</th><th>Zona FC</th><th>Zona ritmo</th></tr></thead><tbody>' +
+        a.filas.map(function (r) { return '<tr' + (r.pausa ? " class='pausa'" : '') + '><td>' + r.n + '</td><td>' + F.pace(r.spk) + '</td><td>' + (r.hr || '—') + '</td><td>' + r.zf + '</td><td>' + esc(r.zr) + '</td></tr>'; }).join('') + '</tbody></table></div></details>';
+      return out + '<details><summary>Zonas de referencia</summary>' + refsHtml(lim, z) + '</details>';
+    }
+    var obj = OBJETIVO[tipo] || (tipo === 'E' || tipo === 'R' ? 'Rodaje suave: FC media en Z1 (bajo ' + lim.l1 + ' lpm), sin mirar el reloj.' : '');
+    return "<div class='an-cab'><span class='vd futuro'>" + (f === isoHoy() ? 'Hoy' : 'Por venir') + '</span> <span>' + esc(T.nom || '') + ' · ' + esc(plan) + '</span></div>' +
+      (obj ? '<p><b>Qué pide la sesión:</b> ' + esc(obj) + '</p>' : '') +
+      '<h5>Cómo se juzgará</h5>' + refsHtml(lim, z) +
+      '<p><small>Cuando Strava sincronice la salida, aquí aparecerá el veredicto (cumplida, parcial o sin calidad), el porqué y qué faltó.' + (d.racha ? ' Pase lo que pase, la milla mínima (1,6 km) mantiene la racha.' : '') + '</small></p>';
+  }
+  function horarioHtml(d) {
+    var H = P.horarioDe && P.horarioDe(d.fecha, d); if (!H) return '';
+    var ini = 4.5, fin = 24, span = fin - ini;
+    var barra = H.bloques.map(function (b) {
+      return "<span class='hr-b " + b.t + "' style='left:" + ((b.h0 - ini) / span * 100).toFixed(1) + '%;width:' + ((b.h1 - b.h0) / span * 100).toFixed(1) + "%' title='" + esc(hora(b.h0) + '–' + hora(b.h1) + ' · ' + b.txt) + "'></span>";
+    }).join('');
+    var eje = [6, 9, 12, 15, 18, 21].map(function (x) { return "<i style='left:" + ((x - ini) / span * 100).toFixed(1) + "%'>" + x + '</i>'; }).join('');
+    return "<div class='hr'><div class='hr-cab'><b>" + esc(H.titulo) + '</b>' + (H.despertar ? "<span class='hr-up'>Despierta " + esc(H.despertar) + '</span>' : '') + '</div>' +
+      "<p class='hr-z'><small>" + esc(H.zona) + '</small></p>' +
+      (d.recordatorio ? "<p class='hr-rec'>" + App.icons.svg('campana') + '<span>' + esc(d.recordatorio) + '</span></p>' : '') +
+      "<div class='hr-tl' role='img' aria-label='Línea de tiempo del día'>" + barra + "</div><div class='hr-ax'>" + eje + '</div>' +
+      "<ul class='hr-ls'>" + H.bloques.map(function (b) { return "<li><i class='" + b.t + "'></i><b>" + hora(b.h0) + '–' + hora(b.h1) + '</b> ' + esc(b.txt) + '</li>'; }).join('') + '</ul>' +
+      (H.notas.length ? "<ul class='hr-nt'>" + H.notas.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+  }
+  function rachaHtml() {
+    var R = P.RACHA; if (!R) return '';
+    var hoy = isoHoy(), n = P.diaRacha(hoy), total = P.diaRacha(R.meta), falta = Math.max(0, total - n);
+    var pct = Math.min(100, Math.round(n / total * 100));
+    return "<section class='racha' aria-label='Racha'><div class='rc-n'><b>Día " + n + '</b><span>de la racha</span></div>' +
+      "<div class='rc-m'><div class='rc-bar' role='img' aria-label='" + pct + " por ciento hacia la meta'><i style='width:" + pct + "%'></i></div>" +
+      '<small>' + (falta ? 'Faltan <b>' + falta + ' días</b> para el 6 de enero de 2027 (día ' + total + ').' : 'Meta cumplida: la racha sigue como extra.') +
+      ' Mínimo diario: <b>1 milla (1,6 km)</b>. En este plan no hay un solo día sin correr; el descanso es de bici y fuerza.</small></div></section>';
+  }
+  function hitosHtml() {
+    var hoy = isoHoy(), I = App.icons;
+    var H = [['2026-11-01', 'reloj', 'Termina el horario de verano de EE. UU.', 'Domingo 1 nov: Utah queda una hora más tarde; Guatemala no cambia.'],
+      ['2026-11-25', 'avion', 'Vuelo a Charlotte', 'Aterrizas 15:27. Calidad por la mañana, rutina de noche desde las 18:00.'],
+      ['2027-01-13', 'avion', 'Regreso a Retalhuleu', 'Vuelo 14:00 · la milla de la racha a las 22:00 de Guatemala.']];
+    var prox = H.filter(function (x) { return x[0] >= hoy; });
+    if (!prox.length) return '';
+    return "<div class='hitos'>" + prox.map(function (x) {
+      var dd = Math.round((DT.d(x[0]) - DT.d(hoy)) / 864e5);
+      return "<div class='hito'><span class='ico libre'>" + I.svg(x[1]) + "</span><div><b>" + esc(x[2]) + '</b><small>' + esc(F.fecha(x[0])) + ' · ' + (dd === 0 ? 'hoy' : 'en ' + dd + ' días') + '<br>' + esc(x[3]) + '</small></div></div>';
+    }).join('') + '</div>';
+  }
+  /* Tabla «calidad hasta ahora»: todos los días pasados con sesión de calidad o largo. */
+  function calidadHasta(lista) {
+    var filas = [], c = { ok: 0, parcial: 0, sin: 0 };
+    Object.keys(ANALISIS_FULL).sort().forEach(function (f) {
+      var a = ANALISIS_FULL[f];
+      if (!/^[QHSTL]$/.test(a.tipo)) return;
+      var d = lista.filter(function (x) { return x.fecha === f; })[0] || { sesion: '' };
+      c[a.nivel === 'ok' ? 'ok' : a.nivel === 'parcial' ? 'parcial' : 'sin']++;
+      var m = a.m;
+      filas.push([F.fecha(f), "<span class='wrap'>" + esc(d.sesionOriginal || d.sesion) + '</span>', vd(a),
+        F.num(m.km, 1) + ' km · FC ' + Math.round(m.hr) + (a.sinSplits ? '' : ' · ' + F.num(m.z2min, 0) + ' min en Z2+' + (m.z3min >= 1 ? ' · ' + F.num(m.z3min, 0) + ' en Z3' : ''))]);
+    });
+    if (!filas.length) return '';
+    return '<h3>Calidad hasta ahora</h3>' +
+      U.kpis([U.kpi('Cumplidas', String(c.ok), 'sesiones de calidad o largo', c.ok ? 'ok' : ''),
+        U.kpi('Parciales', String(c.parcial), 'esfuerzo real, por debajo de lo pedido', c.parcial ? 'warn' : ''),
+        U.kpi('Sin calidad', String(c.sin), 'se reprograman', c.sin ? 'bad' : 'ok')], 'k3') +
+      U.tabla([{ t: 'Fecha' }, { t: 'Sesión del plan' }, { t: 'Veredicto' }, { t: 'Lo medido' }], filas,
+        { pie: 'Se juzga por kilómetro con Strava: FC en zonas (Z2 desde ' + limitesFC().l1 + ' lpm, Z3 desde ' + limitesFC().l2 + ') y ritmo. Toca el día en el calendario, pestaña «Análisis», para ver el porqué y qué faltó.' });
+  }
+
   /* ---------- render ---------- */
   function render(D) {
     D0 = D;
     var plan = planActivo(), lista = dias(plan), info = P.PLANES[plan];
+    var secCalidad = calidadHasta(lista), racha = rachaHtml(), hitos = hitosHtml(), hoyN = P.diaRacha ? P.diaRacha(isoHoy()) : 0;
     var semPlan = proyectarCarga(D, lista);
     var futuras = semPlan.filter(function (w) { return w.dias.some(function (d) { return d.plan; }); });
 
@@ -531,8 +695,10 @@
     });
 
     return h`
-      ${raw(U.modhead('3', 'Octubre y noviembre, día por día', 'Tres caminos sobre las mismas seis competencias. Toca un día para ver el detalle por deporte y registrar lo que hiciste de verdad.'))}
+      ${raw(U.modhead('3', 'Octubre a enero, día por día', 'Tres caminos sobre las mismas seis competencias. Toca un día para ver el detalle por deporte y registrar lo que hiciste de verdad.'))}
 
+      ${raw(racha)}
+      ${raw(hitos)}
       <div id='calCtl' role='group' aria-label='Elegir plan'>
         ${raw(BOTONES.map(function (b) {
           return "<button type='button' data-plan='" + b[0] + "' class='" + (plan === b[0] ? '' : 'secondary outline') + "'>" + esc(b[1]) + '</button>';
@@ -547,12 +713,13 @@
       <p><small>Las actividades de Strava marcan automáticamente los días pasados y completan el plan vs. real. Toca cualquier día para ver el detalle o añadir una nota; el registro manual se guarda sólo en este navegador.</small></p>
 
       ${raw(resumenReciente(D, lista))}
+      ${raw(secCalidad)}
       ${raw(U.kpis([
-        U.kpi('Kilómetros del bloque', F.num(kmTot, 0), 'corriendo, del 5 oct al 30 nov'),
-        U.kpi('Semana más alta', F.num(Math.max.apply(null, futuras.map(function (w) { return w.kmRun; })), 1) + ' km', 'pico de volumen'),
+        U.kpi('Kilómetros del bloque', F.num(kmTot, 0), 'corriendo, del ' + F.fecha(lista[0].fecha) + ' al ' + F.fecha(lista[lista.length - 1].fecha)),
         U.kpi('ACWR máximo proyectado', F.num(pico, 2), pico > 1.5 ? 'zona de riesgo alto' : pico > 1.3 ? 'vigilar' : 'dentro de rango',
           pico > 1.5 ? 'bad' : pico > 1.3 ? '' : 'ok'),
-        U.kpi('Días libres', F.num(lista.filter(function (d) { return d.tipo === 'D'; }).length, 0), 'descanso real programado'),
+        U.kpi('Racha', 'Día ' + hoyN, 'meta 6 ene 2027 · mínimo 1 milla al día', 'ok'),
+        U.kpi('Natación y boxeo', lista.filter(function (d) { return d.nat; }).length + ' · ' + lista.filter(function (d) { return /fuerza C/i.test(d.sesion || ''); }).length, 'sesiones previstas: natación opcional · boxeo'),
         U.kpi('Días con actividad', F.num(lista.filter(function (d) { return d.real; }).length, 0), 'Strava o registro manual')
       ]))}
 
@@ -566,7 +733,7 @@
         'Para un solo día, usa el enlace «Google» de la tabla de competencias. ' +
         '<b>Apple Calendar / Outlook:</b> abre el .ics con doble clic.'))}
 
-      ${raw(U.acc('Horario y rutinas en que se basa el plan', '<p>Ajustado a tu horario: entre semana desde las 18:00 (máx. 75 min), sábado desde las 14:00 y domingo desde las 05:00. Las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360).</p>'))}
+      ${raw(U.acc('Horario y rutinas en que se basa el plan', '<p>Cada día tiene su pestaña «Horario». Hasta el 1 de nov (verano de Utah): mañana 5:30–6:45, trabajo 7:00–16:00. Del 2 de nov al 24 de nov: Utah una hora más tarde, mañana hasta 7:30. En Charlotte (25 nov–13 ene, trabajo 9:00–18:00 allá): dos sesiones entre 6:00 y 8:30 y la calidad siempre por la mañana. Las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360); la C es boxeo.</p>'))}
       <h3>Competencias del bloque</h3>
       ${raw(P.CONFLICTOS.map(function (c) { return U.note(c.titulo, esc(c.texto), c.nivel); }).join(''))}
 
@@ -595,9 +762,16 @@
 
       <dialog id='calDlg'>
         <article>
-          <header><b id='calDlgT'>Detalle</b><br><small>Detalle de la actividad, por deporte</small></header>
-          <div id='calDet'></div>
-          <form id='calForm'>
+          <header><button type='button' class='x' data-act='cerrar' aria-label='Cerrar'>×</button><b id='calDlgT'>Detalle</b><br><small>Sesión, análisis y horario del día</small></header>
+          <div class='seg mtabs' id='calTabs' role='tablist' aria-label='Secciones del día'>
+            <button type='button' role='tab' data-tab='ses' aria-pressed='true'>Sesión</button>
+            <button type='button' role='tab' data-tab='an' aria-pressed='false'>Análisis</button>
+            <button type='button' role='tab' data-tab='hr' aria-pressed='false'>Horario</button>
+          </div>
+          <div id='calDet' data-p='ses'></div>
+          <div id='calAn' data-p='an' hidden></div>
+          <div id='calHr' data-p='hr' hidden></div>
+          <form id='calForm' data-p='ses'>
             <input type='hidden' name='fecha'>
             <h5>Lo que hiciste de verdad</h5>
             <div class='grid'>
@@ -662,6 +836,16 @@
       if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abrir(ev); }
     });
 
+    function pestana(k) {
+      App.$$('#calTabs button', root).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-tab') === k); });
+      App.$$('[data-p]', dlg).forEach(function (e) { e.hidden = e.getAttribute('data-p') !== k; });
+    }
+    dlg.addEventListener('click', function (ev) {
+      var tb = ev.target.closest('button[data-tab]');
+      if (tb) { pestana(tb.getAttribute('data-tab')); return; }
+      if (ev.target.closest('button[data-act=cerrar]')) dlg.close();
+    });
+
     function abrir(ev) {
       var c = ev.target.closest('.c[data-f]'); if (!c) return;
       var f = c.getAttribute('data-f'), plan = planActivo();
@@ -673,12 +857,19 @@
       form.min.value = r.min != null ? Math.round(r.min) : '';
       form.ritmo.value = r.ritmo || '';
       form.nota.value = r.nota || '';
-      var bs = form.querySelector('[data-act=saltar]');
+      var bs = form.querySelector('[data-act=saltar]'), pasado = f < isoHoy();
       bs.textContent = estaSaltado(f) ? 'Sí la hice · deshacer' : 'No la hice · reorganizar';
-      bs.hidden = d.tipo === 'D' && !estaSaltado(f);
+      bs.hidden = false;
+      bs.disabled = pasado && !estaSaltado(f);
+      bs.title = bs.disabled ? 'Este día ya pasó: se detecta solo con Strava. Sólo se reorganizan hoy y los días por venir.' : '';
       root.querySelector('#calDlgT').textContent = F.fechaLarga(f);
       root.querySelector('#calDet').innerHTML = App.actividad.detalle(d, D0);
       root.querySelector('#calDif').innerHTML = difHtml(d);
+      root.querySelector('#calAn').innerHTML = analisisHtml(d);
+      root.querySelector('#calHr').innerHTML = horarioHtml(d);
+      var an = ANALISIS_FULL[f];
+      root.querySelector('[data-tab=an]').innerHTML = 'Análisis' + (an && pasado ? " <span class='dot " + veredictoTexto(an)[1] + "'></span>" : '');
+      pestana(pasado && an && an.nivel !== 'ok' ? 'an' : 'ses');
       dlg.showModal();
     }
 
@@ -698,7 +889,7 @@
       var b = ev.target.closest('button[data-act]'); if (!b) return;
       var act = b.getAttribute('data-act');
       if (act === 'cancelar') { dlg.close(); return; }
-      if (act === 'saltar') { alternarSalto(form.fecha.value); dlg.close(); refrescarPlan(); return; }
+      if (act === 'saltar') { if (b.disabled) return; alternarSalto(form.fecha.value); dlg.close(); refrescarPlan(); return; }
       var r = reales(); delete r[form.fecha.value];
       App.data.setPref(CLAVE_REAL, r);
       dlg.close(); repintar();

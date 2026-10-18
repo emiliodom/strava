@@ -103,7 +103,7 @@
         'K' + (x.i + 1) + (x.parcial ? ' <small>(' + F.num(x.dist, 2) + ' km)</small>' : ''),
         '<b>' + (x.dist < 0.1 ? '—' : F.paceKm(x.spk)) + '</b>',
         x.hr ? x.hr + ' lpm' : '—',
-        zh ? "<span style='color:" + zh.col + "'>" + esc(zh.nom) + '</span>' : (zp ? esc(zp.nom) : '—'),
+        zh ? "<span><i style='display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.35rem;background:" + zh.col + "'></i>" + esc(zh.nom) + '</span>' : (zp ? esc(zp.nom) : '—'),
         (x.elev > 0 ? '+' : '') + F.num(x.elev, 0) + ' m'
       ];
     });

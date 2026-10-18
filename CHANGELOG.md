@@ -3,6 +3,24 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.0] — 2026-10-17
+
+### Añadido
+- **Análisis de sesiones pasadas** (`calendario.js`): el detalle de cada día tiene ahora pestañas **Sesión · Análisis · Horario**. El análisis da un veredicto graduado —cumplida, **parcial** o sin calidad—, el porqué (minutos en Z2/Z3 por kilómetro, bloque continuo más largo, ritmo), qué faltó y la tabla km a km. Una sesión con esfuerzo aeróbico real pero por debajo del umbral ya no se marca «sin calidad»: es parcial y no se reprograma. Nueva sección «Calidad hasta ahora» con resumen.
+- **Racha de la milla** (`ajuste.js`): no hay un solo día sin correr hasta el 6 de enero de 2027 (mínimo 1,6 km); los descansos son de bici y fuerza. Banner con el día de racha y los días que faltan.
+- **Natación opcional** (una vez por semana, 30 min, no penaliza si no se hace) y **boxeo** repartido (una vez por semana; dos en el camino brutal).
+- **Viaje a Charlotte (25 nov – 13 ene)**: los tres planes se extienden hasta el 13 de enero; recordatorio de hacer la calidad por la mañana, hito de vuelo (aterrizaje 15:27) y de regreso (vuelo 14:00, milla a las 22:00 en Guatemala).
+- **Horario del día** (pestaña «Horario» y «Hoy»): línea de tiempo con la hora de levantarse según la fase —verano de Utah, horario estándar desde el 1 de noviembre, o Charlotte (trabajo 9:00–18:00, dos sesiones entre 6:00 y 8:30).
+- Iconos de natación, vuelo, reloj y recordatorio; tarjetas de próximos hitos; .ics con recordatorios.
+
+### Cambiado
+- El botón «No la hice · reorganizar» queda deshabilitado en días pasados (se detectan solos con Strava).
+- Una sesión saltada ya no deja un día en cero: queda como la milla de la racha. El «Días libres» del resumen se sustituye por la racha.
+- En bici no se supone nada en Charlotte: los días de bici pasan a rodaje fácil de al menos 5 km.
+
+### Corregido
+- Texto de zona de FC en «Día» con contraste insuficiente (ahora punto de color + texto normal).
+
 ## [No publicado]
 
 ### Añadido
