@@ -87,6 +87,7 @@
 
     if (dia.nat) out += bloque('🏊', 'Natación (opcional) — ' + dia.nat + ' min', ['Una vez por semana, sin penalización si no se hace.'], ['Calienta 100 m suaves.', 'Series cómodas a RPE 4–5 con 20 s de pausa.', 'Cierra con 100 m de espalda.'], 'Descarga las piernas: ideal el día siguiente a la calidad.');
     if (dia.racha && dia.km < 3 && T.deporte !== 'run') out += bloque('🔥', 'La milla de la racha', ['<b>Mínimo del día:</b> 1,6 km (1 milla) a ritmo cómodo.'], null, 'No hay día sin correr: esto protege la racha hasta el 6 de enero.');
+    if (dia.lugar) out += bloque('📍', 'Dónde', [esc(dia.lugar)], null, null);
     if (dia.recordatorio) out += bloque('⏰', 'Recordatorio', [esc(dia.recordatorio)], null, null);
 
     return out || "<p><small>Sin sesión programada este día.</small></p>";

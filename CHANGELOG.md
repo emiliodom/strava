@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.1] — 2026-10-17
+
+### Añadido
+- **Charlotte con bici**: la calidad se hace en el **Sugar Creek Greenway (Freedom Park → Pineville)**, el tramo más plano para velocidad, HIIT e intervalos; cada semana hay una salida de trail «de una vez» (Crowders Mountain State Park o U.S. National Whitewater Center, alternando) y un día de bici. Los tres planes tienen 6–8 sesiones de calidad en el viaje; el detalle del día muestra «📍 Dónde». Los parques son sugerencias, confírmalos.
+- «No la hice · reorganizar» sigue dejando como mínimo la milla de la racha (1,6 km) en los días saltados, también en Charlotte.
+
+### Cambiado
+- Se retira el supuesto «sin bici en Charlotte» de 0.12.0.
+
 ## [0.12.0] — 2026-10-17
 
 ### Añadido
@@ -16,7 +25,6 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ### Cambiado
 - El botón «No la hice · reorganizar» queda deshabilitado en días pasados (se detectan solos con Strava).
 - Una sesión saltada ya no deja un día en cero: queda como la milla de la racha. El «Días libres» del resumen se sustituye por la racha.
-- En bici no se supone nada en Charlotte: los días de bici pasan a rodaje fácil de al menos 5 km.
 
 ### Corregido
 - Texto de zona de FC en «Día» con contraste insuficiente (ahora punto de color + texto normal).

@@ -1,7 +1,7 @@
 /* ajuste.js — reglas de vida real sobre los tres planes base (plan.js), aplicadas una sola vez al cargar:
    1. Racha: ningún día sin correr. Mínimo 1 milla (1,6 km) hasta la meta del 6 ene 2027; no hay descanso absoluto de correr.
    2. Extiende cada plan hasta el 13 ene 2027 (regreso de Charlotte), con calidad por la mañana.
-   3. Viaje a Charlotte (25 nov – 13 ene): sin bici, calidad por la mañana, recordatorios.
+   3. Viaje a Charlotte (25 nov – 13 ene): con bici, calidad en el Sugar Creek Greenway por la mañana, un parque de montaña cada sábado, recordatorios.
    4. Natación opcional, una vez por semana. Boxeo (fuerza C) repartido: al menos una vez por semana.
    Además calcula el horario de cada día (Guatemala / Utah / Charlotte, con el fin del horario de verano de EE. UU.). */
 (function (global) {
@@ -36,14 +36,33 @@
   function porFecha(dias, f) { for (var i = 0; i < dias.length; i++) if (dias[i].fecha === f) return dias[i]; return null; }
 
   /* ---------- 3. viaje ---------- */
-  function aplicarViaje(dias) {
+  // Charlotte tiene bici y buen terreno: el Sugar Creek Greenway (Freedom Park → Pineville) es plano, ideal para velocidad, HIIT e intervalos;
+  // cada sábado hay una salida única a un parque de montaña. Calidad por dow (0 = lunes) y plan.
+  var GREENWAY = 'Sugar Creek Greenway (Freedom Park → Pineville)';
+  var MONTANAS = ['Crowders Mountain State Park', 'U.S. National Whitewater Center (senderos)'];
+  var CALIDAD_CLT = {
+    estructurado: { 1: ['Q', 'Q AM · tempo en el ' + GREENWAY, 7], 3: ['H', 'HIIT AM · repeticiones en el ' + GREENWAY, 7], 5: ['T', null, 9] },
+    intermedio: { 1: ['H', 'HIIT AM · repeticiones en el ' + GREENWAY, 8], 3: ['Q', 'Q AM · tempo en el ' + GREENWAY, 8], 4: ['S', 'Sprints AM · rectas del ' + GREENWAY, 6], 5: ['T', null, 10] },
+    brutal: { 0: ['Q', 'Q AM · tempo en el ' + GREENWAY, 9], 2: ['H', 'HIIT AM · repeticiones en el ' + GREENWAY, 9], 4: ['S', 'Sprints AM · rectas del ' + GREENWAY, 7], 5: ['T', null, 12] }
+  };
+  var BICI_CLT = { estructurado: [4, 50], intermedio: [2, 45], brutal: [1, 60] };   // [dow, minutos]
+  function aplicarViaje(id, dias) {
+    var semMonte = 0;
     dias.forEach(function (d) {
       if (d.fecha < VIAJE.ida || d.fecha > VIAJE.vuelta) return;
       d.viaje = 'charlotte';
-      if (d.minBici > 0 || /^[BFVM]$/.test(d.tipo)) {   // sin bici en Charlotte: se sustituye por rodaje fácil
-        var fz = RE_FZ.exec(d.sesion || '');
-        d.tipo = 'E'; d.minBici = 0; d.km = Math.max(d.km || 0, 5);
-        d.sesion = 'E (sin bici en Charlotte)' + (fz ? ' + fuerza ' + fz[1].toUpperCase() : '');
+      if (d.evento || d.fecha === VIAJE.ida || d.fecha === VIAJE.vuelta) return;
+      var w = DT.dowMon0(DT.d(d.fecha)), fz = RE_FZ.exec(d.sesion || ''), cal = CALIDAD_CLT[id][w], bici = BICI_CLT[id];
+      var fzTxt = fz ? ' + fuerza ' + fz[1].toUpperCase() + (/fuerza [ABC] PM/i.test(d.sesion) ? ' PM' : '') : '';
+      if (cal) {
+        d.tipo = cal[0]; d.km = cal[2]; d.minBici = 0;
+        if (cal[0] === 'T') {
+          var m = MONTANAS[semMonte++ % MONTANAS.length];
+          d.sesion = 'Trail de montaña (salida única de la semana): ' + m; d.lugar = m + '. Sal temprano: el desnivel manda, no el ritmo.';
+        } else { d.sesion = cal[1] + fzTxt; d.lugar = GREENWAY + ': tramo plano y sin cruces, el mejor lugar de Charlotte para velocidad. Calienta 2 km, lo duro en el tramo recto y vuelve trotando.'; }
+      } else if (w === bici[0] && (d.tipo === 'E' || d.tipo === 'R') && !d.hito) {
+        d.minBici = bici[1]; d.sesion = d.tipo + ' + bici Z2 por el ' + GREENWAY + fzTxt;
+        d.lugar = 'Bici de Freedom Park a Pineville por el Sugar Creek Greenway (ida y vuelta); ajusta el retorno a los minutos del plan.';
       }
       if (DUROS[d.tipo] && !d.evento) {
         d.recordatorio = d.tipo === 'L'
@@ -124,7 +143,7 @@
   Object.keys(P.PLANES).forEach(function (id) {
     var dias = P.PLANES[id].dias;
     extender(id, dias);
-    aplicarViaje(dias);
+    aplicarViaje(id, dias);
     aplicarRacha(dias);
     aplicarExtras(id, dias);
   });
@@ -152,7 +171,7 @@
         bl.push({ h0: 7, h1: 9, t: 'sesion', txt: DUROS[d && d.tipo] ? 'Largo o sesión principal' : 'Sesión del día' }, { h0: 18, h1: 20, t: 'noche', txt: 'Pesas, boxeo, natación o la milla si falta' });
       } else {
         titulo = 'Día laboral en Charlotte'; despertar = '5:15';
-        bl.push({ h0: 6, h1: 7.25, t: 'sesion', txt: 'Atletismo (calidad por la mañana)' }, { h0: 7.25, h1: 8.5, t: 'sesion', txt: 'Segunda sesión: fuerza, natación opcional o bici estática' },
+        bl.push({ h0: 6, h1: 7.25, t: 'sesion', txt: 'Atletismo (calidad por la mañana)' }, { h0: 7.25, h1: 8.5, t: 'sesion', txt: 'Segunda sesión: fuerza, natación opcional o bici (Sugar Creek Greenway)' },
           { h0: 9, h1: 18, t: 'trabajo', txt: 'Trabajo de Utah (7:00–16:00 allá)' }, { h0: 18, h1: 20, t: 'noche', txt: 'Rutina de noche: lo pendiente y la milla de la racha' });
         notas.push('Tu reloj de Guatemala va una hora atrás: las 5:15 de Charlotte son las 4:15 de tu cuerpo. Acuéstate antes de las 21:30.');
       }
