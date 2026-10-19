@@ -3,10 +3,19 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.3] — 2026-10-18
+
+### Añadido
+- **Calendario de noviembre con las pruebas fuertes**: Campanabaj MTB (8 nov, 30 km, 1.200 m D+), Entre Senderos MTB (15 nov, 50 km, 1.500 m D+), Guatemágica Nocturna 15K (21 nov, 19:00, con bici suave de 40 min por la mañana o la tarde) y **Xab Sibaná** (22 nov, 8:00, 20 km, 800 m D+, como trote largo de recuperación). En Campanabaj y Entre Senderos sólo se añade la milla de la racha.
+- **Calidad obligatoria cada semana** en los tres planes hasta la Guatemágica: dos sesiones por semana (Q, HIIT, sprints o FTP), con activación corta de sprints en la semana de cada prueba y un Q de afinación de 3 × 2 km a ritmo de 15K el 17 nov. El largo de la semana de Entre Senderos se acorta.
+
+### Cambiado
+- Racha 286/365: el trote de 2,2 km del 18 oct (FC 127) cumplió el mínimo tras Colomba.
+
 ## [0.12.2] — 2026-10-18
 
 ### Cambiado
-- **Reajuste tras la ida a Colomba** (lluvia, piernas y espalda cargadas): hoy sólo la milla de la racha (1,6 km); el 19 sigue suave y el 20 es fácil. La calidad vuelve el 21 (HIIT en los tres planes) y el 22 (Q en normal e intermedio); el brutal añade FTP en bici el 24. El 29 pasa a HIIT (normal) o sprints (intermedio y brutal).
+- **Reajuste tras la ida a Colomba** (lluvia, piernas y espalda cargadas): hoy sólo la milla de la racha (1,6 km); el 19 sigue suave y el 20 es fácil. La calidad vuelve el 21 (HIIT en los tres planes) y el 22 (Q en normal e intermedio); el intermedio añade FTP en bici el 24. El 29 pasa a HIIT (normal) o sprints (intermedio y brutal).
 - Colomba en Strava: 14,7 km, 98 min, FC media 144 y máxima 181 (el plan preveía unos 180–210 min).
 
 ## [0.12.1] — 2026-10-17
