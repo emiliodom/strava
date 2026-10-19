@@ -140,12 +140,26 @@
     });
   }
 
+  /* Prevención (espalda baja y equilibrio): lunes, miércoles y viernes (espalda), jueves y sábado (equilibrio),
+     y al terminar cada MTB larga. Nunca en días de vuelo. */
+  var DESDE_PREV = '2026-10-19', MTB_LARGAS = { colomba: 1, campana: 1, senderos: 1, xab: 1 };
+  function aplicarPrevencion(dias) {
+    dias.forEach(function (d) {
+      if (d.fecha < DESDE_PREV || d.hito) return;
+      var w = dow(d);
+      if (d.evento && MTB_LARGAS[d.evento]) d.sesion += ' + prevención lumbar 12 min al terminar';
+      else if (!d.evento && (w === 0 || w === 2 || w === 4)) d.sesion += ' + prevención lumbar 12 min';
+      else if (!d.evento && (w === 3 || w === 5)) d.sesion += ' + equilibrio 10 min';
+    });
+  }
+
   Object.keys(P.PLANES).forEach(function (id) {
     var dias = P.PLANES[id].dias;
     extender(id, dias);
     aplicarViaje(id, dias);
     aplicarRacha(dias);
     aplicarExtras(id, dias);
+    aplicarPrevencion(dias);
   });
 
   /* ---------- horario del día (hora local de donde estás) ---------- */

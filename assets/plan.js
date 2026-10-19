@@ -49,7 +49,9 @@
   var RUTINAS = {
     A: { nom: 'pierna y empuje', min: 25, items: ['3 rondas', 'Sentadilla búlgara con mancuerna de 25 lb · 8–10 por pierna', 'Peso muerto rumano a una pierna con kettlebell · 8–10 por lado', 'Flexiones con soportes · 8–15', 'Press de hombros con mancuernas · 8–10'] },
     B: { nom: 'espalda y cadera', min: 25, items: ['3 rondas', 'Dominadas con banda o negativas de 4 s · 3–6', 'Remo inclinado con la barra · 10–12', 'Puente de glúteo con la barra · 12–15', 'Balanceo de kettlebell · 20'] },
-    C: { nom: 'boxeo', min: 20, items: ['5 rounds de 3 min en el saco, 1 min de pausa', '3 × 2 min de cuerda'] }
+    C: { nom: 'boxeo', min: 20, items: ['5 rounds de 3 min en el saco, 1 min de pausa', '3 × 2 min de cuerda'] },
+    P: { nom: 'espalda baja y cadera', min: 12, items: ['2 rondas, sin dolor (una molestia leve está bien; el dolor que sube, no)', 'Gato-camello · 10 lentos', 'Bird-dog con pausa de 5 s · 8 por lado', 'Dead bug · 8 por lado', 'Plancha lateral · 30 s por lado', 'Puente de glúteo con pausa de 3 s · 12', 'Estiramiento del flexor de cadera en rodilla · 45 s por lado'] },
+    E: { nom: 'equilibrio y estabilidad', min: 10, items: ['2 rondas', 'Equilibrio a una pierna con los ojos cerrados · 30 s por lado', 'Bajada lateral de escalón, 3 s · 8 por pierna', 'Caminata lateral con banda · 12 pasos por lado', 'Elevación de talón a una pierna, bajada de 3 s · 12 por pierna', 'Zancada con giro de tronco · 8 por lado'] }
   };
 
   // Fila = [fecha, tipo, descripción, km de carrera, minutos de bici, id de evento]

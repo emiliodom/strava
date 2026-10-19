@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.4] — 2026-10-18
+
+### Añadido
+- **Módulo «Espalda y equilibrio»** (`prevencion.js`, en la página «Cuerpo y ciencia»): qué pasó con el dolor lumbar en la última subida y cómo evitar que se repita (cadencia, cambios de postura, pelvis, ajuste de la bici), prevención y actuación ante **calambres** (fatiga neuromuscular, ritmo, cadencia, sodio, carbohidrato), **equilibrio al subir** (mirada, marcha, posición, presión de llantas, práctica) y señales de alarma para consultar a un profesional.
+- **Dos rutinas nuevas** en `P.RUTINAS`: `P` «espalda baja y cadera» (12 min) y `E` «equilibrio y estabilidad» (10 min).
+- **En el calendario** (`ajuste.js`, desde el 19 oct, los tres planes): prevención lumbar lunes, miércoles y viernes y al terminar cada MTB larga (Colomba, Campanabaj, Entre Senderos, Xab Sibaná); equilibrio jueves y sábado. El detalle del día muestra las rutinas con sus ejercicios.
+- **Xab Sibaná es MTB** (22 nov, 20 km, 800 m D+): rodada suave de 120 min más la milla de la racha.
+
 ## [0.12.3] — 2026-10-18
 
 ### Añadido

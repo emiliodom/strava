@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.12.3** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.12.4** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -40,6 +40,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
 | Preparación | Qué hacer 15, 10 y 5 días antes de cada evento del calendario |
+| Espalda y equilibrio | Dolor lumbar al subir, calambres y pérdida de equilibrio: causas, prevención, señales de alarma y dos rutinas (12 y 10 min) que también están en el calendario |
 | Registro | Registro de comidas con foto hacia un endpoint PHP (ver abajo) |
 | Recursos | Nutrición, recuperación y lecturas con enlaces verificados |
 
@@ -294,7 +295,7 @@ Los tokens están al final de `app.css` (`:root` y `[data-theme=dark]`); cambiar
 | `assets/core.js` | Formato de números, fechas y estadística. |
 | `assets/charts.js` | Gráficas en SVG, sin librerías. |
 | `assets/metrics.js` | El motor: carga, ACWR, monotonía, VDOT, zonas. |
-| `assets/plan.js` | Los tres planes, los tipos de sesión, las rutinas de fuerza y las seis carreras. |
+| `assets/plan.js` | Los tres planes, los tipos de sesión, las rutinas de fuerza, de prevención y las carreras. |
 | `assets/actividad.js` | El detalle de cada actividad por deporte (ritmo e intensidad objetivo), reutilizado en el calendario y en «Lo que te toca hoy». |
 | `assets/modules/*.js` | Un archivo por módulo de la página. |
 | `connector/` | OAuth, descarga, transformación, servidor y despliegue. |

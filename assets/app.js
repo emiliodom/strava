@@ -3,14 +3,14 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'dia', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'preparacion', 'registro', 'recursos'];
+  var ORDEN = ['resumen', 'dia', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'prevencion', 'preparacion', 'registro', 'recursos'];
   // Cada «página» agrupa módulos afines; la URL es #pagina (o #modulo, que abre su página y baja hasta él).
   var PAGINAS = [
     { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia'] },
     { id: 'calendario', nom: 'Calendario', icono: 'p_cal', mods: ['calendario'] },
     { id: 'rendimiento', nom: 'Rendimiento', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
     { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['proyeccion', 'suenos', 'preparacion'] },
-    { id: 'cuerpo', nom: 'Cuerpo y ciencia', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia'] },
+    { id: 'cuerpo', nom: 'Cuerpo y ciencia', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'prevencion'] },
     { id: 'registro', nom: 'Registro', icono: 'p_registro', mods: ['registro', 'recursos'] }
   ];
   var MODELO = null, MODS = {}, PAGINA = null;
