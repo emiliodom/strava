@@ -21,9 +21,9 @@
     { id: 'guatemagica', fecha: '2026-11-21', nombre: 'Guatemágica Nocturna 15K (19:00)', deporte: 'atletismo',
       km: 15, prioridad: 'A', lugar: 'Retalhuleu',
       nota: 'La carrera A del año: exactamente la distancia de tu meta de 15K a 5:00/km. Sale a las 19:00: bici suave de 40 min por la mañana o la tarde (terminada ≥3 h antes), comida principal a las 15:30.' },
-    { id: 'xab', fecha: '2026-11-22', nombre: 'Xab Sibaná (8:00)', deporte: 'trail',
+    { id: 'xab', fecha: '2026-11-22', nombre: 'Xab Sibaná MTB (8:00)', deporte: 'mtb',
       km: 20, prioridad: 'C', lugar: 'Por confirmar', desnivel: 800,
-      nota: '20 km con 800 m D+, apenas 13 horas después de la Guatemágica. Hazla como trote largo de recuperación, sin competir; camina las subidas y baja si algo molesta.' }
+      nota: 'MTB de 20 km con 800 m D+, apenas 13 horas después de la Guatemágica. Rodada suave en Z2, sin competir; camina o baja el ritmo en las subidas y, al terminar, la milla de la racha.' }
   ];
 
   /* ---------- Tipos de sesión ----------
@@ -102,7 +102,7 @@
     ['2026-11-19', 'C', 'C', 6.5, 0, 'sanfelipe'],
     ['2026-11-20', 'D', 'D', 1.6, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'C', 'Xab Sibaná 8:00 · 20 km, 800 m D+ (trote largo de recuperación, sin competir)', 20, 0, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'D', 'D', 1.6, 0, null],
     ['2026-11-24', 'R', 'R', 3, 0, null],
     ['2026-11-25', 'B', '3 km suave AM + bici Z2 PM', 3, 45, null],
@@ -162,7 +162,7 @@
     ['2026-11-19', 'C', 'C', 8, 0, 'sanfelipe'],
     ['2026-11-20', 'R', 'R', 2, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'C', 'Xab Sibaná 8:00 · 20 km, 800 m D+ (trote largo de recuperación, sin competir)', 20, 0, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'R', 'R AM + bici suave PM', 3, 30, null],
     ['2026-11-24', 'E', 'E AM + bici Z2 + fuerza A PM', 6, 40, null],
     ['2026-11-25', 'B', 'Bici fondo + 3 km off-bike (brick)', 3, 120, null],
@@ -224,7 +224,7 @@
     ['2026-11-19', 'C', 'C', 6.5, 0, 'sanfelipe'],
     ['2026-11-20', 'D', 'D', 1.6, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'C', 'Xab Sibaná 8:00 · 20 km, 800 m D+ (trote largo de recuperación, sin competir)', 20, 0, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'D', 'D', 1.6, 0, null],
     ['2026-11-24', 'R', 'R', 3, 0, null],
     ['2026-11-25', 'F', 'FTP suave PM + 3 km (brick)', 3, 60, null],

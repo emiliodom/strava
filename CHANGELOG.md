@@ -6,7 +6,7 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ## [0.12.3] — 2026-10-18
 
 ### Añadido
-- **Calendario de noviembre con las pruebas fuertes**: Campanabaj MTB (8 nov, 30 km, 1.200 m D+), Entre Senderos MTB (15 nov, 50 km, 1.500 m D+), Guatemágica Nocturna 15K (21 nov, 19:00, con bici suave de 40 min por la mañana o la tarde) y **Xab Sibaná** (22 nov, 8:00, 20 km, 800 m D+, como trote largo de recuperación). En Campanabaj y Entre Senderos sólo se añade la milla de la racha.
+- **Calendario de noviembre con las pruebas fuertes**: Campanabaj MTB (8 nov, 30 km, 1.200 m D+), Entre Senderos MTB (15 nov, 50 km, 1.500 m D+), Guatemágica Nocturna 15K (21 nov, 19:00, con bici suave de 40 min por la mañana o la tarde) y **Xab Sibaná MTB** (22 nov, 8:00, 20 km, 800 m D+, rodada suave y la milla de la racha). En Campanabaj y Entre Senderos sólo se añade la milla de la racha.
 - **Calidad obligatoria cada semana** en los tres planes hasta la Guatemágica: dos sesiones por semana (Q, HIIT, sprints o FTP), con activación corta de sprints en la semana de cada prueba y un Q de afinación de 3 × 2 km a ritmo de 15K el 17 nov. El largo de la semana de Entre Senderos se acorta.
 
 ### Cambiado
