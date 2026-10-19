@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.2] — 2026-10-18
+
+### Cambiado
+- **Reajuste tras la ida a Colomba** (lluvia, piernas y espalda cargadas): hoy sólo la milla de la racha (1,6 km); el 19 sigue suave y el 20 es fácil. La calidad vuelve el 21 (HIIT en los tres planes) y el 22 (Q en normal e intermedio); el brutal añade FTP en bici el 24. El 29 pasa a HIIT (normal) o sprints (intermedio y brutal).
+- Colomba en Strava: 14,7 km, 98 min, FC media 144 y máxima 181 (el plan preveía unos 180–210 min).
+
 ## [0.12.1] — 2026-10-17
 
 ### Añadido
