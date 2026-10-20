@@ -24,11 +24,50 @@
   // UA por minuto cuando no hay esfuerzo relativo de Strava (se recalibra con los datos reales)
   var K_DEFECTO = { running: 1.30, mtb: 1.20, ruta: 0.95, fuerza: 0.50, nado: 0.90, otros: 0.35 };
 
+  /* Une los tramos de bici del mismo día: si entre el final de un tramo y el inicio del siguiente pasan 45 min o menos,
+     es una sola salida (Strava la corta cada vez que se pausa el reloj). Suma distancia, tiempo y desnivel, pondera la FC
+     por tiempo en movimiento y conserva el nombre del tramo más largo. */
+  var GAP_UNIR_MIN = 45;
+  function esBici(a) { var g = GRUPO[a.sport_type]; return g === 'ruta' || g === 'mtb'; }
+  function ms(a) { return new Date(String(a.start_local).slice(0, 19) + 'Z').getTime(); }
+  function unirBicis(lista) {
+    var bicis = lista.filter(esBici).sort(function (x, y) { return ms(x) - ms(y); });
+    var otras = lista.filter(function (a) { return !esBici(a); }), grupos = [];
+    bicis.forEach(function (a) {
+      var g = grupos[grupos.length - 1];
+      var ult = g && g[g.length - 1];
+      var mismo = ult && String(ult.start_local).slice(0, 10) === String(a.start_local).slice(0, 10);
+      var gap = mismo ? (ms(a) - (ms(ult) + (ult.elapsed_time || ult.moving_time || 0) * 1000)) / 60000 : Infinity;
+      if (g && mismo && gap <= GAP_UNIR_MIN) g.push(a); else grupos.push([a]);
+    });
+    grupos.forEach(function (g) {
+      if (g.length === 1) { otras.push(g[0]); return; }
+      var sum = function (k) { return g.reduce(function (s, a) { return s + (a[k] || 0); }, 0); };
+      var conHr = g.filter(function (a) { return a.avg_hr; }), tHr = conHr.reduce(function (s, a) { return s + a.moving_time; }, 0);
+      var principal = g.slice().sort(function (x, y) { return y.moving_time - x.moving_time; })[0];
+      var fin = ms(g[g.length - 1]) + (g[g.length - 1].elapsed_time || g[g.length - 1].moving_time || 0) * 1000;
+      var u = {};
+      Object.keys(g[0]).forEach(function (k) { u[k] = g[0][k]; });
+      u.id = g[0].id; u.name = principal.name + ' (' + g.length + ' tramos unidos)'; u.unidas = g.length;
+      u.sport_type = g.some(function (a) { return GRUPO[a.sport_type] === 'mtb'; }) ? principal.sport_type : g[0].sport_type;
+      u.distance = sum('distance'); u.moving_time = sum('moving_time'); u.elapsed_time = (fin - ms(g[0])) / 1000;
+      u.elevation_gain = sum('elevation_gain'); u.calories = sum('calories');
+      u.relative_effort = g.some(function (a) { return a.relative_effort > 0; }) ? sum('relative_effort') : g[0].relative_effort;
+      u.avg_hr = tHr ? conHr.reduce(function (s, a) { return s + a.avg_hr * a.moving_time; }, 0) / tHr : null;
+      u.max_hr = g.reduce(function (m, a) { return Math.max(m, a.max_hr || 0); }, 0) || null;
+      u.max_speed = g.reduce(function (m, a) { return Math.max(m, a.max_speed || 0); }, 0);
+      u.avg_speed = u.moving_time ? u.distance / u.moving_time : 0;
+      u.splits = null;
+      otras.push(u);
+    });
+    return otras;
+  }
+
   function normalizar(raw) {
     var anomalias = {};
     (raw.estadisticas && raw.estadisticas.anomalias_datos || []).forEach(function (a) { anomalias[String(a.id)] = a.detalle; });
 
-    var acts = (raw.actividades || []).map(function (a) {
+    var acts = unirBicis(raw.actividades || []).map(function (a) {
       var g = GRUPO[a.sport_type] || 'otros';
       var min = (a.moving_time || 0) / 60;
       var km = (a.distance || 0) / 1000;

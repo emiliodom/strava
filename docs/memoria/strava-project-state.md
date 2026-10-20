@@ -1,13 +1,13 @@
 ---
 name: strava-project-state
-description: State of the Strava training-analysis site after v0.12.4 (architecture, pages, calendar, tooling, how to verify)
+description: State of the Strava training-analysis site after v0.12.5 (architecture, pages, calendar, tooling, how to verify)
 metadata:
   type: project
 ---
 
 Static, no-build site (Spanish UI) analysing Emilio's Strava data; pushed as v0.11.0 (commit 84d4259, 2026-10-16). README, CHANGELOG and CHEATSHEET are current; read them first.
 
-**Architecture:** `index.html` loads `assets/*.js` (global `App`, ES5 style, modules in `assets/modules/`). `app.js` renders all 14 modules into `<section id>` then routes by hash: 6 pages (hoy, calendario, rendimiento, metas, cuerpo, registro) hide other sections with class `off`; module ids (`#carga`) still work and scroll. `#imprimir` = print-everything mode (used by `connector/pdf.mjs`). Assets carry `?v=0.12.4` in index.html: bump it every release (a stale-cache mix of old/new modules caused "App.hoy.render is not a function").
+**Architecture:** `index.html` loads `assets/*.js` (global `App`, ES5 style, modules in `assets/modules/`). `app.js` renders all 14 modules into `<section id>` then routes by hash: 6 pages (hoy, calendario, rendimiento, metas, cuerpo, registro) hide other sections with class `off`; module ids (`#carga`) still work and scroll. `#imprimir` = print-everything mode (used by `connector/pdf.mjs`). Assets carry `?v=0.12.5` in index.html: bump it every release (a stale-cache mix of old/new modules caused "App.hoy.render is not a function").
 
 **Calendar (`modules/calendario.js`, `icons.js`):** per-day icons, ring of completion on past days (evaluarDia().pct), 3 layouts (cuadricula/compacta/agenda) + 6 data toggles stored in pref `calVista`. Color only on border/icon by 6 families; text always `--ink`.
 
@@ -25,3 +25,5 @@ Static, no-build site (Spanish UI) analysing Emilio's Strava data; pushed as v0.
 **v0.12.3:** en `plan.js` el orden de los arreglos es ESTRUCTURADO, BRUTAL, INTERMEDIO (no el de los nombres de PLANES). Eventos de nov: campana 8 (30 km/1200 m), senderos 15 (50 km/1500 m), guatemagica 21 (19:00, bici suave 40 min), xab 22 (8:00, 20 km/800 m, deporte 'mtb'). Regla: mínimo dos sesiones de calidad por semana hasta la Guatemágica.
 
 **v0.12.4:** módulo `prevencion.js` (página «Cuerpo y ciencia», id `prevencion`, en `ORDEN` y `PAGINAS` de `app.js`) con espalda baja, calambres y equilibrio; rutinas `P.RUTINAS.P` (espalda y cadera) y `.E` (equilibrio). `ajuste.js` → `aplicarPrevencion` añade «+ prevención lumbar 12 min» (lun/mié/vie y al terminar MTB largas: colomba, campana, senderos, xab) y «+ equilibrio 10 min» (jue/sáb) desde 2026-10-19; `actividad.js` pinta los bloques por regex sobre `d.sesion`. Contexto: dolor lumbar en la última subida de Colomba (18 oct). Xab Sibaná (22 nov) es MTB. Si se añade otra MTB larga, ponla en `MTB_LARGAS`.
+
+**v0.12.5:** `metrics.js` → `unirBicis` une tramos de ruta/mtb del mismo día con hueco ≤ 45 min (`GAP_UNIR_MIN`) antes de normalizar; el id es el del primer tramo y `unidas` guarda cuántos eran. Objetivo declarado del usuario para los planes: bajar grasa, más fuerza, equilibrio y core, y varias sesiones de calidad por semana (3 en semanas sin carrera); el orden de los arreglos de `plan.js` sigue siendo estructurado, brutal, intermedio.

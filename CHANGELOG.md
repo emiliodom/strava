@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.5] — 2026-10-19
+
+### Añadido
+- **Tramos de bici unidos** (`metrics.js`, `unirBicis`): los tramos de bici del mismo día con 45 min o menos entre el final de uno y el inicio del siguiente se cuentan como una sola salida (Strava la parte cada vez que se pausa el reloj). Suma distancia, tiempo y desnivel, pondera la FC por el tiempo en movimiento y usa el nombre del tramo más largo con «(N tramos unidos)». Hoy: 4 tramos → una MTB de 20,4 km, 1:17:40 en movimiento, +399 m, FC media 145 y máxima 195, esfuerzo relativo 122.
+- Racha 287/365 (trote de 3 km, FC 128).
+
+### Cambiado
+- **Reacomodo hasta la Guatemágica** para bajar grasa y ganar fuerza, equilibrio y core con varias sesiones de calidad por semana: tres sesiones de calidad en las semanas del 19 y 26 oct (FTP en bici los sábados 24 y 31 oct, lejos del HIIT y del Q) y activación de sprints con fuerza A ligera el 18 nov, para que la semana de la carrera no quede sin fuerza. Se mantienen dos fuerzas por semana, la prevención lumbar/core tres o cuatro veces y el equilibrio dos veces.
+
 ## [0.12.4] — 2026-10-18
 
 ### Añadido
