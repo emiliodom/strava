@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.6] — 2026-10-20
+
+### Añadido
+- **Orden de correr y bici en los días híbridos, con interruptor** (`actividad.js`, `calendario.js`). Propuesta por defecto: si la bici es lo principal (tipos B/F/V/M), primero la bici y luego un trote corto (transición «ladrillo»); si lo principal es correr (calidad, largo, fácil), primero correr y luego bici suave. El botón «Orden en días híbridos» del calendario lo voltea y se guarda en el navegador (`ordenInvertido`). El detalle numera los bloques (1.º / 2.º) con una línea de motivo y la celda corta muestra «A → B».
+- La fuerza se recomienda separada unas 6 h de la calidad (efecto de interferencia).
+
+### Nota
+- El orden propuesto sale de la literatura general (la sesión de calidad con piernas frescas; bici→carrera sólo como habilidad específica de triatlón; sin evidencia clara de que un orden queme más grasa), no de datos individuales.
+
 ## [0.12.5] — 2026-10-19
 
 ### Añadido

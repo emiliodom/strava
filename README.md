@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.12.5** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.12.6** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -41,6 +41,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
 | Preparación | Qué hacer 15, 10 y 5 días antes de cada evento del calendario |
 | Espalda y equilibrio | Dolor lumbar al subir, calambres y pérdida de equilibrio: causas, prevención, señales de alarma y dos rutinas (12 y 10 min) que también están en el calendario |
+| Orden correr/bici | Botón en el calendario que voltea el orden propuesto en los días con correr y bici (bici primero si la bici es lo principal; correr primero en el resto) |
 | Registro | Registro de comidas con foto hacia un endpoint PHP (ver abajo) |
 | Recursos | Nutrición, recuperación y lecturas con enlaces verificados |
 

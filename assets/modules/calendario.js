@@ -704,6 +704,7 @@
           return "<button type='button' data-plan='" + b[0] + "' class='" + (plan === b[0] ? '' : 'secondary outline') + "'>" + esc(b[1]) + '</button>';
         }).join(''))}
       </div>
+      <p class='ordenSel'><button type='button' id='calOrden' class='secondary outline' aria-pressed='${App.data.pref('ordenInvertido', false) ? 'true' : 'false'}' title='Orden en los días con correr y bici'>Orden en días híbridos: ${App.data.pref('ordenInvertido', false) ? 'invertido (voltear a la propuesta)' : 'propuesto (voltear)'}</button></p>
       <p class='lede'>${esc(info.resumen)}</p>
       ${raw(panelAjustes(plan))}
 
@@ -813,6 +814,12 @@
       var b = ev.target.closest('button[data-plan]'); if (!b) return;
       App.data.setPref(CLAVE_PLAN, b.getAttribute('data-plan'));
       App.refrescar ? App.refrescar('calendario') : repintar();
+    });
+
+    root.querySelector('#calOrden').addEventListener('click', function () {
+      App.data.setPref('ordenInvertido', !App.data.pref('ordenInvertido', false));
+      App.refrescar ? App.refrescar('calendario') : repintar();
+      if (App.refrescar) { App.refrescar('resumen'); App.refrescar('hoy'); }
     });
 
     root.querySelector('#calLay').addEventListener('click', function (ev) {

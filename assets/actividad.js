@@ -41,13 +41,28 @@
   function esRun(dia, T) { return dia.km >= 3 || T.deporte === 'run'; }
   function esBici(dia, T) { return dia.minBici > 0 || T.deporte === 'bici'; }
 
+  /* Orden en los días híbridos. Propuesta por defecto: si la bici es lo principal (B/F/V/M), primero la bici y luego un trote corto
+     (transición «ladrillo»); si lo principal es correr (calidad, largo, fácil), primero correr y luego bici suave, así la carrera se hace
+     con piernas frescas. El interruptor «ordenInvertido» lo voltea. Devuelve 'run' o 'bici' (lo que va primero). */
+  var BICI_PRINCIPAL = { B: 1, F: 1, V: 1, M: 1 };
+  function ordenPref() { return !!(App.data && App.data.pref && App.data.pref('ordenInvertido', false)); }
+  function primero(dia, T) {
+    var p = BICI_PRINCIPAL[dia.tipo] ? 'bici' : 'run';
+    if (ordenPref()) p = p === 'run' ? 'bici' : 'run';
+    return p;
+  }
+  function motivo(p, dia) {
+    if (ordenPref()) return 'Orden invertido por ti.';
+    return p === 'bici' ? 'La bici es lo principal; el trote al final entrena la transición.' : 'Correr primero: las piernas frescas protegen la calidad y la técnica.';
+  }
+
   /* Una línea corta para la celda del calendario y para «Lo que te toca hoy». */
   function corto(dia, D) {
     var z = D && D.zonas, T = P.TIPOS[dia.tipo] || {};
     var r = esRun(dia, T), b = esBici(dia, T);
     var sr = r ? (CORTO_RUN[dia.tipo] || CORTO_RUN.E)(z) : '';
     var sb = b ? (CORTO_BICI[dia.tipo] || 'Z2') : '';
-    if (r && b) return sr + ' + ' + sb;   // día híbrido: correr y bici
+    if (r && b) return primero(dia, T) === 'bici' ? sb + ' → ' + sr : sr + ' → ' + sb;   // día híbrido, en orden
     return sr || sb || '';
   }
 
@@ -65,24 +80,28 @@
     if (ev) out += bloque('🏁', ev.nombre,
       ['<b>' + esc(ev.lugar || 'Lugar por confirmar') + '</b> · prioridad ' + esc(ev.prioridad)], null, ev.nota);
 
+    var hib = esRun(dia, T) && esBici(dia, T), ord = hib ? primero(dia, T) : '', bRun = '', bBici = '';
     if (esRun(dia, T)) {
       var r = (RUN[dia.tipo] || RUN.E)(z);
-      out += bloque('🏃', 'Correr — ' + r.nom,
+      bRun = bloque('🏃', (hib ? (ord === 'run' ? '1.º ' : '2.º ') : '') + 'Correr — ' + r.nom,
         ['<b>Ritmo objetivo:</b> ' + esc(r.ritmo)].concat(dia.km >= 1 ? ['<b>Distancia:</b> ' + F.num(dia.km, 1) + ' km'] : []),
         r.est, r.nota);
     }
 
     if (esBici(dia, T)) {
       var b = BICI[dia.tipo] || BICI.B;
-      out += bloque('🚴', 'Bici — ' + b.nom,
+      bBici = bloque('🚴', (hib ? (ord === 'bici' ? '1.º ' : '2.º ') : '') + 'Bici — ' + b.nom,
         ['<b>Intensidad:</b> ' + esc(b.inten)].concat(dia.minBici ? ['<b>Duración:</b> ' + F.num(dia.minBici, 0) + ' min'] : []),
         b.est, b.nota);
     }
 
+    if (hib) out += "<p class='n'><small>" + esc(motivo(ord, dia)) + ' Cambia el orden con el botón «Orden» del calendario.</small></p>';
+    out += ord === 'bici' ? bBici + bRun : bRun + bBici;
+
     var m = /fuerza ([ABC])/.exec(dia.sesion || '');
     if (m) {
       var ru = P.RUTINAS[m[1]];
-      if (ru) out += bloque('💪', 'Fuerza ' + m[1] + ' — ' + ru.nom + ' (' + ru.min + ' min)', [], ru.items, 'En casa, antes o después del rodaje fácil.');
+      if (ru) out += bloque('💪', 'Fuerza ' + m[1] + ' — ' + ru.nom + ' (' + ru.min + ' min)', [], ru.items, 'En casa, separada unas 6 h de la calidad si se puede (efecto de interferencia); si no, después del rodaje fácil.');
     }
 
     if (/prevención lumbar/.test(dia.sesion || '')) out += bloque('🧘', 'Prevención lumbar y cadera (' + P.RUTINAS.P.min + ' min)', [], P.RUTINAS.P.items, 'Protege la espalda en las subidas. Antes o después de la rodada; sin dolor.');

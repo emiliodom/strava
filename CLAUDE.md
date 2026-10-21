@@ -1,6 +1,6 @@
 # Instrucciones para Claude (proyecto strava)
 
-**Lee primero `docs/memoria/MEMORY.md` y los archivos que enlaza**: contienen el estado del proyecto (v0.12.5), la arquitectura,
+**Lee primero `docs/memoria/MEMORY.md` y los archivos que enlaza**: contienen el estado del proyecto (v0.12.6), la arquitectura,
 las trampas de CSS/Pico ya resueltas, las herramientas de verificación (`connector/contraste.mjs`, `pdf.mjs`) y las preferencias del usuario.
 
 Cuenta de Git de este repo: **emiliodom** (comprueba `gh auth status` antes de empujar). Commits y push sólo cuando el usuario lo pida.
