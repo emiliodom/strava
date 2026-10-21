@@ -15,6 +15,15 @@
     return U.modhead('10', 'Espalda, calambres y equilibrio', 'Lo que pasó en la última subida (dolor lumbar), cómo evitar que se repita y cómo prevenir calambres y pérdida de equilibrio en la cuesta. Las rutinas ya están dentro del calendario.') +
       U.note('Honestidad', 'Esto es preparación general, no un diagnóstico. Si el dolor baja con los días, lo normal es una sobrecarga muscular. Pero si se repite pese a todo lo de abajo, se queda más de 1–2 semanas o aparece alguna de las señales de alarma, ve con un fisioterapeuta o médico del deporte: puede mirar en persona tu ajuste de la bici y tu movimiento.', 'warn') +
 
+      U.acc('Golpe fuerte en el pie: qué hacer esta semana', C('Pausar la calidad y proteger el pie',
+        '<p>Un golpe seco contra un bloque (patada) puede ser sólo un moretón, pero en dedos y metatarsos también produce <b>fracturas pequeñas</b> que se pasan por alto. Esto no es un diagnóstico.</p>' +
+        '<ul><li><b>Pide revisión</b> (y radiografía) si hay hinchazón o moretón grande, dolor al tocar el hueso, dedo o pie deformado o que se ve torcido, no puedes dar 4 pasos sin cojear, o hay entumecimiento.</li>' +
+        '<li><b>Primeros días:</b> eleva el pie, hielo 10–15 min varias veces al día, calzado con suela firme o abierto en la zona golpeada. Evita aspirina e ibuprofeno en las primeras 48 h si hay mucho moretón y consulta tu caso.</li>' +
+        '<li><b>Criterio para volver:</b> caminar sin dolor 2 días seguidos, luego trote suave de 2–3 km con dolor menor a 3/10 y sin cojera. Si el dolor sube, vuelve un paso atrás.</li>' +
+        '<li><b>Mientras tanto:</b> milla lenta o caminada (la racha), natación (sin empujar la pared), core y tren superior sin cargar el pie y la prevención lumbar. Nada de sprints, saltos, zancadas ni elevaciones de talón.</li>' +
+        '<li><b>Bici:</b> sólo si pedalear no duele; la zona del golpe presiona el pedal.</li></ul>' +
+        rutina('Z', 'Rutina «core y tren superior sin cargar el pie»')), true) +
+
       U.acc('Señales de alarma: cuándo parar y consultar', C('No lo aguantes',
         '<ul><li>Dolor que baja por la pierna <b>por debajo de la rodilla</b>, hormigueo o entumecimiento en pierna o pie.</li>' +
         '<li>Debilidad al levantar el pie, o entumecimiento en la zona del sillín.</li>' +

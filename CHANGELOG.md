@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.12.7] — 2026-10-21
+
+### Cambiado
+- **Golpe fuerte en el pie (20 oct): se pausa la calidad esta semana** (`ajuste.js`, `aplicarLesion`, en los tres planes). 21–25 oct: milla de la racha lenta o caminada, core y tren superior sin cargar el pie, prevención lumbar y natación opcional; el sábado, prueba del pie (trote de 2 km si hay 2 días sin dolor) y el domingo trote fácil de 3 km sólo si no duele. 26–28 oct: sólo fácil (se quitan HIIT/Q/sprints, FTP y sprints en bici, fuerza A y boxeo). El 29 oct la calidad vuelve sólo con 2 días sin dolor.
+- Datos de Strava al 20 oct: racha 288 (3,17 km, FC 118) y fuerza nocturna de 21 min.
+
+### Añadido
+- Rutina **Z «core y tren superior sin cargar el pie»** (`plan.js`) y su bloque en el detalle del día (`actividad.js`).
+- Sección «Golpe fuerte en el pie» en Espalda y equilibrio: cuándo pedir radiografía, primeros días, criterio para volver. No es un diagnóstico.
+
 ## [0.12.6] — 2026-10-20
 
 ### Añadido

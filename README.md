@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.12.6** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.12.7** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 

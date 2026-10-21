@@ -153,6 +153,35 @@
     });
   }
 
+  /* Golpe en el pie (20 oct): se pausan la calidad y la fuerza que carga el pie. 21–25 oct: milla lenta o caminata, core sin carga y,
+     si no duele, trote corto el fin de semana. 26–28 oct: sólo fácil (la calidad vuelve el 29 si no hay dolor). */
+  var LESION = { desde: '2026-10-21', hasta: '2026-10-25', vuelta: '2026-10-28' };
+  var LESION_TXT = {
+    '2026-10-21': ['Milla de la racha LENTA o caminada (pie golpeado): sin cojear, sin forzar', 'Sin intervalos hoy. Si al apoyar el pie duele o cojeas, camina la milla. Mira las señales de alarma en «Espalda y equilibrio».'],
+    '2026-10-22': ['Milla lenta o caminata + core sin cargar el pie 15 min + prevención lumbar 12 min', null],
+    '2026-10-23': ['Milla lenta o caminata + natación opcional 30 min (sin empujar la pared con el pie) + prevención lumbar 12 min', null],
+    '2026-10-24': ['Prueba del pie: trote suave 2 km si llevas 2 días caminando sin dolor; si no, otra milla lenta + core sin cargar el pie 15 min', 'Si el dolor es mayor a 3/10 o cojeas, para y camina.'],
+    '2026-10-25': ['Trote fácil de 3 km sólo si el pie está sin dolor; si no, la milla lenta', 'Si hay hinchazón, moretón grande o dolor al apoyar, no corras y consulta.']
+  };
+  function aplicarLesion(dias) {
+    dias.forEach(function (d) {
+      if (d.fecha < LESION.desde || d.hito || d.evento) return;
+      if (d.fecha <= LESION.hasta) {
+        var t = LESION_TXT[d.fecha];
+        d.tipo = 'R'; d.minBici = 0; d.km = d.fecha === '2026-10-24' ? 2 : d.fecha === '2026-10-25' ? 3 : 1.6;
+        d.sesion = t[0] + (d.nat && !/natación/.test(t[0]) ? ' + natación opcional ' + d.nat + ' min' : '');
+        if (t[1]) d.recordatorio = t[1];
+        d.lesion = 1;
+      } else if (d.fecha <= LESION.vuelta) {
+        d.sesion = d.sesion.replace(/ [+] fuerza [AC]( PM)?/g, '');   // sin zancadas ni boxeo mientras vuelve el pie
+        if (d.tipo === 'Q' || d.tipo === 'H' || d.tipo === 'S') { d.tipo = 'E'; d.km = 4; d.minBici = 0; d.sesion = 'Fácil 4 km, sin calidad (reintroducción tras el golpe en el pie)'; d.lesion = 1; }
+        else if (d.tipo === 'F' || d.tipo === 'V') { d.tipo = 'B'; d.km = 1.6; d.minBici = 60; d.sesion = 'Bici Z2 suave 60 min, sin esfuerzos de pie (reintroducción) + milla de la racha'; d.lesion = 1; }
+      } else if (d.fecha === '2026-10-29') {
+        d.recordatorio = 'La calidad vuelve sólo si el pie lleva 2 días sin dolor al caminar y al trotar. Si no, haz el fácil y pospón.';
+      }
+    });
+  }
+
   Object.keys(P.PLANES).forEach(function (id) {
     var dias = P.PLANES[id].dias;
     extender(id, dias);
@@ -160,6 +189,7 @@
     aplicarRacha(dias);
     aplicarExtras(id, dias);
     aplicarPrevencion(dias);
+    aplicarLesion(dias);
   });
 
   /* ---------- horario del día (hora local de donde estás) ---------- */
