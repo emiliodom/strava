@@ -142,9 +142,9 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 /* calendario ------------------------------------------------------------
    Color = familia de sesión (borde + icono); el TEXTO siempre va en tinta normal, nunca en color de acento.
    El cumplimiento se lee por forma (✓ · % · ✕) además de por color. */
-.cal,.lgd,.vista,#calDlg,.racha,.hitos{--kv-suave:#0b7a55;--kv-duro:#b3400a;--kv-monte:#6b46c1;--kv-bici:#1d5fbf;--kv-carrera:#c0262d;--kv-libre:#5f6779;
+.cal,.lgd,.vista,#calDlg,.racha,.hitos,.mcal,.mlgd{--kv-suave:#0b7a55;--kv-duro:#b3400a;--kv-monte:#6b46c1;--kv-bici:#1d5fbf;--kv-carrera:#c0262d;--kv-libre:#5f6779;
   --st-ok:#0b7a55;--st-warn:#946200;--st-bad:#c0262d;--track:#e3dcd2}
-[data-theme=dark] .cal,[data-theme=dark] .lgd,[data-theme=dark] .vista,[data-theme=dark] #calDlg,[data-theme=dark] .racha,[data-theme=dark] .hitos{--kv-suave:#34d399;--kv-duro:#ff9a5c;--kv-monte:#b49cff;--kv-bici:#6aa2ff;--kv-carrera:#ff7b7b;--kv-libre:#97a1b6;
+[data-theme=dark] .cal,[data-theme=dark] .lgd,[data-theme=dark] .vista,[data-theme=dark] #calDlg,[data-theme=dark] .racha,[data-theme=dark] .hitos,[data-theme=dark] .mcal,[data-theme=dark] .mlgd{--kv-suave:#34d399;--kv-duro:#ff9a5c;--kv-monte:#b49cff;--kv-bici:#6aa2ff;--kv-carrera:#ff7b7b;--kv-libre:#97a1b6;
   --st-ok:#34d399;--st-warn:#fbb73a;--st-bad:#ff7b7b;--track:#2a3550}
 .f-suave{--k:var(--kv-suave)}.f-duro{--k:var(--kv-duro)}.f-monte{--k:var(--kv-monte)}
 .f-bici{--k:var(--kv-bici)}.f-carrera{--k:var(--kv-carrera)}.f-libre{--k:var(--kv-libre)}
@@ -520,3 +520,36 @@ section{scroll-margin-top:calc(var(--hh,3.6rem) + 3rem)}
 .hito small{font-size:.76rem;line-height:1.35}
 .c.viaje{box-shadow:inset 0 -3px 0 var(--kv-carrera)}
 @media print{.mtabs,#calDlg .x{display:none}.racha,.hito{break-inside:avoid}}
+
+/* ---------- pausa general (lesión): todo en gris, nada se borra ---------- */
+.hero.pausa{--hero-a:#1f232d;--hero-b:#2a2e39;--glow:#4a5262}
+.hero.pausa .hero-k{color:#d3d8e3}
+.hero.pausa .hero-cta{background:#d9deea;color:#1a2233;box-shadow:none}
+.hero.pausa .hero-cta:hover{background:#eef1f7}
+.hero.pausa .hero-chip{background:rgba(255,255,255,.14)}
+.hero .strip .dia.pausa u{color:#d3d8e3}
+.hero .strip .dia.pausa{background:rgba(255,255,255,.06)}
+.vista .c.pausa[role=button]{background-color:color-mix(in srgb,var(--pico-color) 5%,var(--pico-card-background-color));border-style:dashed;border-left-style:solid}
+.c.pausa .p-ses,.c.pausa .p-vol,.c.pausa .fe,.c.pausa .p-rit{color:var(--pico-muted-color)}
+.c.pausa .p-ico{opacity:1}
+.ring.pz{--s:1.55rem;background:none;border:2px dashed var(--kv-libre);color:var(--kv-libre)}
+.ring.pz::before{display:none}
+.ring.pz .ic{width:.8rem;height:.8rem}
+.lgd .ring.pz{--s:1.35rem}
+.v-compacta .c .p-cum .ring.pz{--s:1.3rem}
+.ag .p-cum .ring.pz{--s:1.7rem}
+.hero.pausa .strip .dia.hoy{background:rgba(255,255,255,.12);outline-color:#d3d8e3}
+header.top nav.container{max-width:min(100%,1400px)}
+@media(min-width:900px) and (max-width:1050px){.links a{padding:.3rem .3rem;font-size:.76rem}}
+
+/* Comida: calendario con tope de kcal (menu.js) */
+.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:.25rem;margin-bottom:1rem}
+.mlgd{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0;font-size:.8rem}
+.mh{text-align:center;font-size:.7rem;color:var(--ink)}
+.mc{--k:var(--kv-suave);display:flex;flex-direction:column;gap:.1rem;min-height:3.6rem;padding:.25rem .3rem;border:1px solid var(--pico-muted-border-color);border-left:4px solid var(--k);border-radius:.4rem;font-size:.7rem;line-height:1.15;color:var(--ink);cursor:pointer}
+.mc.ee{--k:var(--kv-bici)}.mc.lg{--k:var(--kv-duro)}
+.mc.e{border:0;cursor:default;min-height:0}
+.mc.sel{border-color:var(--k);outline:2px solid var(--k)}
+.mc[role=button]:focus-visible{outline:2px solid var(--pico-primary);outline-offset:2px}
+.mc small{font-size:.62rem;color:var(--ink)}
+.mlgd .mc{min-height:0;display:inline-block;cursor:default}

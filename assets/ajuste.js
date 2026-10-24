@@ -15,7 +15,7 @@
   var DESDE_EXTRAS = '2026-10-17';        // natación y boxeo se reparten desde esta fecha en adelante
 
   var DUROS = { Q: 1, H: 1, S: 1, T: 1, L: 1, C: 1 };
-  var RE_FZ = /fuerza ([ABC])/i;
+  var RE_FZ = /fuerza ([ABCGU])/i;
 
   /* ---------- 1. extensión del 1 dic al 13 ene (plantilla semanal por plan; lun…dom) ---------- */
   var FACTOR = [1, 1.06, 1.12, 0.8, 1.1, 1.16, 0.8];   // 3 semanas de carga y una de descarga (Navidad)
@@ -182,6 +182,50 @@
     });
   }
 
+  /* PAUSA GENERAL (21 oct 2026): posible fractura de un dedo del pie. NO se borra ni se reescribe nada del plan: cada día desde `desde`
+     lleva `d.pausa = 1` y la portada, el calendario y las proyecciones lo muestran en gris y sin exigencia. Para reanudar, pon `activa: false`
+     (o cambia `desde`/`hasta`). Las rutas de lesión de arriba siguen en el plan, listas para usarse cuando el médico lo autorice. */
+  var PAUSA = { activa: false, desde: '2026-10-21', hasta: '2026-10-21',   // levantada el 22 oct: el pie mejora; sigue RETORNO
+    motivo: 'Posible fractura de un dedo del pie: todo en pausa hasta la radiografía y el visto bueno del médico.' };
+  /* RETORNO (22 oct–4 nov): el pie golpeado mejora (2 km caminando con algo de dolor, la bici sin dolor). Dos semanas iguales en los
+     tres planes: la bici manda (calidad sentado, sin pararse sobre los pedales), la racha se cumple CAMINANDO (1,6–2 km), pesas sin
+     cargar el pie (U) 3×/semana y boxeo sin desplazamiento (G) 2×/semana, un descanso los lunes. El trote vuelve como prueba el 31 oct
+     y el 3 nov sólo con 2 días caminando sin dolor. Fila: [tipo, km a pie, min de bici, sesión, recordatorio]. */
+  var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-04';
+  var RETORNO = {
+    '2026-10-22': ['B', 2, 45, 'Bici Z2 suave 45 min + caminata 2 km + fuerza U PM', null],
+    '2026-10-23': ['R', 2, 0, 'Caminata 2 km + fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', null],
+    '2026-10-24': ['F', 1.6, 75, 'Bici FTP sentado 2 × 12 min (75 min) + caminata 1,6 km + fuerza U PM', 'Toda la calidad sentado: nada de pararse sobre los pedales ni de sprints de pie.'],
+    '2026-10-25': ['B', 1.6, 120, 'Rodada Z2 de 120 min, terreno suave y subidas sentado + caminata 1,6 km + prevención lumbar 12 min al terminar', null],
+    '2026-10-26': ['D', 1.6, 0, 'Descanso: sólo la caminata de la racha 1,6 km + prevención lumbar 12 min', null],
+    '2026-10-27': ['B', 1.6, 60, 'Bici Z2 60 min + caminata 1,6 km + fuerza U PM', null],
+    '2026-10-28': ['F', 1.6, 60, 'Bici calidad: 5 × 4 min fuerte sentado, 3 min suave (60 min) + caminata 1,6 km + fuerza G (boxeo sin desplazamiento)', null],
+    '2026-10-29': ['R', 2.5, 0, 'Caminata 2–3 km a paso vivo (prueba: sin cojear y sin dolor al día siguiente) + prevención lumbar 12 min', 'Anota el dolor de 0 a 10: decide si el sábado hay trote.'],
+    '2026-10-30': ['B', 1.6, 60, 'Bici Z2 60 min + caminata 1,6 km + fuerza U PM', null],
+    '2026-10-31': ['F', 1.6, 75, 'Bici FTP sentado 3 × 10 min (75 min) + prueba de trote 1,6 km muy suave sólo si llevas 2 días caminando sin dolor (si no, caminata) + fuerza U PM', 'Trote sólo con dolor ≤ 2/10 y sin cojear; si sube, camina el resto.'],
+    '2026-11-01': ['B', 1.6, 150, 'MTB Z2 150 min: subidas sentado y bajadas tranquilas (ensayo para Campanabaj) + caminata o trote 1,6 km + prevención lumbar 12 min al terminar', 'Si el pie molesta en lo técnico, baja de la bici y camina ese tramo.'],
+    '2026-11-02': ['D', 1.6, 0, 'Descanso: sólo la caminata o el trote suave de la racha 1,6 km + prevención lumbar 12 min', null],
+    '2026-11-03': ['B', 2, 60, 'Bici Z2 60 min + trote suave 2 km si el sábado fue sin dolor (si no, caminata 2 km) + fuerza U PM', null],
+    '2026-11-04': ['F', 1.6, 60, 'Bici calidad: 6 × 3 min fuerte sentado (60 min) + caminata o trote 1,6 km + fuerza G (boxeo sin desplazamiento)', null]
+  };
+  function aplicarRetorno(dias) {
+    dias.forEach(function (d) {
+      if (d.fecha < RETORNO_DESDE || d.evento) return;
+      if (d.fecha > RETORNO_HASTA) {
+        if (d.fecha === '2026-11-05') d.recordatorio = 'Vuelve la calidad corriendo sólo si los trotes del 31 oct y del 3 nov fueron sin dolor; si no, sigue con bici y caminata y lo reajustamos.';
+        return;
+      }
+      var r = RETORNO[d.fecha]; if (!r) return;
+      d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.recordatorio = [d.hito ? d.recordatorio : null, r[4]].filter(Boolean).join(' · ') || null;
+      d.nat = 0; d.caminar = r[1]; d.retorno = 1; delete d.lesion;
+    });
+  }
+
+  function aplicarPausa(dias) {
+    if (!PAUSA.activa) return;
+    dias.forEach(function (d) { if (d.fecha >= PAUSA.desde && (!PAUSA.hasta || d.fecha <= PAUSA.hasta)) d.pausa = 1; });
+  }
+
   Object.keys(P.PLANES).forEach(function (id) {
     var dias = P.PLANES[id].dias;
     extender(id, dias);
@@ -190,6 +234,8 @@
     aplicarExtras(id, dias);
     aplicarPrevencion(dias);
     aplicarLesion(dias);
+    aplicarRetorno(dias);
+    aplicarPausa(dias);
   });
 
   /* ---------- horario del día (hora local de donde estás) ---------- */
@@ -242,5 +288,5 @@
   /* ---------- racha: número de día ---------- */
   function diaRacha(f) { return Math.round((DT.d(f) - DT.d(RACHA.inicio)) / 864e5) + 1; }
 
-  P.RACHA = RACHA; P.VIAJE = VIAJE; P.horarioDe = horarioDe; P.diaRacha = diaRacha; P.FIN_VERANO = FIN_VERANO; P.FIN_PLAN = FIN_PLAN;
+  P.RACHA = RACHA; P.VIAJE = VIAJE; P.horarioDe = horarioDe; P.diaRacha = diaRacha; P.FIN_VERANO = FIN_VERANO; P.FIN_PLAN = FIN_PLAN; P.PAUSA = PAUSA; P.RETORNO = { desde: RETORNO_DESDE, hasta: RETORNO_HASTA };
 })(this);

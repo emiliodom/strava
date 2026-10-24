@@ -23,7 +23,7 @@
   /* ¿Se cumplió? '✓' todo, '≈' parte, '✗' nada, '·' sin requisitos */
   function cumple(dia, r) {
     var req = [], ok = [];
-    var fz = /fuerza [ABC]/.test(dia.sesion);
+    var fz = /fuerza [ABCGU]/.test(dia.sesion);
     if (dia.km >= 3) { req.push(1); if (r && r.kmRun >= 0.8 * dia.km) ok.push(1); }
     if (dia.minBici >= 30) { req.push(1); if (r && r.bici >= 0.8 * dia.minBici) ok.push(1); }
     if (fz) { req.push(1); if (r && r.fuerza >= 15) ok.push(1); }
@@ -67,7 +67,7 @@
     out.semana = [0, 1, 2, 3, 4, 5, 6].map(function (i) {
       var d = new Date(lun); d.setDate(lun.getDate() + i);
       var iso = isoLocal(d), pd = dias.filter(function (x) { return x.fecha === iso; })[0];
-      var estado = iso < hoyISO ? (pd ? cumple(pd, real(D, iso)) : '·') : iso === hoyISO ? 'hoy' : 'pend';
+      var estado = pd && pd.pausa && iso >= hoyISO ? (iso === hoyISO ? 'hoy' : 'pausa') : iso < hoyISO ? (pd ? cumple(pd, real(D, iso)) : '·') : iso === hoyISO ? 'hoy' : 'pend';
       return { iso: iso, dow: ['D', 'L', 'M', 'X', 'J', 'V', 'S'][d.getDay()], tipo: pd ? pd.tipo : '·', sesion: pd ? pd.sesion : 'sin plan', estado: estado };
     });
 
@@ -92,6 +92,7 @@
     out.tipo = tipo; out.ventana = ventana; out.resumenTxt = partesTxt.join(' + ');
     out.obj = App.actividad ? App.actividad.corto(hoyDia, D) : '';
     out.detalleHtml = App.actividad ? App.actividad.detalle(hoyDia, D) : '';
+    out.pausa = !!hoyDia.pausa;
     out.n = App.cuerpo && App.cuerpo.metaDia ? App.cuerpo.metaDia(pid, hoyDia) : null;
     out.talla = App.cuerpo && App.cuerpo.metaTalla ? App.cuerpo.metaTalla(pid, hoyDia) : null;
     return out;

@@ -22,8 +22,8 @@
       km: 15, prioridad: 'A', lugar: 'Retalhuleu',
       nota: 'La carrera A del año: exactamente la distancia de tu meta de 15K a 5:00/km. Sale a las 19:00: bici suave de 40 min por la mañana o la tarde (terminada ≥3 h antes), comida principal a las 15:30.' },
     { id: 'xab', fecha: '2026-11-22', nombre: 'Xab Sibaná MTB (8:00)', deporte: 'mtb',
-      km: 20, prioridad: 'C', lugar: 'Por confirmar', desnivel: 800,
-      nota: 'MTB de 20 km con 800 m D+, apenas 13 horas después de la Guatemágica. Rodada suave en Z2, sin competir; camina o baja el ritmo en las subidas y, al terminar, la milla de la racha.' }
+      km: 22, prioridad: 'C', lugar: 'Por confirmar', desnivel: 700,
+      nota: 'MTB de 22 km con 700 m D+ (sale más tarde que la otra opción, Dec Santo Tomás: 30 km, 800 m D+, con rifa de una bici), apenas 13 horas después de la Guatemágica. Rodada suave en Z2, sin competir; camina o baja el ritmo en las subidas y, al terminar, la milla de la racha.' }
   ];
 
   /* ---------- Tipos de sesión ----------
@@ -52,6 +52,8 @@
     C: { nom: 'boxeo', min: 20, items: ['5 rounds de 3 min en el saco, 1 min de pausa', '3 × 2 min de cuerda'] },
     P: { nom: 'espalda baja y cadera', min: 12, items: ['2 rondas, sin dolor (una molestia leve está bien; el dolor que sube, no)', 'Gato-camello · 10 lentos', 'Bird-dog con pausa de 5 s · 8 por lado', 'Dead bug · 8 por lado', 'Plancha lateral · 30 s por lado', 'Puente de glúteo con pausa de 3 s · 12', 'Estiramiento del flexor de cadera en rodilla · 45 s por lado'] },
     E: { nom: 'equilibrio y estabilidad', min: 10, items: ['2 rondas', 'Equilibrio a una pierna con los ojos cerrados · 30 s por lado', 'Bajada lateral de escalón, 3 s · 8 por pierna', 'Caminata lateral con banda · 12 pasos por lado', 'Elevación de talón a una pierna, bajada de 3 s · 12 por pierna', 'Zancada con giro de tronco · 8 por lado'] },
+    U: { nom: 'pesas sin cargar el pie', min: 30, items: ['3 rondas; todo sentado, tumbado o de rodillas, con el pie golpeado sin apoyo de puntas', 'Press de pecho en el suelo o en banco con mancuernas · 8–12', 'Remo a una mano con rodilla y mano en el banco · 10 por lado', 'Press de hombros sentado con mancuernas · 8–10', 'Dominadas con banda o negativas de 4 s · 3–6 (bájate sin saltar)', 'Curl de bíceps sentado + extensión de tríceps · 12 + 12', 'Puente de glúteo apoyando talones · 12–15 (sólo si no duele)', 'Plancha con rodillas apoyadas · 30–40 s'] },
+    G: { nom: 'boxeo sin desplazamiento (sólo golpes)', min: 20, items: ['De pie y fijo, peso en el talón y en el pie sano; sin pivotar sobre la punta del pie golpeado, sin cuerda ni saltos', '5 rounds de 2 min al saco o al aire, 1 min de pausa: jab, directo, ganchos y uppercuts con giro de cadera, no de pie', 'Si al girar o al cargar el pie molesta, hazlo sentado en un banco (sólo brazos y tronco)', 'Cierra con 2 × 30 s de golpes rápidos sin potencia'] },
     Z: { nom: 'core y tren superior sin cargar el pie', min: 15, items: ['2 rondas, todo sentado o tumbado; si el pie molesta, sáltalo', 'Plancha sobre los antebrazos con las rodillas apoyadas · 30 s', 'Dead-bug lento · 8 por lado', 'Press de hombros sentado con mancuernas · 10', 'Remo con banda sentado · 12', 'Elevación de piernas tumbado, rodillas flexionadas · 10', 'Plancha lateral sobre la rodilla · 20 s por lado'] }
   };
 
@@ -105,7 +107,7 @@
     ['2026-11-19', 'C', 'C', 6.5, 0, 'sanfelipe'],
     ['2026-11-20', 'D', 'D', 1.6, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (22 km, 700 m D+; alternativa: Dec Santo Tomás 30 km/800 m D+; rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'D', 'D', 1.6, 0, null],
     ['2026-11-24', 'R', 'R', 3, 0, null],
     ['2026-11-25', 'B', '3 km suave AM + bici Z2 PM', 3, 45, null],
@@ -165,7 +167,7 @@
     ['2026-11-19', 'C', 'C', 8, 0, 'sanfelipe'],
     ['2026-11-20', 'R', 'R', 2, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (22 km, 700 m D+; alternativa: Dec Santo Tomás 30 km/800 m D+; rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'R', 'R AM + bici suave PM', 3, 30, null],
     ['2026-11-24', 'E', 'E AM + bici Z2 + fuerza A PM', 6, 40, null],
     ['2026-11-25', 'B', 'Bici fondo + 3 km off-bike (brick)', 3, 120, null],
@@ -227,7 +229,7 @@
     ['2026-11-19', 'C', 'C', 6.5, 0, 'sanfelipe'],
     ['2026-11-20', 'D', 'D', 1.6, 0, null],
     ['2026-11-21', 'C', 'Bici suave 40 min (mañana o tarde, ≥3 h antes) + Guatemágica Nocturna 15K a las 19:00', 15.1, 40, 'guatemagica'],
-    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (20 km, 800 m D+, rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
+    ['2026-11-22', 'B', 'Xab Sibaná MTB 8:00 (22 km, 700 m D+; alternativa: Dec Santo Tomás 30 km/800 m D+; rodada suave tras la Guatemágica) + milla de la racha', 1.6, 120, 'xab'],
     ['2026-11-23', 'D', 'D', 1.6, 0, null],
     ['2026-11-24', 'R', 'R', 3, 0, null],
     ['2026-11-25', 'F', 'FTP suave PM + 3 km (brick)', 3, 60, null],

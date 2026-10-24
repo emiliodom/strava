@@ -3,6 +3,39 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.13.0] — 2026-10-23
+
+### Añadido
+- **Página «Comida»** (`assets/modules/menu.js`, módulo 15): calendario mensual (23 oct–14 ene) de comida guatemalteca con tope diario de kcal (sale de `App.cuerpo.metaDia` del plan activo), porciones por grupo (palmas, tortillas, tazas) y menú de 4 comidas; reglas de cocina (plato servido, cocina cerrada 21:00, sin líquidos con calorías). Del 24 nov al 14 ene (Charlotte) las mismas bases con reglas para porciones de EE. UU. (mitad en la caja antes de empezar, tamaño regular, cocinar 5 de 7 días, una comida libre medida el sábado).
+
+### Cambiado
+- **Xab Sibaná** (22 nov): 22 km / 700 m D+ (antes 20 km / 800 m); se anota la alternativa Dec Santo Tomás (30 km, 800 m D+, rifa de bici). Pendiente: el usuario aún no decide.
+- Versión de los assets a `?v=0.13.0`.
+
+## [0.12.9] — 2026-10-22
+
+### Cambiado
+- **Se levanta la pausa y se reestructuran dos semanas (22 oct–4 nov)** (`ajuste.js`, `RETORNO` + `aplicarRetorno`, iguales en los tres planes): el pie mejora (2 km caminando con algo de dolor; la bici sin dolor).
+  - **La bici manda:** Z2 de 45–150 min y calidad **sentado** (FTP 2 × 12 y 3 × 10 los sábados; 5 × 4 y 6 × 3 los miércoles), nada de pararse sobre los pedales ni sprints de pie. MTB de 150 min el 1 nov como ensayo de Campanabaj.
+  - **La racha se cumple caminando** 1,6–2 km (`d.caminar`); el detalle del día muestra «Caminata de la racha» en vez de un bloque de correr, y el calendario la puntúa como «Caminata (racha)».
+  - **Pesas sin cargar el pie** (rutina nueva **U**, 30 min) 3 veces por semana y **boxeo sin desplazamiento** (rutina nueva **G**, sólo golpes, sin cuerda ni pivotar sobre la punta) 2 veces por semana; descanso los lunes con sólo la caminata.
+  - **Trote como prueba** el 31 oct y el 3 nov, sólo con 2 días caminando sin dolor (dolor ≤ 2/10, sin cojear); el 29 oct, caminata de 2–3 km para decidirlo. Sin natación ni equilibrio a una pierna en estas dos semanas.
+  - Desde el 5 nov vuelve el plan original, con un recordatorio: la calidad corriendo sólo si los trotes de prueba fueron sin dolor.
+- `PAUSA.activa = false` (el código de pausa y la ruta de lesión del 21 oct siguen ahí, sin borrar). Las regex de fuerza aceptan `fuerza U` y `fuerza G` (`actividad.js`, `calendario.js`, `hoy.js`, `replan.js`, `ajuste.js`).
+
+## [0.12.8] — 2026-10-21
+
+### Añadido
+- **Pausa general por posible fractura de un dedo del pie** (`ajuste.js`, constante `PAUSA`; `calendario.js`, `resumen.js`, `hoy.js`, `cuerpo.js`): desde el 21 oct todo el plan queda en pausa **sin borrar ni reescribir nada**; cada día lleva `d.pausa = 1`.
+  - **Portada:** el hero pasa a gris («Pausa · hasta nuevo aviso»), con botón «Qué hacer» (hielo, elevar, radiografía, decisión sobre la racha, enlace a la guía), la tira semanal con ‖ y sin «No la hice». La comida se calcula **sin déficit** mientras sana el hueso.
+  - **Calendario:** banner de pausa, celdas en gris con borde punteado y un anillo de pausa; el detalle de cada día muestra el plan original dentro de un acordeón; la columna de km semanal dice «pausa»; la leyenda incluye «en pausa». Las proyecciones de carga y los km del bloque no cuentan los días en pausa (la carga decae).
+  - **Reanudar:** pon `activa: false` en `PAUSA` (o fija `hasta`); el plan original y la ruta de vuelta del 21–28 oct siguen intactos.
+- **Guía ampliada del dedo roto** (`prevencion.js`, módulo «Pie, espalda y equilibrio»): síntomas de más leve a más serio, cuándo ir hoy a urgencias, dedo gordo frente a dedos pequeños, qué preguntar al médico, **analgésicos de venta libre** (paracetamol primero, ibuprofeno con criterio, combinar, gel de diclofenaco, contraindicaciones, aviso de que el analgésico no es permiso para entrenar), nutrición para el hueso y cómo volver. Información general, no diagnóstico ni receta.
+
+### Cambiado
+- La cabecera usa todo el ancho (la última entrada, «Registro», se recortaba en pantallas de 900–1100 px) y el modal de la portada cierra al seguir un enlace interno.
+- Auditoría de contraste: el degradado del hero se evalúa con las variables del propio hero (el hero en pausa tiene otra paleta). Sigue en verde.
+
 ## [0.12.7] — 2026-10-21
 
 ### Cambiado

@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.12.7** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.13.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -50,7 +50,7 @@ Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
 
 ## Páginas, PDF y contraste
 
-La página se organiza en seis **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…).
+La página se organiza en siete **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Comida · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…).
 
 ```bash
 node connector/pdf.mjs [salida.pdf]   # informe completo en PDF (A4, tema claro, calendario apaisado)
@@ -59,6 +59,10 @@ node connector/contraste.mjs          # auditoría WCAG AA de texto y gráficos,
 
 Ambos usan Chrome sin interfaz (variable `CHROME` si no está en la ruta habitual). El botón «PDF» de la cabecera hace lo mismo desde el navegador.
 Al publicar una versión nueva, cambia `?v=…` de los `<script>`/`<link>` de `index.html` para que ningún navegador mezcle módulos viejos y nuevos.
+
+## Pausa por lesión
+
+`assets/ajuste.js` define `PAUSA` (`activa`, `desde`, `hasta`, `motivo`). Mientras esté activa, los días desde `desde` llevan `d.pausa = 1`: la portada y el calendario se ven en gris, no exigen nada, no cuentan para la carga proyectada y la comida va sin déficit. **No se borra nada del plan**: para reanudar basta `activa: false` (o fijar `hasta`). Tras la pausa del 21 oct, `RETORNO` (22 oct–4 nov) sobrescribe esos días en los tres planes: bici como base, racha caminando, pesas sin cargar el pie (rutina U) y boxeo sin desplazamiento (rutina G).
 
 ## Versionado
 

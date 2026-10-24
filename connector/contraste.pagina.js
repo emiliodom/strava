@@ -18,7 +18,8 @@
   // El «hero» es un degradado oscuro con un resplandor naranja arriba a la derecha. Se calcula el fondo REAL bajo el centro
   // del elemento: base = el más claro de los dos tonos, más el resplandor (38 % en la esquina, 0 a 60 % de la elipse).
   function heroEn(el, hero) {
-    const a = rgba(css('--hero-a')), b = rgba(css('--hero-b')), g = rgba(css('--glow'));
+    const v = (n) => getComputedStyle(hero).getPropertyValue(n).trim();
+    const a = rgba(v('--hero-a')), b = rgba(v('--hero-b')), g = rgba(v('--glow'));
     const base = lum(a) > lum(b) ? a : b;
     const R = hero.getBoundingClientRect(), E = el.getBoundingClientRect();
     const x = E.left + E.width / 2, y = E.top + E.height / 2;

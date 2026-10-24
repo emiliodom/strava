@@ -37,24 +37,26 @@
     return auto;
   }
 
-  function componentesPlan(d) {
+  function componentesPlan(d, conPausa) {
+    if (d.pausa && !conPausa) return [];            // en pausa: el plan sigue ahí, pero no exige nada
     var tipo = TIPOS[d.tipo] || {};
     var ev = d.evento ? EVT[d.evento] : null;
     var corridaBrick = /off-bike|brick/i.test(d.sesion || '');
     var componentes = [];
-    var milla = d.racha && d.km < 3 && tipo.deporte !== 'run';
+    var milla = (d.racha && d.km < 3 && tipo.deporte !== 'run') || d.caminar >= 1;
     if (d.km >= 1 && (d.km >= 3 || milla || tipo.deporte === 'run' || (ev && /trail|atletismo/.test(ev.deporte)))) {
-      var nombreRun = milla ? 'Milla de la racha' : corridaBrick ? 'Correr (brick)' : tipo.nom && tipo.nom !== 'Fácil' ? 'Correr · ' + tipo.nom : 'Correr fácil';
+      var nombreRun = d.caminar ? (/trote/i.test(d.sesion || '') ? 'Caminata o trote (racha)' : 'Caminata (racha)') : milla ? 'Milla de la racha' : corridaBrick ? 'Correr (brick)' : tipo.nom && tipo.nom !== 'Fácil' ? 'Correr · ' + tipo.nom : 'Correr fácil';
       componentes.push({ deporte: 'running', nombre: nombreRun, objetivo: d.km, unidad: 'km' });
     }
     if (d.minBici >= 20) componentes.push({ deporte: 'bici', nombre: 'Bici', objetivo: d.minBici, unidad: 'min' });
-    var fuerza = /fuerza ([ABC])/i.exec(d.sesion || '');
-    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: fuerza[1].toUpperCase() === 'C' ? 'Boxeo' : 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
+    var fuerza = /fuerza ([ABCGU])/i.exec(d.sesion || '');
+    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: /[CG]/.test(fuerza[1].toUpperCase()) ? 'Boxeo' : 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
     if (d.nat) componentes.push({ deporte: 'nado', nombre: 'Natación (opcional)', objetivo: d.nat, unidad: 'min', opcional: true });
     return componentes;
   }
 
   function kmRunPlan(d) {
+    if (d.pausa) return 0;
     return componentesPlan(d).filter(function (c) { return c.deporte === 'running'; })
       .reduce(function (s, c) { return s + c.objetivo; }, 0);
   }
@@ -318,6 +320,7 @@
     return z.facil;
   }
   function cargaDia(d, z, calib) {
+    if (d.pausa) return { min: 0, minRun: 0, kmRun: 0, carga: 0 };   // descanso total: la carga proyectada decae
     var kmRun = kmRunPlan(d);
     var minRun = kmRun > 0 ? kmRun * ritmoDe(d.tipo, z) / 60 : 0;
     var kBici = calib.mtb || 1.5;
@@ -367,7 +370,7 @@
   /* ---------- piezas de una celda ---------- */
   var SPORT_DEP = { run: 'running', bici: 'bici', fuerza: 'fuerza', nado: 'nado' };
   function iconosDe(d, evalDia, puntuado) {
-    var I = App.icons, T = TIPOS[d.tipo] || TIPOS.E, comps = componentesPlan(d), out = [];
+    var I = App.icons, T = TIPOS[d.tipo] || TIPOS.E, comps = componentesPlan(d, true), out = [];
     var estado = {};
     evalDia.componentes.forEach(function (c) { estado[c.deporte] = c.estado; });
     function dep(n) {
@@ -389,7 +392,7 @@
     else if (d.recordatorio) out.push({ n: 'campana', t: d.recordatorio, st: '' });
     return out.slice(0, 5).map(function (x) {
       var txt = { ' st-ok': 'hecho', ' st-parcial': 'parcial', ' st-miss': 'no hecho' }[x.st];
-      return "<span class='ico " + I.TIPO_FAMILIA[d.tipo] + (x.main ? ' mn' : '') + x.st + "' title='" + esc(x.t + (txt ? ' · ' + txt : '')) + "'>" + I.svg(x.n) + '</span>';
+      return "<span class='ico " + (d.pausa ? 'libre' : I.TIPO_FAMILIA[d.tipo]) + (x.main ? ' mn' : '') + x.st + "' title='" + esc(x.t + (txt ? ' · ' + txt : '')) + "'>" + I.svg(x.n) + '</span>';
     }).join('');
   }
   function anillo(pct) {
@@ -421,10 +424,10 @@
     var pasado = !!ultimoDato && k <= ultimoDato;
     var puntuado = evalDia.total > 0 && (pasado || !!d.real);
     var pct = puntuado ? evalDia.pct : null;
-    var fam = I.TIPO_FAMILIA[d.tipo] || 'libre';
-    var aria = F.fechaLarga(k) + ': ' + d.sesion + (puntuado ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte';
+    var fam = d.pausa ? 'libre' : I.TIPO_FAMILIA[d.tipo] || 'libre';
+    var aria = F.fechaLarga(k) + (d.pausa ? ' (en pausa)' : '') + ': ' + d.sesion + (puntuado ? '. ' + evalDia.cumplidas + ' de ' + evalDia.total + ' componentes cumplidos.' : '') + ' Ver detalles de la actividad, por deporte';
     var dia = DT.d(k).getUTCDate();
-    var cls = 'c f-' + fam + (k === hoyIso ? ' hoy' : '') + (puntuado ? ' pas' : '') + (d.viaje ? ' viaje' : '');
+    var cls = 'c f-' + fam + (k === hoyIso ? ' hoy' : '') + (puntuado ? ' pas' : '') + (d.viaje ? ' viaje' : '') + (d.pausa ? ' pausa' : '');
     var tip = esc(t.nom + ' · ' + d.sesion);
     var fecha = agenda ? "<span class='fe'><i>" + F.DOW[DT.dowMon0(DT.d(k))] + '</i><b>' + dia + '</b></span>' : "<b class='fe'>" + dia + '</b>';
     var ico = "<span class='p-ico'>" + iconosDe(d, evalDia, puntuado) + '</span>';
@@ -432,7 +435,7 @@
     var rit = obj ? "<span class='p-rit'>" + esc(obj) + '</span>' : '';
     var evt = ev ? "<span class='p-evt'>" + I.svg('carrera') + esc(ev.nombre) + '</span>' : '';
     var vol = "<span class='p-vol'>" + volumen(d, evalDia, puntuado) + '</span>';
-    var cum = "<span class='p-cum'>" + (puntuado ? anillo(pct) : '') + '</span>';
+    var cum = "<span class='p-cum'>" + (d.pausa ? "<span class='ring pz' role='img' aria-label='En pausa'>" + I.svg('pausa') + '</span>' : puntuado ? anillo(pct) : '') + '</span>';
     var det = puntuado ? "<span class='p-det'>" + detalleComps(evalDia) + '</span>' : '';
     var cuerpo = agenda
       ? fecha + ico + "<span class='ag-tx'>" + ses + evt + rit + det + '</span>' + vol + cum
@@ -451,6 +454,7 @@
         var k = DT.iso(cur), d = idx[k] || null;
         sem.dias.push({ k: k, d: d });
         if (d) {
+          if (d.pausa) sem.pausa = (sem.pausa || 0) + 1;
           sem.plan += kmRunPlan(d);
           var r = realDe(k); if (r && r.km) sem.real += r.km;
         }
@@ -461,6 +465,7 @@
     return out;
   }
   function kmSemana(s) {
+    if (s.pausa && !s.plan) return "<span class='kmw'><b>pausa</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
     return "<span class='kmw'><b>" + F.num(s.plan, 0) + " km</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
   }
   function rejilla(plan, lista, D) {
@@ -480,6 +485,13 @@
     return out + '</div></div>';
   }
 
+  function bannerPausa() {
+    if (!P.PAUSA || !P.PAUSA.activa) return '';
+    return U.note('Entrenamiento en pausa desde el ' + esc(F.fecha(P.PAUSA.desde)),
+      esc(P.PAUSA.motivo) + ' Los días en gris conservan su plan original (nada se borró) pero no exigen nada ni cuentan para la carga proyectada. ' +
+      'Cuando el médico lo autorice, se reanuda: el plan se retoma con la vuelta gradual de la sección «Dedo del pie posiblemente roto» (Cuerpo y ciencia).', 'warn');
+  }
+
   function leyenda() {
     var I = App.icons;
     return "<div class='lgd cal' aria-label='Leyenda'>" +
@@ -487,7 +499,8 @@
       "<span class='sep'></span>" +
       "<span><span class='ring ok' style='--p:100'><b>✓</b></span>hecho (≥ 80 %)</span>" +
       "<span><span class='ring warn' style='--p:55'><b>55</b></span>parcial</span>" +
-      "<span><span class='ring bad' style='--p:0'><b>✕</b></span>no hecho</span></div>";
+      "<span><span class='ring bad' style='--p:0'><b>✕</b></span>no hecho</span>" +
+      (P.PAUSA && P.PAUSA.activa ? "<span><span class='ring pz'>" + I.svg('pausa') + '</span>en pausa</span>' : '') + '</div>';
   }
 
   /* ---------- exportación ---------- */
@@ -699,6 +712,7 @@
 
       ${raw(racha)}
       ${raw(hitos)}
+      ${raw(bannerPausa())}
       <div id='calCtl' role='group' aria-label='Elegir plan'>
         ${raw(BOTONES.map(function (b) {
           return "<button type='button' data-plan='" + b[0] + "' class='" + (plan === b[0] ? '' : 'secondary outline') + "'>" + esc(b[1]) + '</button>';
@@ -866,11 +880,14 @@
       form.nota.value = r.nota || '';
       var bs = form.querySelector('[data-act=saltar]'), pasado = f < isoHoy();
       bs.textContent = estaSaltado(f) ? 'Sí la hice · deshacer' : 'No la hice · reorganizar';
-      bs.hidden = false;
+      bs.hidden = !!d.pausa;                       // en pausa no hay nada que reorganizar
       bs.disabled = pasado && !estaSaltado(f);
       bs.title = bs.disabled ? 'Este día ya pasó: se detecta solo con Strava. Sólo se reorganizan hoy y los días por venir.' : '';
       root.querySelector('#calDlgT').textContent = F.fechaLarga(f);
-      root.querySelector('#calDet').innerHTML = App.actividad.detalle(d, D0);
+      root.querySelector('#calDet').innerHTML = d.pausa
+        ? U.note('Entrenamiento en pausa', esc(P.PAUSA.motivo) + ' Lo de abajo es el plan original, que queda guardado y no se hace hasta nuevo aviso.', 'warn') +
+          '<details class="acc"><summary>Ver el plan original de este día</summary>' + App.actividad.detalle(d, D0) + '</details>'
+        : App.actividad.detalle(d, D0);
       root.querySelector('#calDif').innerHTML = difHtml(d);
       root.querySelector('#calAn').innerHTML = analisisHtml(d);
       root.querySelector('#calHr').innerHTML = horarioHtml(d);

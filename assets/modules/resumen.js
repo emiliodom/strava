@@ -26,7 +26,17 @@
     var fichas = [], modales = [];
 
     /* ---- Hoy ---- */
-    if (H.hoyDia) {
+    var pausa = !!(H.hoyDia && H.hoyDia.pausa), PZ = App.plan.PAUSA || {};
+    if (pausa) {
+      var dp = H.hoyDia;
+      modales.push(plantilla('hoy', 'Entrenamiento en pausa',
+        U.note('El plan está guardado, no borrado', esc(PZ.motivo || '') + ' Se retoma cuando lo autorices.', 'warn') +
+        '<ul><li><b>Hoy:</b> no se entrena. Pie en alto, hielo 10–15 min varias veces al día, calzado de suela firme y apoyar sólo lo que no duela.</li>' +
+        '<li><b>Radiografía:</b> pídela cuanto antes; con un dedo golpeado, hinchado o morado no se «camina» el diagnóstico.</li>' +
+        '<li><b>Racha:</b> la decisión es tuya y del médico; correr con una posible fractura puede desplazarla. Síntomas, analgésicos y cómo volver: <a href="#prevencion">Pie, espalda y equilibrio</a> (Cuerpo y ciencia).</li>' +
+        '<li><b>Comida:</b> sin déficit mientras sana el hueso (la energía baja retrasa la curación) y con la proteína intacta.</li></ul>' +
+        U.acc('Plan original de hoy (en pausa)', U.note(esc(H.tipo.nom || 'Sesión') + ' · ' + esc(App.hoy.fecha(H.hoyISO)), '<b>' + esc(dp.sesion) + '</b>', '') + H.detalleHtml)));
+    } else if (H.hoyDia) {
       var d = H.hoyDia;
       /* la sesión de hoy se pinta en el hero */
       modales.push(plantilla('hoy', 'Lo que te toca hoy',
@@ -53,21 +63,21 @@
     /* ---- Talla ---- */
     if (T) {
       fichas.push(ficha('talla', 'Cintura', F.num(T.cintura, 0) + ' → ' + F.num(T.meta, 0) + ' cm',
-        T.brutal ? 'mantenimiento hasta el 24 nov' : '≈ −' + F.num(T.cm, 1) + ' cm al 15 nov', 'warn'));
+        T.pausa ? 'pausa: sin déficit mientras sana el hueso' : T.brutal ? 'mantenimiento hasta el 24 nov' : '≈ −' + F.num(T.cm, 1) + ' cm al 15 nov', 'warn'));
       modales.push(plantilla('talla', 'Meta de talla: cintura, pecho, costados y panza', T.html));
     }
 
     /* ---- Semana en curso ---- */
     var chipSem = H.semana.map(function (x) {
-      var s = x.estado === 'hoy' ? '●' : x.estado === 'pend' ? '○' : x.estado;
-      var c = x.estado === 'hoy' ? 'hoy' : x.estado === '✓' ? 'ok' : x.estado === '✗' ? 'bad' : x.estado === '≈' ? 'warn' : '';
+      var s = x.estado === 'hoy' ? '●' : x.estado === 'pend' ? '○' : x.estado === 'pausa' ? '‖' : x.estado;
+      var c = x.estado === 'hoy' ? 'hoy' : x.estado === 'pausa' ? 'pausa' : x.estado === '✓' ? 'ok' : x.estado === '✗' ? 'bad' : x.estado === '≈' ? 'warn' : '';
       return "<span class='dia " + c + "' title='" + esc(x.sesion) + "'><b>" + x.dow + '</b><i>' + esc(x.tipo) + '</i><u>' + s + '</u></span>';
     }).join('');
     var pendientes = H.semana.filter(function (x) { return x.estado === 'pend' || x.estado === 'hoy'; }).length;
     /* la tira semanal se pinta dentro del hero */
     modales.push(plantilla('semana', 'Esta semana y los últimos días',
       U.tabla([{ t: 'Día' }, { t: 'Tipo' }, { t: 'Plan' }, { t: '' }], H.semana.map(function (x) {
-        return [esc(App.hoy.fecha(x.iso)), esc(x.tipo), esc(x.sesion), x.estado === 'pend' ? '○' : x.estado === 'hoy' ? '●' : x.estado];
+        return [esc(App.hoy.fecha(x.iso)), esc(x.tipo), esc(x.sesion), x.estado === 'pend' ? '○' : x.estado === 'hoy' ? '●' : x.estado === 'pausa' ? '‖' : x.estado];
       }), { pie: '✓ cumplido · ≈ a medias · ✗ no · ● hoy · ○ pendiente.' }) +
       (H.tablaHtml ? '<h4>Últimos días: plan contra Strava</h4>' + H.tablaHtml : '')));
 
@@ -127,20 +137,20 @@
         "<button type='button' class='secondary outline' data-reset-saltos>Restablecer plan original</button>"));
     }
 
-    var heroHtml = "<div class='hero' data-tipo='" + esc(H.hoyDia ? H.hoyDia.tipo : '-') + "'>" +
+    var heroHtml = "<div class='hero" + (pausa ? ' pausa' : '') + "' data-tipo='" + esc(H.hoyDia ? H.hoyDia.tipo : '-') + "'>" +
       "<div class='hero-top'><span class='hero-fecha'>" + esc(App.hoy.fecha(H.hoyISO)) + "</span>" +
-      (H.hoyDia ? "<span class='hero-chip'>" + esc(H.tipo.nom || 'Sesión') + "</span>" : '') + '</div>' +
-      "<p class='hero-k'>" + (saltadoHoy ? 'Hoy' : 'Hoy toca') + '</p>' +
-      "<h2 class='hero-t'>" + (saltadoHoy ? 'Sesión saltada' : H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
-      "<p class='hero-s'>" + (saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
+      (pausa ? "<span class='hero-chip'>En pausa</span>" : H.hoyDia ? "<span class='hero-chip'>" + esc(H.tipo.nom || 'Sesión') + "</span>" : '') + '</div>' +
+      "<p class='hero-k'>" + (pausa ? 'Hasta nuevo aviso' : saltadoHoy ? 'Hoy' : 'Hoy toca') + '</p>' +
+      "<h2 class='hero-t'>" + (pausa ? 'Pausa' : saltadoHoy ? 'Sesión saltada' : H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
+      "<p class='hero-s'>" + (pausa ? esc(PZ.motivo || '') : saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
         (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
-      "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>Ver sesión ›</button>" +
+      "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>" + (pausa ? 'Qué hacer ›' : 'Ver sesión ›') + "</button>" +
       "<div class='hero-race'><b>" + dias15 + "</b><span>días a la<br>Guatemágica 15K</span></div></div>" +
-      (puedeSaltar || cambios.length ? "<div class='hero-acts'>" +
+      (!pausa && (puedeSaltar || cambios.length) ? "<div class='hero-acts'>" +
         (puedeSaltar ? "<button type='button' class='hero-skip' data-saltar='" + esc(H.hoyISO) + "'>" + (saltadoHoy ? 'Sí la hice · deshacer' : 'No la hice · reorganizar') + '</button>' : '') +
         (cambios.length ? "<button type='button' class='hero-chg' data-modal='ajustes'>Plan reorganizado · " + cambios.length + ' cambios ›</button>' : '') + '</div>' : '') +
       "<button type='button' class='hero-week' data-modal='semana' aria-label='Ver la semana'>" +
-      "<span class='hero-wl'>Esta semana · " + pendientes + " días por delante</span><span class='strip'>" + chipSem + '</span></button>' +
+      "<span class='hero-wl'>Esta semana · " + (pausa ? 'entrenamiento en pausa' : pendientes + ' días por delante') + "</span><span class='strip'>" + chipSem + '</span></button>' +
       '</div>';
 
     return "<div class='port'>" + heroHtml +
@@ -186,7 +196,7 @@
       ['resumen', 'dia', 'calendario', 'cuerpo', 'proyeccion'].forEach(function (id) { App.refrescar(id); });
     });
     dlg.addEventListener('click', function (ev) {
-      if (ev.target === dlg || ev.target.closest('[data-cerrar]')) dlg.close();
+      if (ev.target === dlg || ev.target.closest('[data-cerrar]') || ev.target.closest('a[href^="#"]')) dlg.close();
       if (CE && ev.target.closest('[data-reset-saltos]')) {
         CE.restablecerSaltos(); dlg.close();
         ['resumen', 'dia', 'calendario', 'cuerpo', 'proyeccion'].forEach(function (id) { App.refrescar(id); });

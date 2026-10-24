@@ -128,6 +128,7 @@
     else if (f < '2026-11-21') { def = 300; modo = 'déficit suave (−300)'; }
     else { def = 400; modo = 'déficit moderado (−400)'; }
     if (def && dia.evento) { def = 0; modo = 'día de evento: sin déficit'; }
+    if (dia.pausa) { def = 0; modo = 'pausa por lesión: sin déficit mientras sana el hueso'; }
     var kcal = A.tdee - def, prot = (brutal && def ? 2.2 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
     var carbG = Math.max(120, (kcal - prot * 4 - grasa * 9) / 4);
     var duro = /^(Q|C|L|R|E)$/.test(dia.tipo) && (dia.km >= 12 || dia.minBici >= 90 || dia.evento);
@@ -145,7 +146,7 @@
 
     // Déficit acumulado desde hoy hasta el 15 nov (la semana de carrera no cuenta: sin déficit).
     var d0 = new Date(dia.fecha + 'T12:00:00'), d1 = new Date('2026-11-15T12:00:00');
-    var diasDef = brutal ? 0 : Math.max(0, Math.round((d1 - d0) / 864e5) + 1);
+    var diasDef = (brutal || dia.pausa) ? 0 : Math.max(0, Math.round((d1 - d0) / 864e5) + 1);
     var kgCarrera = diasDef * 300 / 7700, cmCarrera = kgCarrera / 1.2;       // ~1 cm de cintura por cada 1,2 kg: orientativo
     var semPost = Math.ceil(Math.max(0, A.kg - kgCarrera - metaKg) / (defPost * 7 / 7700));
     var cinturaHoy = A.cintura;
@@ -153,7 +154,7 @@
     var duro = n && /día largo/.test(n.carbTxt), fuerza = /fuerza/i.test(dia.sesion), descanso = dia.tipo === 'D';
     var kpis = U.kpis([
       U.kpi('Cintura', F.num(cinturaHoy, 0) + ' cm', 'meta: ' + F.num(cinturaMeta, 0) + ' cm (' + F.num(cinturaHoy - cinturaMeta, 0) + ' menos)'),
-      U.kpi('Hasta el 15 nov', brutal ? 'mantenimiento' : '≈ −' + F.num(cmCarrera, 1) + ' cm', brutal ? 'el déficit empieza el 24 nov' : '≈ −' + F.num(kgCarrera, 1) + ' kg con −300 kcal'),
+      U.kpi('Hasta el 15 nov', dia.pausa ? 'en pausa' : brutal ? 'mantenimiento' : '≈ −' + F.num(cmCarrera, 1) + ' cm', dia.pausa ? 'sin déficit mientras sana el hueso' : brutal ? 'el déficit empieza el 24 nov' : '≈ −' + F.num(kgCarrera, 1) + ' kg con −300 kcal'),
       U.kpi('Después de la carrera', semPost + ' sem', 'a ' + F.num(metaKg, 0) + ' kg con −' + defPost + ' kcal')
     ], 'k3');
 
@@ -180,7 +181,7 @@
       '</ul>' +
       '<p><small>Meta de proteína: ' + (n ? F.num(n.prot, 0) + ' g (4 tomas de ' + F.num(n.prot / 4, 0) + ' g)' : '1,8 g/kg') + '. Regla 80/20: 5 de cada 6 comidas así y 1 «de las que te gustan», con porción medida.</small></p>';
 
-    return { cintura: cinturaHoy, meta: cinturaMeta, cm: cmCarrera, kg: kgCarrera, semPost: semPost, metaKg: metaKg, defPost: defPost, brutal: brutal,
+    return { cintura: cinturaHoy, meta: cinturaMeta, cm: cmCarrera, kg: kgCarrera, semPost: semPost, metaKg: metaKg, defPost: defPost, brutal: brutal, pausa: !!dia.pausa,
       html: kpis + verdad +
       '<h4>Qué evitar</h4>' + evitar + '<h4>Qué comer hoy (nutrición guatemalteca)</h4>' + menu +
       '<p><small>Estimación orientativa (±1 cm): ~1 cm de cintura por cada 1,2 kg de peso. Mide la cintura a la altura del ombligo, exhalando.</small></p>' };

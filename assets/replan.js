@@ -20,7 +20,7 @@
   var SUAVES = { E: 1, R: 1, D: 1 };
   var VENTANA = 4;
   var DOW = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-  var RE_FUERZA = /fuerza ([ABC])/i;
+  var RE_FUERZA = /fuerza ([ABCGU])/i;
 
   function iso(d) {
     var m = d.getMonth() + 1, dd = d.getDate();
@@ -142,7 +142,7 @@
       d.sesionOriginal = sesion; d.tipoOriginal = tipo;
       if (hecho) {
         d.km = kmHecho; d.minBici = biciHecha;
-        d.sesion = sesion.replace(/\s*\+\s*fuerza [ABC](\s*PM)?/i, '') + ' (parcial)';
+        d.sesion = sesion.replace(/\s*\+\s*fuerza [ABCGU](\s*PM)?/i, '') + ' (parcial)';
       } else {
         d.tipo = 'R'; d.km = 1.6; d.minBici = 0; d.sesion = 'Saltada: ' + sesion + ' · sólo la milla de la racha';
       }

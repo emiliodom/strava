@@ -16,6 +16,7 @@
     suave: "<path d='M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z'/>",
     medidor: "<path d='M4 17a8 8 0 1 1 16 0M12 17l4-5'/>",
     tempo: "<circle cx='12' cy='13' r='7.5'/><path d='M12 9v4l3 2M9.5 3h5'/>",
+    pausa: "<circle cx='12' cy='12' r='9'/><path d='M10 8.5v7M14 8.5v7'/>",
     hecho: "<circle cx='12' cy='12' r='9'/><path d='M8 12.5l3 3 5-6'/>",
     parcial: "<circle cx='12' cy='12' r='9'/><path d='M12 3a9 9 0 0 1 0 18z' fill='currentColor'/>",
     falla: "<circle cx='12' cy='12' r='9'/><path d='M9 9l6 6M15 9l-6 6'/>",
@@ -30,6 +31,7 @@
     p_cal: "<path d='M3 9h18M7 3v4M17 3v4M4 5h16v16H4z'/>",
     p_rend: "<path d='M4 20V10M10 20V4M16 20v-8M22 20H2'/>",
     p_metas: "<circle cx='12' cy='12' r='9'/><circle cx='12' cy='12' r='5'/><circle cx='12' cy='12' r='1.2'/>",
+    p_comida: "<path d='M4 11h16a8 8 0 0 1-16 0zM12 3v4M8 5v2M16 5v2'/>",
     p_cuerpo: "<circle cx='12' cy='5' r='2'/><path d='M12 8v7M8 10l4-2 4 2M9 21l3-6 3 6'/>",
     p_registro: "<path d='M6 3h12v18H6zM9 8h6M9 12h6M9 16h4'/>"
   };

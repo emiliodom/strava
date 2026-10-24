@@ -38,7 +38,7 @@
   };
   var CORTO_BICI = { B: 'Z2', F: 'FTP', V: 'sprints', M: 'montaña' };
 
-  function esRun(dia, T) { return dia.km >= 3 || T.deporte === 'run'; }
+  function esRun(dia, T) { return !dia.caminar && (dia.km >= 3 || T.deporte === 'run'); }
   function esBici(dia, T) { return dia.minBici > 0 || T.deporte === 'bici'; }
 
   /* Orden en los días híbridos. Propuesta por defecto: si la bici es lo principal (B/F/V/M), primero la bici y luego un trote corto
@@ -98,7 +98,7 @@
     if (hib) out += "<p class='n'><small>" + esc(motivo(ord, dia)) + ' Cambia el orden con el botón «Orden» del calendario.</small></p>';
     out += ord === 'bici' ? bBici + bRun : bRun + bBici;
 
-    var m = /fuerza ([ABC])/.exec(dia.sesion || '');
+    var m = /fuerza ([ABCGU])/.exec(dia.sesion || '');
     if (m) {
       var ru = P.RUTINAS[m[1]];
       if (ru) out += bloque('💪', 'Fuerza ' + m[1] + ' — ' + ru.nom + ' (' + ru.min + ' min)', [], ru.items, 'En casa, separada unas 6 h de la calidad si se puede (efecto de interferencia); si no, después del rodaje fácil.');
@@ -108,7 +108,9 @@
     if (/prevención lumbar/.test(dia.sesion || '')) out += bloque('🧘', 'Prevención lumbar y cadera (' + P.RUTINAS.P.min + ' min)', [], P.RUTINAS.P.items, 'Protege la espalda en las subidas. Antes o después de la rodada; sin dolor.');
     if (/equilibrio \d/.test(dia.sesion || '')) out += bloque('⚖️', 'Equilibrio y estabilidad (' + P.RUTINAS.E.min + ' min)', [], P.RUTINAS.E.items, 'Piernas y cadera estables para no perder tracción en la cuesta. En casa, sin pesas.');
     if (dia.nat) out += bloque('🏊', 'Natación (opcional) — ' + dia.nat + ' min', ['Una vez por semana, sin penalización si no se hace.'], ['Calienta 100 m suaves.', 'Series cómodas a RPE 4–5 con 20 s de pausa.', 'Cierra con 100 m de espalda.'], 'Descarga las piernas: ideal el día siguiente a la calidad.');
-    if (dia.racha && dia.km < 3 && T.deporte !== 'run') out += bloque('🔥', 'La milla de la racha', ['<b>Mínimo del día:</b> 1,6 km (1 milla) a ritmo cómodo.'], null, 'No hay día sin correr: esto protege la racha hasta el 6 de enero.');
+    if (dia.caminar) out += bloque('🚶', 'Caminata de la racha — ' + F.num(dia.caminar, 1) + ' km', ['<b>Ritmo:</b> paso cómodo, sin cojear; calzado de suela firme.'],
+      ['Si el día dice «trote», sólo con dolor ≤ 2/10 y sin cojear; si sube, camina el resto.', 'Regístrala en Strava como siempre: cuenta para la racha.'], 'El pie manda: si hoy duele más que ayer, camina menos y avisa.');
+    else if (dia.racha && dia.km < 3 && T.deporte !== 'run') out += bloque('🔥', 'La milla de la racha', ['<b>Mínimo del día:</b> 1,6 km (1 milla) a ritmo cómodo.'], null, 'No hay día sin correr: esto protege la racha hasta el 6 de enero.');
     if (dia.lugar) out += bloque('📍', 'Dónde', [esc(dia.lugar)], null, null);
     if (dia.recordatorio) out += bloque('⏰', 'Recordatorio', [esc(dia.recordatorio)], null, null);
 
