@@ -154,6 +154,52 @@
     if (m.montar) m.montar(el, MODELO);
   };
 
+  /* ---------- auto-actualización ----------
+     Cada 10 min (y al volver a la pestaña tras 2 min) mira si cambió el JSON de datos o index.html (una versión nueva del código).
+     Si cambió, recarga la página; si hay un diálogo abierto o se está imprimiendo, espera al siguiente intento para no perder lo que escribes.
+     Sólo con servidor (http/https). Se apaga con la casilla del pie (pref autoActualizar). */
+  var AUTO_MS = 10 * 60 * 1000, AUTO_VUELTA_MS = 2 * 60 * 1000, huellas = {}, ultimoAuto = Date.now();
+  function huella(url) {
+    return fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now(), { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+      var h = r.headers.get('etag') || r.headers.get('last-modified') || r.headers.get('content-length');
+      if (h) return h;
+      return fetch(url, { cache: 'no-store' }).then(function (g) { return g.text(); }).then(function (t) { return t.length + ':' + t.slice(-40); });
+    });
+  }
+  function comprobarActualizacion() {
+    ultimoAuto = Date.now();
+    if (!App.data.pref('autoActualizar', true) || location.protocol === 'file:') return;
+    var urls = [App.data.RUTA, location.pathname.split('/').pop() || 'index.html'];
+    Promise.all(urls.map(function (u) { return huella(u).catch(function () { return null; }); })).then(function (hs) {
+      var cambio = false;
+      hs.forEach(function (h, i) {
+        if (h == null) return;
+        if (huellas[urls[i]] != null && huellas[urls[i]] !== h) cambio = true;
+        huellas[urls[i]] = h;
+      });
+      if (!cambio) return;
+      if (document.querySelector('dialog[open]') || document.body.classList.contains('imprimir-todo')) { huellas = {}; return; }
+      location.reload();
+    });
+  }
+  App.comprobarActualizacion = function () { return comprobarActualizacion(); };
+  function iniciarAutoActualizacion() {
+    if (location.protocol === 'file:') return;
+    comprobarActualizacion();
+    global.setInterval(comprobarActualizacion, AUTO_MS);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && Date.now() - ultimoAuto > AUTO_VUELTA_MS) comprobarActualizacion();
+    });
+    var pie = $('#pie');
+    if (pie) {
+      var lab = document.createElement('label'); lab.className = 'autoAct';
+      lab.innerHTML = "<input type='checkbox' id='autoAct'> Actualizar sola cada 10 min";
+      pie.parentNode.insertBefore(lab, pie.nextSibling);
+      var c = lab.querySelector('input'); c.checked = !!App.data.pref('autoActualizar', true);
+      c.addEventListener('change', function () { App.data.setPref('autoActualizar', c.checked); if (c.checked) comprobarActualizacion(); });
+    }
+  }
+
   /* ---------- arranque ---------- */
   function arrancar() {
     iniciarTema();
@@ -177,6 +223,7 @@
         ' · ' + MODELO.acts.length + ' actividades · ' +
         (MODELO.acts.length - MODELO.limpias.length) + ' descartadas. ' +
         'Para actualizar: <code>node connector/sync.mjs &amp;&amp; node connector/build.mjs</code>.';
+      iniciarAutoActualizacion();
       if (location.hash === '#imprimir') { document.body.classList.add('imprimir-todo'); prepararImpresion(); }
       else if (location.hash) mostrar(location.hash);
     }).catch(function (err) {

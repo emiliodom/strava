@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.13.1] — 2026-10-26
+
+### Cambiado
+- **Retorno ajustado al pie real** (`ajuste.js`, tabla `RETORNO`, ahora 22 oct–7 nov, igual en los tres planes): el pie permite bici sin dolor fuerte y trote suave (~9:00/km, dolor máx. 3/10), así que la racha vuelve a ser trote (fila con marca de trote, `caminar = 0`) y se retoma la calidad en bici de pie o sentado.
+- **Agenda realista**: Strava del 22–25 oct muestra sólo la milla de la racha (ninguna bici ni pesas de las planeadas) y hoy aparece por primera vez una salida de mañana (MTB 66 min, 6:58). Cada día ahora tiene como mucho dos citas con hora: **AM 5:30–6:00** (bici, la única sesión principal) y **PM 18:30** (trote de la racha seguido de las pesas U o el boxeo G, en el mismo rato). Calidad en bici martes, jueves y sábado; MTB larga el domingo 1 nov (ensayo de Campanabaj); descanso el lunes 2 nov; activación el 5 nov y descarga el 6–7 nov.
+- Datos de Strava al 26 oct: racha 293, MTB 13,9 km, 66 min, +206 m, FC 138 (máx. 179).
+
+### Añadido
+- **Auto-actualización** (`app.js`): cada 10 min y al volver a la pestaña (tras 2 min) compara la huella (ETag, fecha o tamaño) de `ano2026_datos.min.json` e `index.html`; si cambió, recarga la página para traer los datos y el código nuevos. No recarga con un diálogo abierto ni al imprimir, y no corre desde `file://`. Se apaga con la casilla del pie (pref `autoActualizar`).
+
 ## [0.13.0] — 2026-10-23
 
 ### Añadido

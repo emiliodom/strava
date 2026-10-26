@@ -191,33 +191,36 @@
      tres planes: la bici manda (calidad sentado, sin pararse sobre los pedales), la racha se cumple CAMINANDO (1,6–2 km), pesas sin
      cargar el pie (U) 3×/semana y boxeo sin desplazamiento (G) 2×/semana, un descanso los lunes. El trote vuelve como prueba el 31 oct
      y el 3 nov sólo con 2 días caminando sin dolor. Fila: [tipo, km a pie, min de bici, sesión, recordatorio]. */
-  var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-04';
+  var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-07';
   var RETORNO = {
     '2026-10-22': ['B', 2, 45, 'Bici Z2 suave 45 min + caminata 2 km + fuerza U PM', null],
     '2026-10-23': ['R', 2, 0, 'Caminata 2 km + fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', null],
     '2026-10-24': ['F', 1.6, 75, 'Bici FTP sentado 2 × 12 min (75 min) + caminata 1,6 km + fuerza U PM', 'Toda la calidad sentado: nada de pararse sobre los pedales ni de sprints de pie.'],
     '2026-10-25': ['B', 1.6, 120, 'Rodada Z2 de 120 min, terreno suave y subidas sentado + caminata 1,6 km + prevención lumbar 12 min al terminar', null],
-    '2026-10-26': ['D', 1.6, 0, 'Descanso: sólo la caminata de la racha 1,6 km + prevención lumbar 12 min', null],
-    '2026-10-27': ['B', 1.6, 60, 'Bici Z2 60 min + caminata 1,6 km + fuerza U PM', null],
-    '2026-10-28': ['F', 1.6, 60, 'Bici calidad: 5 × 4 min fuerte sentado, 3 min suave (60 min) + caminata 1,6 km + fuerza G (boxeo sin desplazamiento)', null],
-    '2026-10-29': ['R', 2.5, 0, 'Caminata 2–3 km a paso vivo (prueba: sin cojear y sin dolor al día siguiente) + prevención lumbar 12 min', 'Anota el dolor de 0 a 10: decide si el sábado hay trote.'],
-    '2026-10-30': ['B', 1.6, 60, 'Bici Z2 60 min + caminata 1,6 km + fuerza U PM', null],
-    '2026-10-31': ['F', 1.6, 75, 'Bici FTP sentado 3 × 10 min (75 min) + prueba de trote 1,6 km muy suave sólo si llevas 2 días caminando sin dolor (si no, caminata) + fuerza U PM', 'Trote sólo con dolor ≤ 2/10 y sin cojear; si sube, camina el resto.'],
-    '2026-11-01': ['B', 1.6, 150, 'MTB Z2 150 min: subidas sentado y bajadas tranquilas (ensayo para Campanabaj) + caminata o trote 1,6 km + prevención lumbar 12 min al terminar', 'Si el pie molesta en lo técnico, baja de la bici y camina ese tramo.'],
-    '2026-11-02': ['D', 1.6, 0, 'Descanso: sólo la caminata o el trote suave de la racha 1,6 km + prevención lumbar 12 min', null],
-    '2026-11-03': ['B', 2, 60, 'Bici Z2 60 min + trote suave 2 km si el sábado fue sin dolor (si no, caminata 2 km) + fuerza U PM', null],
-    '2026-11-04': ['F', 1.6, 60, 'Bici calidad: 6 × 3 min fuerte sentado (60 min) + caminata o trote 1,6 km + fuerza G (boxeo sin desplazamiento)', null]
+    '2026-10-26': ['B', 1.6, 66, 'AM: MTB suave 66 min (hecha) + PM 18:30: trote de la racha 1,6 km a ~9:00/km (dolor máx. 3/10) + prevención lumbar 12 min', 'Primer trote con el pie: si al día siguiente no hay más dolor, mañana se repite.', 1],
+    '2026-10-27': ['F', 1.6, 60, 'AM 6:00: bici calidad 5 × 4 min fuerte (60 min), puedes pararte sobre los pedales si no duele + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'Sólo dos citas hoy: la bici de la mañana y el trote + pesas de la noche, todo seguido.', 1],
+    '2026-10-28': ['B', 1.6, 60, 'AM 6:00: bici Z2 60 min + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
+    '2026-10-29': ['F', 1.6, 60, 'AM 6:00: bici calidad 6 × 3 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', null, 1],
+    '2026-10-30': ['R', 3, 0, 'AM 6:00: trote suave 3 km a ~9:00/km (prueba, dolor máx. 3/10) + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Anota el dolor de 0 a 10 al terminar y a la mañana siguiente: decide si el sábado hay calidad de pie.', 1],
+    '2026-10-31': ['F', 1.6, 75, 'AM 5:30: bici FTP 3 × 10 min (75 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'Hoy termina el horario de verano de Utah: desde mañana tu jornada va una hora más tarde.', 1],
+    '2026-11-01': ['B', 1.6, 150, 'AM 5:30: MTB Z2 150 min, subidas sentado y bajadas tranquilas (ensayo para Campanabaj) + trote o caminata de la racha 1,6 km + prevención lumbar 12 min al terminar', 'Si el pie molesta en lo técnico, baja a 90 min. Con el cambio de hora tienes la mañana hasta las 7:30.', 1],
+    '2026-11-02': ['D', 1.6, 0, 'Descanso: sólo el trote suave de la racha 1,6 km + prevención lumbar 12 min', null, 1],
+    '2026-11-03': ['F', 1.6, 60, 'AM 5:30: bici calidad 6 × 3 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', null, 1],
+    '2026-11-04': ['E', 4, 0, 'AM 5:30: trote fácil 4 km a ~9:00/km + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Si los trotes del 30 oct y de hoy fueron sin dolor, la calidad corriendo vuelve después de Campanabaj.', 1],
+    '2026-11-05': ['B', 1.6, 45, 'AM 5:30: bici activación 45 min con 4 × 1 min fuerte (3 días antes de Campanabaj) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
+    '2026-11-06': ['R', 2, 0, 'Trote suave 2 km (racha) + prevención lumbar 12 min; revisa la bici, llantas y comida de la carrera', 'Víspera de la víspera: nada duro, duerme bien.', 1],
+    '2026-11-07': ['B', 1.6, 30, 'Bici suave 30 min (soltar las piernas) + trote de la racha 1,6 km + prepara la mochila', 'Mañana Campanabaj: sal con luz y con el pie vendado o con calzado rígido si te lo indicó el médico.', 1]
   };
   function aplicarRetorno(dias) {
     dias.forEach(function (d) {
       if (d.fecha < RETORNO_DESDE || d.evento) return;
       if (d.fecha > RETORNO_HASTA) {
-        if (d.fecha === '2026-11-05') d.recordatorio = 'Vuelve la calidad corriendo sólo si los trotes del 31 oct y del 3 nov fueron sin dolor; si no, sigue con bici y caminata y lo reajustamos.';
+        if (d.fecha === '2026-11-09') d.recordatorio = 'Vuelve la calidad corriendo sólo si los trotes de la semana pasada fueron sin dolor; si no, sigue con bici y lo reajustamos.';
         return;
       }
       var r = RETORNO[d.fecha]; if (!r) return;
       d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.recordatorio = [d.hito ? d.recordatorio : null, r[4]].filter(Boolean).join(' · ') || null;
-      d.nat = 0; d.caminar = r[1]; d.retorno = 1; delete d.lesion;
+      d.nat = 0; d.caminar = r[5] ? 0 : r[1]; d.retorno = 1; delete d.lesion;
     });
   }
 
