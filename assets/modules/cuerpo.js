@@ -45,7 +45,7 @@
     var cinturaCm = A.cintura;                               // body360.py ya convierte pulgadas a cm
 
     var rutas = [
-      { n: 'Camino normal', ini: hoy, def: 400, pre: 300, prot: 1.8, nota: 'Déficit moderado; sostenible durante meses sin dañar el rendimiento.' },
+      { n: 'Camino normal', ini: hoy, def: 400, pre: 500, prot: 2.0, nota: 'Déficit moderado; sostenible durante meses sin dañar el rendimiento.' },
       { n: 'Camino brutal', ini: new Date(carrera.getTime() + 3 * 864e5), def: 750, prot: 2.2, nota: 'Cerca del 1 % del peso por semana: el tope razonable. Dos días de mantenimiento y fecha de fin fija.' }
     ].map(function (r) {
       var porSem = r.def * 7 / 7700, sem = Math.ceil((A.kg - meta) / porSem);
@@ -85,7 +85,7 @@
       U.tabla([{ t: 'Ruta' }, { t: 'Comer', n: 1 }, { t: 'Proteína', n: 1 }, { t: 'Por semana', n: 1 }, { t: 'Llegas a ' + F.num(meta, 0) + ' kg' }, { t: 'Cómo' }], rutas,
         { pie: 'Gasto estimado ' + F.num(A.tdee, 0) + ' kcal/día (Mifflin–St Jeor ×1,55); 7.700 kcal ≈ 1 kg de grasa. Con 17 % de grasa pesarías ' + F.num(meta, 1) + ' kg y con 15 %, ' + F.num(meta15, 1) + ' kg.' }) +
       U.note('Faltan ' + diasCarrera + ' días para la Guatemágica',
-        'Hasta el 21 de noviembre, <b>sólo el camino normal</b> y con no más de −300 kcal: un déficit fuerte justo antes de tu carrera principal baja la calidad de los entrenos clave y sube el riesgo de lesión. ' +
+        'Hasta el 21 de noviembre, <b>sólo el camino normal</b> y con −500 kcal como máximo (cintura primero; el brutal de −750 espera a la carrera): un déficit fuerte justo antes de tu carrera principal baja la calidad de los entrenos clave y sube el riesgo de lesión. ' +
         'El camino brutal empieza el lunes siguiente a la carrera. En ambos, sin déficit la semana de carrera ni los dos días después.', 'warn') +
 
       U.acc('Comer bien en Guatemala', U.coach('El plato base',
@@ -125,11 +125,11 @@
     if (f >= '2026-11-16' && f <= '2026-11-23') { def = 0; modo = 'semana de carrera: sin déficit'; }
     else if (brutal && f < '2026-11-24') { def = 0; modo = 'mantenimiento hasta la carrera'; }
     else if (brutal) { def = 750; modo = 'déficit brutal'; }
-    else if (f < '2026-11-21') { def = 300; modo = 'déficit suave (−300)'; }
+    else if (f < '2026-11-21') { def = 500; modo = 'déficit para la cintura (−500)'; }
     else { def = 400; modo = 'déficit moderado (−400)'; }
     if (def && dia.evento) { def = 0; modo = 'día de evento: sin déficit'; }
     if (dia.pausa) { def = 0; modo = 'pausa por lesión: sin déficit mientras sana el hueso'; }
-    var kcal = A.tdee - def, prot = (brutal && def ? 2.2 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
+    var kcal = A.tdee - def, prot = (brutal && def ? 2.2 : def >= 500 ? 2.0 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
     var carbG = Math.max(120, (kcal - prot * 4 - grasa * 9) / 4);
     var duro = /^(Q|C|L|R|E)$/.test(dia.tipo) && (dia.km >= 12 || dia.minBici >= 90 || dia.evento);
     return { kcal: kcal, modo: modo, prot: prot, carbG: carbG,
@@ -147,14 +147,14 @@
     // Déficit acumulado desde hoy hasta el 15 nov (la semana de carrera no cuenta: sin déficit).
     var d0 = new Date(dia.fecha + 'T12:00:00'), d1 = new Date('2026-11-15T12:00:00');
     var diasDef = (brutal || dia.pausa) ? 0 : Math.max(0, Math.round((d1 - d0) / 864e5) + 1);
-    var kgCarrera = diasDef * 300 / 7700, cmCarrera = kgCarrera / 1.2;       // ~1 cm de cintura por cada 1,2 kg: orientativo
+    var kgCarrera = diasDef * 500 / 7700, cmCarrera = kgCarrera / 1.2;       // ~1 cm de cintura por cada 1,2 kg: orientativo
     var semPost = Math.ceil(Math.max(0, A.kg - kgCarrera - metaKg) / (defPost * 7 / 7700));
     var cinturaHoy = A.cintura;
 
     var duro = n && /día largo/.test(n.carbTxt), fuerza = /fuerza/i.test(dia.sesion), descanso = dia.tipo === 'D';
     var kpis = U.kpis([
       U.kpi('Cintura', F.num(cinturaHoy, 0) + ' cm', 'meta: ' + F.num(cinturaMeta, 0) + ' cm (' + F.num(cinturaHoy - cinturaMeta, 0) + ' menos)'),
-      U.kpi('Hasta el 15 nov', dia.pausa ? 'en pausa' : brutal ? 'mantenimiento' : '≈ −' + F.num(cmCarrera, 1) + ' cm', dia.pausa ? 'sin déficit mientras sana el hueso' : brutal ? 'el déficit empieza el 24 nov' : '≈ −' + F.num(kgCarrera, 1) + ' kg con −300 kcal'),
+      U.kpi('Hasta el 15 nov', dia.pausa ? 'en pausa' : brutal ? 'mantenimiento' : '≈ −' + F.num(cmCarrera, 1) + ' cm', dia.pausa ? 'sin déficit mientras sana el hueso' : brutal ? 'el déficit empieza el 24 nov' : '≈ −' + F.num(kgCarrera, 1) + ' kg con −500 kcal'),
       U.kpi('Después de la carrera', semPost + ' sem', 'a ' + F.num(metaKg, 0) + ' kg con −' + defPost + ' kcal')
     ], 'k3');
 

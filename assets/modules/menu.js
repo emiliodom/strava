@@ -107,6 +107,25 @@
       '<li><b>Entreno duro = más pesas y bici, no más comida</b>: el techo ya incluye el entreno. Si entrenas dos veces, sólo se suma una fruta y yogur.</li></ul>', true);
   }
 
+  /* Semana en curso (lun–dom): sesión, techo y comida libre, más los números de cintura. */
+  function semana(ds) {
+    var hoy = new Date(), lun = new Date(hoy); lun.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7));
+    var filas = [], i, d, iso, dia, kc;
+    for (i = 0; i < 7; i++) {
+      d = new Date(lun); d.setDate(lun.getDate() + i);
+      iso = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      dia = ds.filter(function (x) { return x.fecha === iso; })[0];
+      if (!dia) continue;
+      kc = techo(dia);
+      filas.push([DOW[d.getDay()] + ' ' + d.getDate(), esc(String(dia.sesion).split(' + ')[0].slice(0, 70)), F.num(kc, 0), receta(iso, dia, { kcal: kc }).largo ? 'sí' : '—']);
+    }
+    var B = global.__BODY360__, at = B && Object.keys(B)[0], e = at && B[at][B[at].length - 1], A = e && App.cuerpo.analizar(e.medidas);
+    var met = A ? U.kpis([U.kpi('Cintura (escaneo ' + esc(e.fecha) + ')', F.num(A.cintura, 1) + ' cm', 'meta ' + F.num(A.cm * 0.5, 0) + ' cm = mitad de tu estatura'),
+      U.kpi('Ritmo', '−0,5 a −1 cm/sem', '≈ −0,4 kg/sem con −500 kcal'), U.kpi('Medir', 'lunes en ayunas', 'cinta a la altura del ombligo, exhalando')], 'k3') : '';
+    return '<h4>Esta semana</h4>' + met + U.tabla([{ t: 'Día' }, { t: 'Sesión principal' }, { t: 'Techo kcal', n: 1 }, { t: 'Día largo' }], filas,
+      { pie: 'Mínimos diarios para la cintura: proteína en 4 tomas, 8 000+ pasos o la milla, cocina cerrada 21:00, cero líquidos con calorías. Si el lunes la cintura no baja en 2 semanas seguidas, el techo baja 100 kcal.' });
+  }
+
   function mes(ds, y, m) {
     var primero = new Date(y, m, 1), pad = (primero.getDay() + 6) % 7, fin = new Date(y, m + 1, 0).getDate(), c = [];
     for (var i = 0; i < pad; i++) c.push("<div class='mc e'></div>");
@@ -127,7 +146,7 @@
     if (!SEL || ds.every(function (d) { return d.fecha !== SEL; })) SEL = ds.some(function (d) { return d.fecha === hoy; }) ? hoy : (ds[0] && ds[0].fecha);
     var meses = [[2026, 9], [2026, 10], [2026, 11], [2027, 0]];
     return U.modhead('15', 'Comida chapina: calendario con tope', 'El techo de kcal sale de tu plan activo. Hasta el 23 nov es comida de casa; del 24 nov al 14 ene (Charlotte) las mismas bases, con reglas para las porciones de EE. UU. Cada día muestra el tope, las porciones y el menú.') +
-      reglas() + reglasUSA() +
+      semana(ds) + reglas() + reglasUSA() +
       "<div class='mlgd'><span class='mc gt'>GT</span> Guatemala <span class='mc ee'>EE. UU.</span> Charlotte <span class='mc lg'>largo</span> día largo o evento</div>" +
       meses.map(function (a) { return mes(ds, a[0], a[1]); }).join('') +
       "<div id='menuDia' class='coach' aria-live='polite'>" + (SEL ? detalle(ds.filter(function (d) { return d.fecha === SEL; })[0]) : '') + '</div>';

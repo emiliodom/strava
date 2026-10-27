@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.13.2] — 2026-10-26
+
+### Cambiado
+- **Cintura primero** (`cuerpo.js`): hasta la semana de carrera el déficit de los planes Normal e Intermedio pasa de −300 a **−500 kcal** (≈ −0,45 kg/sem, proteína 2,0 g/kg; techo ≈ 2 050 kcal con ~77 kg). Motivo: la semana 22–25 oct sólo tuvo la milla de la racha (~2 km, 30 min), así que el cálculo ×1,55 sobreestimaba el gasto y −300 equivalía a mantenimiento. Brutal sigue en mantenimiento hasta el 24 nov (−750 después); semana de carrera (16–23 nov) y días de evento, sin déficit.
+- Página **Comida**: panel «Esta semana» (sesión, techo de kcal y días largos de lun–dom) y los números de cintura (94 cm → meta 85 cm; medir los lunes en ayunas; si no baja en 2 semanas, −100 kcal).
+
+### Análisis de la semana 22–26 oct (Strava al 26 oct)
+- Cumplido: racha 290–293 (trote/caminata de 1,7–2,2 km, FC 107–123) y, hoy, MTB 66 min / 13,9 km / +206 m (FC media 138, esfuerzo relativo 80, la mejor señal desde la lesión; sin dolor).
+- No hecho: ninguna bici de calidad ni pesas (U/G) entre el 22 y el 25 oct. La semana 26 oct–1 nov conserva la estructura de 0.13.1 (AM bici, PM trote + pesas U/G, trote de prueba el 30 oct, MTB largo de 150 min el 1 nov como ensayo de Campanabaj el 8 nov).
+
 ## [0.13.1] — 2026-10-26
 
 ### Cambiado
