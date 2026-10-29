@@ -8,7 +8,7 @@ Rutas del servidor (Hostinger), todas dentro de
 | Carpeta | Qué es | ¿La borra el deploy? |
 |---|---|---|
 | `public_html/` | El sitio que sirve el dominio | **Sí**, en cada publicación |
-| `mistrava-store/` | `config.php` + fotos del registro de comidas | No (hermana de public_html) |
+| `mistrava-store/` | `config.php`, fotos del registro de comidas y `datos/vtaper.json` (V-taper) | No (hermana de public_html) |
 | `mistrava-cron/` | Clon del repo + `.env` + `.tokens.json` para el cron | No (hermana de public_html) |
 
 Regla de oro: **lo secreto o lo que se escribe en el servidor** vive a la par de
@@ -99,6 +99,7 @@ Comando (una línea), p. ej. a las 08:00 y 20:00:
 | El push del cron pide usuario/clave | No configuraste el PAT en el remoto (`git remote set-url …github_pat_…`). |
 | La página dice que no encuentra los datos | El deploy no dejó `ano2026_datos.min.json` junto a `index.html` en `public_html`. Revisa que el deploy mapee la raíz del repo a la raíz de public_html. |
 | El registro de comidas pierde el token/fotos tras publicar | `mistrava-store/` no existe o no es hermana de `public_html`. |
+| El V-taper dice «Guardado sólo en este navegador» | No hay archivo al que escribir: pon el token en Registro (servidor) o abre la página con `node connector/serve.mjs` (guarda en `data/vtaper.json`; haz commit). |
 | `límite de la API alcanzado` | Normal en la 1.ª sync (100 req/15 min). El connector espera solo; déjalo correr. |
 
 ## Secretos (nunca en git)

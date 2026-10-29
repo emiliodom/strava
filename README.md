@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.14.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.14.1** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -122,6 +122,12 @@ Imprime una dirección `http://localhost:8000` y otra de tu red local para abrir
 
 Si prefieres abrir `index.html` con doble clic, funciona siempre que hayas generado `datos.js`
 con `build.mjs --js`: el navegador bloquea `fetch` sobre `file://`, y `datos.js` esquiva esa limitación.
+
+**V-taper: dónde se guardan lo hecho y las medidas.** La página (módulo V-taper) lo guarda en un archivo, además de en el navegador:
+con `serve.mjs`, en `data/vtaper.json` (se versiona: haz commit); en el servidor PHP, en `mistrava-store/datos/vtaper.json`
+(sobrevive a los deploys; hace falta poner el token en la página Registro). Sin ninguna de las dos, queda sólo en el navegador y
+se usa «Exportar copia». Al abrir el módulo se lee el archivo y se reconcilia con el navegador (gana lo más reciente, o la unión
+si el navegador no tenía marca de tiempo). Ojo: `data/vtaper.json` es público en la web desplegada.
 
 ## Uso diario
 
@@ -306,7 +312,7 @@ Los tokens están al final de `app.css` (`:root` y `[data-theme=dark]`); cambiar
 | `assets/modules/*.js` | Un archivo por módulo de la página. |
 | `connector/` | OAuth, descarga, transformación, servidor y despliegue. |
 | `connector/actualizar.sh` | Tarea de cron del servidor: `git pull` → sync → build → `git push` del JSON. |
-| `registro/api.php` | Endpoint del registro de comidas; guarda token y fotos en `mistrava-store/` (fuera de public_html). |
+| `registro/api.php` | Endpoint del registro de comidas (acciones `lista`, `foto`, `subir`, `borrar`) y del V-taper (`vt_leer`, `vt_guardar`); guarda token, fotos y `vtaper.json` en `mistrava-store/` (fuera de public_html). |
 | `CHEATSHEET.md` | Comandos rápidos: uso diario, montaje del servidor y cron. |
 | `data/raw/` | El crudo de la API. No se versiona: se regenera. |
 

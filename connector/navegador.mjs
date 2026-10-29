@@ -33,9 +33,9 @@ function servidor() {
   });
 }
 
-export async function conNavegador(fn, { ancho = 1300, alto = 900 } = {}) {
-  const srv = await servidor();
-  const base = `http://127.0.0.1:${srv.address().port}/`;
+export async function conNavegador(fn, { ancho = 1300, alto = 900, url = '' } = {}) {
+  const srv = url ? null : await servidor();                  // url: apunta a otro servidor (p. ej. serve.mjs, que sí admite POST /api/vtaper)
+  const base = url || `http://127.0.0.1:${srv.address().port}/`;
   const puerto = 9300 + Math.floor(Math.random() * 600);
   const perfil = fs.mkdtempSync(path.join(os.tmpdir(), 'strava-chrome-'));
   const chrome = spawn(buscarChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', `--remote-debugging-port=${puerto}`,
@@ -77,7 +77,7 @@ export async function conNavegador(fn, { ancho = 1300, alto = 900 } = {}) {
     };
     return await fn(api);
   } finally {
-    chrome.kill(); srv.close();
+    chrome.kill(); if (srv) srv.close();
     try { fs.rmSync(perfil, { recursive: true, force: true }); } catch { /* ya se limpiará */ }
   }
 }

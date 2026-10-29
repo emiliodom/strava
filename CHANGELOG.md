@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.14.1] — 2026-10-29
+
+### Añadido
+- **V-taper guardado en un archivo, no sólo en el navegador.** Lo hecho (`hechos`) y las medidas (`medidas`) se guardan en `data/vtaper.json` (con `connector/serve.mjs`, nuevo `POST /api/vtaper`) o en `mistrava-store/datos/vtaper.json` (servidor PHP: acciones `vt_leer` y `vt_guardar` de `registro/api.php`, con el token de Registro). Las prefs de localStorage siguen siendo la copia de trabajo; al abrir el módulo se lee el archivo (servidor → `data/vtaper.json`) y se reconcilia: unión si el navegador no tenía marca `vtT`, y si no gana lo más reciente. Línea de estado, botón «Guardar en el archivo» y validación de rangos también en el servidor.
+- **Medida «cuello–hombro»** (`cuelloHombro`, 8–40 cm) en el formulario y la tabla. Primera medición real (29 oct): hombros 115 cm (contorno completo) y cuello–hombro 20 cm → índice V ≈ 1,22 con la cintura del escaneo (93,98 cm); meta 1,40.
+- `connector/navegador.mjs`: la opción `url` apunta el navegador de pruebas a otro servidor (p. ej. `serve.mjs`).
+
+### Corregido
+- El módulo V-taper añadía un escuchador de clics nuevo en cada refresco, y la casilla «marcar» podía dispararse dos veces (marcar y desmarcar). Ahora hay uno solo; el modal de Hoy usa `App.vtaper.marcar`.
+
 ## [0.14.0] — 2026-10-29
 
 ### Añadido

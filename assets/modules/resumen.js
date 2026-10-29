@@ -201,10 +201,8 @@
     dlg.addEventListener('click', function (ev) {
       var b = ev.target.closest && ev.target.closest('[data-vt-hecho]');
       if (!b) return;
-      var f = b.getAttribute('data-vt-hecho'), h = App.vtaper.hechos();
-      if (h[f]) delete h[f]; else h[f] = 1;
-      App.data.setPref('vtHecho', h); dlg.close();
-      ['resumen', 'vtaper', 'calendario', 'dia'].forEach(function (id) { App.refrescar(id); });
+      dlg.close();
+      App.vtaper.marcar(b.getAttribute('data-vt-hecho'));
     });
     var sk = el.querySelector('[data-saltar]');
     if (sk && CE) sk.addEventListener('click', function () {

@@ -127,4 +127,33 @@ if ($accion === 'subir' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   file_put_contents($indice, json_encode($lista, JSON_UNESCAPED_UNICODE), LOCK_EX);
   salir(200, ['ok' => true, 'id' => $id, 'url' => $entrada['url'] ?? null]);
 }
+/* ---------- V-taper: un solo archivo JSON (mistrava-store/datos/vtaper.json) con lo hecho y las medidas ---------- */
+function vt_limpiar($j): array {
+  $h = [];
+  foreach ((array)($j['hechos'] ?? []) as $k => $v) if (preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$k) && $v) $h[(string)$k] = 1;
+  ksort($h);
+  $campos = ['cintura' => [50, 200], 'pecho' => [60, 200], 'hombros' => [70, 220], 'cuelloHombro' => [8, 40], 'brazo' => [15, 70], 'peso' => [30, 250]];
+  $m = [];
+  foreach ((array)($j['medidas'] ?? []) as $x) {
+    if (!is_array($x) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($x['f'] ?? ''))) continue;
+    $e = ['f' => (string)$x['f']];
+    foreach ($campos as $c => $r) if (isset($x[$c]) && is_numeric($x[$c]) && $x[$c] >= $r[0] && $x[$c] <= $r[1]) $e[$c] = round((float)$x[$c], 1);
+    if (count($e) > 1) $m[$e['f']] = $e;
+  }
+  ksort($m);
+  return ['v' => 1, 't' => (int)($j['t'] ?? 0), 'hechos' => (object)$h, 'medidas' => array_values($m)];
+}
+$vtArchivo = $dir . '/vtaper.json';
+if ($accion === 'vt_leer') {
+  $j = is_file($vtArchivo) ? json_decode((string)file_get_contents($vtArchivo), true) : null;
+  salir(200, ['datos' => is_array($j) ? $j : null]);
+}
+if ($accion === 'vt_guardar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  $crudo = (string)file_get_contents('php://input', false, null, 0, 200001);
+  if (strlen($crudo) > 200000) salir(413, ['error' => 'Demasiado grande.']);
+  $j = json_decode($crudo, true);
+  if (!is_array($j)) salir(400, ['error' => 'JSON no válido.']);
+  file_put_contents($vtArchivo, json_encode(vt_limpiar($j), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+  salir(200, ['ok' => true]);
+}
 salir(400, ['error' => 'Acción no válida.']);
