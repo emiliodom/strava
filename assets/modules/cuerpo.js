@@ -117,6 +117,16 @@
   }
 
 
+  /* Rodada de 100 km / 2.000 m D+ (1 nov): carga el sábado, comer y beber durante la salida, recuperar el lunes.
+     Gasto de la salida ≈ 6,5 h × 140–160 W ≈ 3.300 kcal (estimación; con el peso de bici y mochila). El día de la rodada el techo es el 90 % del gasto total
+     (≈ −10 %, consistente con el déficit de −500 de la cintura, sin pasar hambre en la bici); sábado y lunes, sin déficit. */
+  var GASTO_RODADA = 3300;
+  var RODADA = {
+    '2026-10-31': { modo: 'víspera de la rodada: sin déficit, carbohidrato alto (6 g/kg)', extra: 450, carbKg: 6, carbTxt: 'carga: 6 g/kg repartido en 5 tomas, poca fibra desde la tarde' },
+    '2026-11-01': { modo: 'rodada de 100 km: techo = 90 % del gasto (≈ 5 400 kcal)', carbKg: 9, carbTxt: 'día largo: 60 g/h en la bici (≈ 390 g) + comidas antes y después', dia: 1 },
+    '2026-11-02': { modo: 'recuperación de la rodada: sin déficit, glucógeno y proteína', extra: 200, carbKg: 5, carbTxt: 'recuperación: 5 g/kg, proteína en 4–5 tomas' }
+  };
+
   /* Metas de comida de un día del plan (para «Lo que te toca hoy»). Mismo cálculo que la tabla de rutas. */
   function metaDia(pid, dia) {
     var B = global.__BODY360__, at = B && Object.keys(B)[0], e = at && B[at][B[at].length - 1];
@@ -129,11 +139,15 @@
     else { def = 400; modo = 'déficit moderado (−400)'; }
     if (def && dia.evento) { def = 0; modo = 'día de evento: sin déficit'; }
     if (dia.pausa) { def = 0; modo = 'pausa por lesión: sin déficit mientras sana el hueso'; }
-    var kcal = A.tdee - def, prot = (brutal && def ? 2.2 : def >= 500 ? 2.0 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
-    var carbG = Math.max(120, (kcal - prot * 4 - grasa * 9) / 4);
+    var rod = RODADA[f];
+    if (rod) { def = 0; modo = rod.modo; }
+    var kcal = A.tdee - def + (rod && rod.extra ? rod.extra : 0);
+    if (rod && rod.dia) kcal = 0.9 * (A.bmr * 1.3 + GASTO_RODADA);
+    var prot = (rod ? 1.8 : brutal && def ? 2.2 : def >= 500 ? 2.0 : 1.8) * A.kg, grasa = kcal * 0.25 / 9;
+    var carbG = rod ? rod.carbKg * A.kg : Math.max(120, (kcal - prot * 4 - grasa * 9) / 4);
     var duro = /^(Q|C|L|R|E)$/.test(dia.tipo) && (dia.km >= 12 || dia.minBici >= 90 || dia.evento);
-    return { kcal: kcal, modo: modo, prot: prot, carbG: carbG,
-      carbTxt: duro ? 'día largo: carbohidrato antes y durante' : 'reparte con el entreno',
+    return { kcal: kcal, modo: modo, prot: prot, carbG: carbG, rodada: !!rod,
+      carbTxt: rod ? rod.carbTxt : duro ? 'día largo: carbohidrato antes y durante' : 'reparte con el entreno',
       nota: 'Estimación (Mifflin–St Jeor ×1,55). Grasa ≈ ' + F.num(grasa, 0) + ' g. Ajusta con tu peso y cintura cada 2–4 semanas.' };
   }
   /* Meta de talla del día: cintura, qué evitar y qué comer (comida chapina) según la fase del calendario y el tipo de sesión. */
@@ -187,7 +201,7 @@
       '<p><small>Estimación orientativa (±1 cm): ~1 cm de cintura por cada 1,2 kg de peso. Mide la cintura a la altura del ombligo, exhalando.</small></p>' };
   }
 
-  App.cuerpo = { metaDia: metaDia, metaTalla: metaTalla, analizar: analizar };
+  App.cuerpo = { metaDia: metaDia, metaTalla: metaTalla, analizar: analizar, RODADA: RODADA, GASTO_RODADA: GASTO_RODADA };
 
   App.mods.push({ id: 'cuerpo', nom: 'Cuerpo 360', tab: 'Cuerpo', icono: 'M12 4a2 2 0 100 4 2 2 0 000-4zM8 21l1.5-8L7 11l5-2 5 2-2.5 2L16 21', render: render });
 })(this);

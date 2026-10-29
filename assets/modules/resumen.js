@@ -67,6 +67,16 @@
       modales.push(plantilla('talla', 'Meta de talla: cintura, pecho, costados y panza', T.html));
     }
 
+    /* ---- V-taper ---- */
+    if (App.vtaper) {
+      var VT = App.vtaper, vts = VT.semana(), vhoy = (H.hoyDia && H.hoyDia.vt) || null, vh = VT.hechos(), vOk = !!vh[H.hoyISO];
+      var vr = vhoy ? App.plan.RUTINAS[vhoy] : null;
+      fichas.push(ficha('vtaper', 'V-taper', vts.hechos + ' / ' + vts.dias.length, vr ? (vOk ? 'hoy hecho ✓' : 'hoy: ' + esc(vr.min + ' min')) : 'hoy libre', vhoy && !vOk ? 'warn' : vOk ? 'ok' : ''));
+      modales.push(plantilla('vtaper', 'V-taper de hoy', (vr ? '<p><b>' + esc(vr.nom) + ' · ' + vr.min + ' min</b></p><ol>' + vr.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ol>' +
+        "<p><button type='button' data-vt-hecho='" + esc(H.hoyISO) + "' class='" + (vOk ? 'secondary' : '') + "'>" + (vOk ? 'Quitar la marca de hoy' : 'Marcar como hecho') + '</button></p>' : '<p>Hoy no hay V-taper programado.</p>') +
+        "<p><small>Las medidas y el avance están en <a href='#vtaper'>Cuerpo y ciencia → V-taper</a>.</small></p>"));
+    }
+
     /* ---- Semana en curso ---- */
     var chipSem = H.semana.map(function (x) {
       var s = x.estado === 'hoy' ? '●' : x.estado === 'pend' ? '○' : x.estado === 'pausa' ? '‖' : x.estado;
@@ -188,6 +198,14 @@
       b.addEventListener('click', function () { abrir(b.getAttribute('data-modal')); });
     });
     var CE = App.calExport;
+    dlg.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('[data-vt-hecho]');
+      if (!b) return;
+      var f = b.getAttribute('data-vt-hecho'), h = App.vtaper.hechos();
+      if (h[f]) delete h[f]; else h[f] = 1;
+      App.data.setPref('vtHecho', h); dlg.close();
+      ['resumen', 'vtaper', 'calendario', 'dia'].forEach(function (id) { App.refrescar(id); });
+    });
     var sk = el.querySelector('[data-saltar]');
     if (sk && CE) sk.addEventListener('click', function () {
       var f = sk.getAttribute('data-saltar');

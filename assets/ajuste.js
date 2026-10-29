@@ -142,7 +142,7 @@
 
   /* Prevención (espalda baja y equilibrio): lunes, miércoles y viernes (espalda), jueves y sábado (equilibrio),
      y al terminar cada MTB larga. Nunca en días de vuelo. */
-  var DESDE_PREV = '2026-10-19', MTB_LARGAS = { colomba: 1, campana: 1, senderos: 1, xab: 1 };
+  var DESDE_PREV = '2026-10-19', MTB_LARGAS = { rodada100: 1, colomba: 1, campana: 1, senderos: 1, xab: 1 };
   function aplicarPrevencion(dias) {
     dias.forEach(function (d) {
       if (d.fecha < DESDE_PREV || d.hito) return;
@@ -150,6 +150,22 @@
       if (d.evento && MTB_LARGAS[d.evento]) d.sesion += ' + prevención lumbar 12 min al terminar';
       else if (!d.evento && (w === 0 || w === 2 || w === 4)) d.sesion += ' + prevención lumbar 12 min';
       else if (!d.evento && (w === 3 || w === 5)) d.sesion += ' + equilibrio 10 min';
+    });
+  }
+
+  /* V-taper (desde el 30 oct): trabajo diario de dorsales y hombros, 5–14 min, sin tocar el pie. Lunes y jueves V (dorsales + lateral),
+     martes y viernes W (posterior + lateral + postura), miércoles y sábado L (sólo laterales); domingo libre. Los días de fuerza B/U ya llevan
+     remo y dominadas, así que sólo suman laterales; la víspera y el día siguiente a un evento, también. Se registra a mano en «Cuerpo y ciencia» (vtaper.js). */
+  var VT_DESDE = '2026-10-30', VT_RUT = ['V', 'W', 'L', 'V', 'W', 'L', null];
+  function aplicarVTaper(dias) {
+    dias.forEach(function (d, i) {
+      if (d.fecha < VT_DESDE || d.evento || d.hito) return;
+      var r = VT_RUT[dow(d)], sig = dias[i + 1], ant = dias[i - 1];
+      if (!r) return;
+      if (/fuerza [BU]/i.test(d.sesion || '')) r = 'L';
+      if ((sig && sig.evento) || (ant && ant.evento && MTB_LARGAS[ant.evento])) r = 'L';
+      d.vt = r;
+      d.sesion += ' + V-taper ' + P.RUTINAS[r].min + ' min (' + (r === 'V' ? 'dorsales' : r === 'W' ? 'hombro posterior y postura' : 'laterales') + ')';
     });
   }
 
@@ -201,11 +217,10 @@
     '2026-10-27': ['F', 1.6, 60, 'AM 6:00: bici calidad 5 × 4 min fuerte (60 min), puedes pararte sobre los pedales si no duele + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'Sólo dos citas hoy: la bici de la mañana y el trote + pesas de la noche, todo seguido.', 1],
     '2026-10-28': ['B', 1.6, 60, 'AM 6:00: bici Z2 60 min + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
     '2026-10-29': ['F', 1.6, 60, 'AM 6:00: bici calidad 6 × 3 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', null, 1],
-    '2026-10-30': ['R', 3, 0, 'AM 6:00: trote suave 3 km a ~9:00/km (prueba, dolor máx. 3/10) + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Anota el dolor de 0 a 10 al terminar y a la mañana siguiente: decide si el sábado hay calidad de pie.', 1],
-    '2026-10-31': ['F', 1.6, 75, 'AM 5:30: bici FTP 3 × 10 min (75 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'Hoy termina el horario de verano de Utah: desde mañana tu jornada va una hora más tarde.', 1],
-    '2026-11-01': ['B', 1.6, 150, 'AM 5:30: MTB Z2 150 min, subidas sentado y bajadas tranquilas (ensayo para Campanabaj) + trote o caminata de la racha 1,6 km + prevención lumbar 12 min al terminar', 'Si el pie molesta en lo técnico, baja a 90 min. Con el cambio de hora tienes la mañana hasta las 7:30.', 1],
+    '2026-10-30': ['R', 2, 0, 'AM 6:00: trote suave 2 km a ~9:00/km (dolor máx. 3/10) + PM 18:30: fuerza U (pesas sin cargar el pie, las que faltan de esta semana) + prevención lumbar 12 min', 'Víspera de la víspera de los 100 km: nada que cansar. Revisa la bici, las llantas, la cadena y la comida del domingo.', 1],
+    '2026-10-31': ['B', 1.6, 40, 'AM 6:00: bici suave 40 min con 3 × 1 min a cadencia alta (activación) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', 'Mañana salida a las 6:00: cena temprano con mucho carbohidrato, prepara bidones con sodio y la ropa, acuéstate antes de las 21:00. Fin del horario de verano de Utah.', 1],
     '2026-11-02': ['D', 1.6, 0, 'Descanso: sólo el trote suave de la racha 1,6 km + prevención lumbar 12 min', null, 1],
-    '2026-11-03': ['F', 1.6, 60, 'AM 5:30: bici calidad 6 × 3 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', null, 1],
+    '2026-11-03': ['B', 1.6, 60, 'AM 5:30: bici Z2 suave 60 min, piernas sueltas tras los 100 km + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'La calidad de esta semana es la activación del jueves y Campanabaj.', 1],
     '2026-11-04': ['E', 4, 0, 'AM 5:30: trote fácil 4 km a ~9:00/km + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Si los trotes del 30 oct y de hoy fueron sin dolor, la calidad corriendo vuelve después de Campanabaj.', 1],
     '2026-11-05': ['B', 1.6, 45, 'AM 5:30: bici activación 45 min con 4 × 1 min fuerte (3 días antes de Campanabaj) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
     '2026-11-06': ['R', 2, 0, 'Trote suave 2 km (racha) + prevención lumbar 12 min; revisa la bici, llantas y comida de la carrera', 'Víspera de la víspera: nada duro, duerme bien.', 1],
@@ -238,6 +253,7 @@
     aplicarPrevencion(dias);
     aplicarLesion(dias);
     aplicarRetorno(dias);
+    aplicarVTaper(dias);
     aplicarPausa(dias);
   });
 

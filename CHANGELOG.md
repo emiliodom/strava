@@ -3,6 +3,23 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.14.0] — 2026-10-29
+
+### Añadido
+- **Módulo 16 «V-taper»** (`assets/modules/vtaper.js`, en Cuerpo y ciencia): trabajo diario de espalda y hombros (hombros anchos contra cintura estrecha) y su seguimiento. Semana con casillas «marcar» por día, KPIs (sesiones de la semana, racha, series laterales semanales, sesiones desde el 30 oct), formulario de medidas (cintura, pecho, hombros, brazo, peso) con el escaneo del 6 oct como punto de partida, gráficos de cintura (meta 85 cm) e índice V (hombros ÷ cintura, meta 1,40), tabla con borrado, y exportar/importar copia JSON (las prefs `vtHecho` y `vtMedidas` viven sólo en el navegador).
+- **Rutinas V / W / L** (`plan.js`): V (dorsales + lateral, 14 min), W (hombro posterior, lateral y postura, 12 min) y L (sólo laterales, 5 min). `ajuste.js` → `aplicarVTaper` las reparte desde el 30 oct (lun/jue V, mar/vie W, mié/sáb L, domingo libre); los días de fuerza B/U, la víspera de un evento y el día siguiente a una MTB larga sólo llevan L. El detalle del día (`actividad.js`) muestra la rutina.
+- **Comida de la rodada de 100 km** (`cuerpo.js`, `menu.js`): sábado 31 oct de carga (sin déficit, 6 g/kg de carbohidrato), domingo 1 nov con techo del 90 % del gasto (≈ 4 900 kcal; la salida gasta ≈ 3 300) y plan hora por hora (60 g de carbohidrato por hora, líquido y sodio), lunes 2 nov de recuperación sin déficit; guía desplegable en la página Comida hasta el 2 nov.
+- **Calendario:** icono de V-taper (verde si está hecho), la columna semanal añade horas de bici y V-taper hechos/programados, y entrada en la leyenda. Ficha «V-taper» en Hoy con la rutina y botón para marcarla.
+
+## [0.13.3] — 2026-10-29
+
+### Añadido
+- **Evento «Rodada de 100 km, 2.000 m D+»** (domingo 1 nov, salida 6:00, prioridad B; `plan.js`, id `rodada100`): sustituye el MTB Z2 de 150 min del día en los tres planes (≈ 390 min con la milla de la racha al terminar y la prevención lumbar). Es la salida más larga del año y el ensayo de desnivel real para el sueño de 2.000 m.
+
+### Cambiado
+- **Semana alrededor de la rodada** (`ajuste.js`, `RETORNO`): viernes 30 trote suave de 2 km + pesas U (las que faltaban) y revisión de la bici; sábado 31 bici suave de 40 min con activación (sin FTP) y carbohidrato; lunes 2 nov descanso; martes 3 nov bici Z2 de 60 min en lugar de la calidad. La calidad de la semana de Campanabaj queda en la activación del jueves 5 nov y el evento.
+- Análisis Strava 26–29 oct: racha 294–296; MTB 66, 55, 111 y 107 min (82 km, +1.481 m en lunes–jueves, el cuádruple en km que la semana anterior); trote de 6,1 km a 7:33/km con FC 128 el 28 oct; potencia media de 163 W el 29 oct (la mayor del periodo, sin datos de FC); pesas sólo el 26 oct.
+
 ## [0.13.2] — 2026-10-26
 
 ### Cambiado
@@ -12,6 +29,8 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 ### Análisis de la semana 22–26 oct (Strava al 26 oct)
 - Cumplido: racha 290–293 (trote/caminata de 1,7–2,2 km, FC 107–123) y, hoy, MTB 66 min / 13,9 km / +206 m (FC media 138, esfuerzo relativo 80, la mejor señal desde la lesión; sin dolor).
 - No hecho: ninguna bici de calidad ni pesas (U/G) entre el 22 y el 25 oct. La semana 26 oct–1 nov conserva la estructura de 0.13.1 (AM bici, PM trote + pesas U/G, trote de prueba el 30 oct, MTB largo de 150 min el 1 nov como ensayo de Campanabaj el 8 nov).
+
+- Actualización 27 oct (Strava): el 26 oct también hubo racha 294 (trote/caminata de 2,6 km en 28:23, 10:56/km, FC 119, todo en Z1; el último tramo de 394 m a 6:34/km sin subir la FC) y pesas de 22 min por la noche. Hoy, MTB «Climbing train»: 12,4 km, 55 min, +283 m, 149 W de media (ayer 122 W), FC 144 media y 191 máxima, esfuerzo relativo 83 (1,5 por minuto contra 1,2 ayer): cuenta como la calidad de bici del día, aunque Strava no trae intervalos para confirmar los 5 × 4 min.
 
 ## [0.13.1] — 2026-10-26
 

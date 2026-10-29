@@ -368,6 +368,7 @@
   }
 
   /* ---------- piezas de una celda ---------- */
+  function vtHecho(f) { var h = App.data.pref('vtHecho', {}) || {}; return !!h[f]; }
   var SPORT_DEP = { run: 'running', bici: 'bici', fuerza: 'fuerza', nado: 'nado' };
   function iconosDe(d, evalDia, puntuado) {
     var I = App.icons, T = TIPOS[d.tipo] || TIPOS.E, comps = componentesPlan(d, true), out = [];
@@ -388,9 +389,10 @@
       if (!tiene[s] || (s === main && mainEsDeporte)) return;
       out.push({ n: s, t: s === 'run' ? 'Correr' : s === 'bici' ? 'Bici' : s === 'nado' ? 'Natación (opcional)' : 'Fuerza', st: dep(s) });
     });
+    if (d.vt) out.push({ n: 'vtaper', t: 'V-taper: ' + (d.vt === 'V' ? 'dorsales' : d.vt === 'W' ? 'hombro posterior y postura' : 'laterales') + ' (' + P.RUTINAS[d.vt].min + ' min)', st: vtHecho(d.fecha) ? ' st-ok' : '' });
     if (d.hito) out.push({ n: d.hito === 'hora' ? 'reloj' : 'avion', t: d.hito === 'vuelo' ? 'Vuelo a Charlotte' : d.hito === 'regreso' ? 'Regreso a Guatemala' : 'Termina el horario de verano de EE. UU.', st: '' });
     else if (d.recordatorio) out.push({ n: 'campana', t: d.recordatorio, st: '' });
-    return out.slice(0, 5).map(function (x) {
+    return out.slice(0, 6).map(function (x) {
       var txt = { ' st-ok': 'hecho', ' st-parcial': 'parcial', ' st-miss': 'no hecho' }[x.st];
       return "<span class='ico " + (d.pausa ? 'libre' : I.TIPO_FAMILIA[d.tipo]) + (x.main ? ' mn' : '') + x.st + "' title='" + esc(x.t + (txt ? ' · ' + txt : '')) + "'>" + I.svg(x.n) + '</span>';
     }).join('');
@@ -449,13 +451,15 @@
     var idx = {}; lista.forEach(function (d) { idx[d.fecha] = d; });
     var cur = DT.addDays(ini, -DT.dowMon0(ini)), tope = DT.addDays(fin, 6 - DT.dowMon0(fin)), out = [];
     while (cur <= tope) {
-      var sem = { lunes: DT.iso(cur), num: String(DT.isoWeek(cur)).slice(-2), dias: [], plan: 0, real: 0 };
+      var sem = { lunes: DT.iso(cur), num: String(DT.isoWeek(cur)).slice(-2), dias: [], plan: 0, real: 0, bici: 0, vt: 0, vtOk: 0 };
       for (var i = 0; i < 7; i++) {
         var k = DT.iso(cur), d = idx[k] || null;
         sem.dias.push({ k: k, d: d });
         if (d) {
           if (d.pausa) sem.pausa = (sem.pausa || 0) + 1;
           sem.plan += kmRunPlan(d);
+          if (!d.pausa && d.minBici) sem.bici += d.minBici;
+          if (d.vt) { sem.vt++; if (vtHecho(k)) sem.vtOk++; }
           var r = realDe(k); if (r && r.km) sem.real += r.km;
         }
         cur = DT.addDays(cur, 1);
@@ -466,7 +470,9 @@
   }
   function kmSemana(s) {
     if (s.pausa && !s.plan) return "<span class='kmw'><b>pausa</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
-    return "<span class='kmw'><b>" + F.num(s.plan, 0) + " km</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
+    return "<span class='kmw'><b>" + F.num(s.plan, 0) + " km</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') +
+      (s.bici ? "<small>bici " + F.num(s.bici / 60, 1) + ' h</small>' : '') +
+      (s.vt ? "<small>V " + s.vtOk + '/' + s.vt + '</small>' : '') + '</span>';
   }
   function rejilla(plan, lista, D) {
     var v = vista(), agenda = v.layout === 'agenda', hoy = isoHoy(), sems = semanasDe(lista);
@@ -497,6 +503,7 @@
     return "<div class='lgd cal' aria-label='Leyenda'>" +
       I.FAMILIAS.map(function (f) { return "<span class='f-" + f[0] + "'><span class='ico " + f[0] + "'>" + I.svg({ suave: 'run', duro: 'rayo', monte: 'monte', bici: 'bici', carrera: 'carrera', libre: 'descanso' }[f[0]]) + '</span>' + esc(f[1]) + '</span>'; }).join('') +
       "<span class='sep'></span>" +
+      "<span><span class='ico vtaper'>" + I.svg('vtaper') + '</span>V-taper (gris: pendiente; verde: hecho)</span>' +
       "<span><span class='ring ok' style='--p:100'><b>✓</b></span>hecho (≥ 80 %)</span>" +
       "<span><span class='ring warn' style='--p:55'><b>55</b></span>parcial</span>" +
       "<span><span class='ring bad' style='--p:0'><b>✕</b></span>no hecho</span>" +

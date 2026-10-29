@@ -51,6 +51,41 @@
     'Sopa de pollo con verduras + ensalada con pollo; vinagreta aparte'
   ];
 
+  /* Rodada de 100 km (1 nov): sábado de carga, domingo de salida y lunes de recuperación (kcal y carbohidrato en cuerpo.js → RODADA). */
+  var RODADA_DIA = { '2026-10-31': 'carga', '2026-11-01': 'rodada', '2026-11-02': 'recup' };
+  var RODADA_COMIDAS = {
+    carga: [
+      ['Desayuno', 'Avena cocida con leche y banano + 2 tortillas con huevo y miel; café sin azúcar'],
+      ['Almuerzo', 'Pollo sin piel con 1½ tazas de arroz, plátano cocido y poca verdura cocida; sin fritanga ni salsas pesadas'],
+      ['Refacción (16:00)', 'Tortillas o pan francés con miel + banano + 250 ml de jugo diluido o bebida con electrolitos'],
+      ['Cena temprano (18:00)', 'Arroz o pasta (2 tazas) con pollo o atún, 2 tortillas, poco frijol y nada crudo ni picante: es la última comida «grande»'],
+      ['Antes de dormir', 'Vaso de leche o yogur con banano si tienes hambre; 500 ml de agua con una pizca de sal; acuéstate a las 20:30–21:00'],
+      ['Líquidos', '2,5–3 L de agua en el día (orina de color pajizo); cero alcohol']
+    ],
+    rodada: [
+      ['4:15–4:45 · Desayuno', 'Lo que ya probaste en tus salidas largas: avena con leche y banano + 2 tortillas con huevo y miel (≈ 90–100 g de carbohidrato). 500 ml de agua con una pizca de sal'],
+      ['5:45 · Antes de salir', 'Medio banano o 1 gel (20–25 g), 250 ml de agua y los bidones llenos con electrolitos; ya con la bolsa de comida en el bolsillo'],
+      ['Desde el minuto 20', '60 g de carbohidrato por hora (≈ 390 g en 6,5 h): cada 20 min, 1 gel o 1 banano o 2 tortillas con miel; 150–250 ml de líquido cada vez'],
+      ['Hora 3 aprox.', 'Algo salado y real: tortilla con frijol o queso, o pan con jamón (400 kcal); es el momento de rellenar los bidones'],
+      ['Antes de cada subida larga', 'Come 10 min antes; en lo más empinado sólo bebe. Si te acalambras o te sientes vacío, baja la intensidad y come ya'],
+      ['Al terminar (30–60 min)', 'Licuado de leche con banano y avena + tortillas con queso o jamón: 80–90 g de carbohidrato y 25–30 g de proteína; pésate sin ropa para medir el líquido perdido'],
+      ['1–2 h después', 'Comida completa: pollo o carne magra, arroz, plátano y verdura; bebe 1,25–1,5 L por cada kg perdido durante la salida'],
+      ['Noche', 'Cena ligera con proteína (huevos, frijol, queso) y la milla de la racha; sin alcohol; el hambre grande de esta noche es normal, pero no es permiso para fritanga']
+    ],
+    recup: [
+      ['Desayuno', 'Huevos revueltos con tomate, frijol volteado, 3 tortillas, papaya y un banano'],
+      ['Almuerzo', 'Caldo de res o gallina con verdura + arroz (¾ de taza) y tortillas; sal normal'],
+      ['Refacción', 'Yogur natural con fruta y pepitoria; 2–3 L de agua en el día'],
+      ['Cena', 'Pescado o pollo a la plancha, plátano o camote y ensalada; proteína de 30–35 g en cada toma'],
+      ['Peso y cintura', 'El peso sube 1–2 kg por glucógeno y agua: no es grasa. Mide la cintura el martes 3 o el miércoles 4, no hoy']
+    ]
+  };
+  var RODADA_TABLA = {
+    carga: [['Tortillas de maíz', '6 (≈ 72 g de carbohidrato)'], ['Arroz o pasta cocidos', '3 tazas (≈ 135 g)'], ['Plátano o camote', '2 medianos (≈ 70 g)'], ['Avena + banano (desayuno)', '≈ 70 g'], ['Miel, jugo diluido y fruta', '≈ 75 g'], ['Proteína', '4 palmas de pollo, pescado, huevo o lácteo'], ['Frijol y grasa', '½ taza de frijol colado; 1 cda de aceite']],
+    rodada: [['Antes (4:15–5:45)', '≈ 110 g de carbohidrato'], ['Durante (6:00–12:30)', '≈ 390 g, 60 g/h'], ['Después (hasta la cena)', '≈ 190 g + 60 g de proteína'], ['Noche', '≈ 60 g + proteína'], ['Líquido en la bici', '500–750 ml por hora (3,5–5 L en total)'], ['Sodio', '≈ 400–800 mg por litro de bebida; más si hay calor y sudas mucho']],
+    recup: [['Tortillas de maíz', '4–5'], ['Arroz, plátano, camote o papa', '1 taza + 1 plátano'], ['Fruta', '3 porciones'], ['Proteína', '5 palmas (30–35 g por toma)'], ['Frijol y grasa', '1 taza; 1 cda de aceite + ¼ de aguacate']]
+  };
+
   function receta(fecha, dia, n) {
     var ee = fase(fecha) === 'ee', lv = nivel(n.kcal), h = new Date(fecha + 'T12:00:00'), k = Math.floor(h / 864e5);
     var largo = dia.evento || dia.km >= 12 || dia.minBici >= 90, desc = dia.tipo === 'D', sab = h.getDay() === 6;
@@ -62,8 +97,10 @@
       ['Refacción', REFAC[k % REFAC.length]],
       ['Cena (cocina cerrada 21:00)', CENAS[k % CENAS.length]]
     ];
-    if (largo) comidas.push(['Alrededor del entreno largo', 'Banano o tortilla con miel ANTES; durante: 40–60 g de carbohidrato/h (sólo si pasa de 90 min); después: leche o yogur + fruta. Es el único momento del día con carbohidrato extra.']);
-    return { lv: lv, ee: ee, largo: largo, desc: desc, libre: libre, comidas: comidas };
+    var rod = RODADA_DIA[fecha] || null;
+    if (rod) comidas = RODADA_COMIDAS[rod];
+    else if (largo) comidas.push(['Alrededor del entreno largo', 'Banano o tortilla con miel ANTES; durante: 40–60 g de carbohidrato/h (sólo si pasa de 90 min); después: leche o yogur + fruta. Es el único momento del día con carbohidrato extra.']);
+    return { lv: lv, ee: ee, largo: largo || rod === 'rodada', desc: desc, libre: libre, comidas: comidas, rod: rod };
   }
 
   function dias() { return App.calExport.dias(planActivo()).filter(function (d) { return d.fecha >= DESDE && d.fecha <= HASTA; }); }
@@ -75,13 +112,26 @@
     var kc = Math.round(n.kcal / 50) * 50, r = receta(dia.fecha, dia, n), lv = r.lv, ee = r.ee;
     var h = new Date(dia.fecha + 'T12:00:00');
     var cab = '<h4>' + DOW[h.getDay()] + ' ' + h.getDate() + ' de ' + MES[h.getMonth()] + ' · ' + (ee ? 'Charlotte (EE. UU.)' : 'Guatemala') + '</h4>' +
-      U.kpis([U.kpi('Techo del día', F.num(kc, 0) + ' kcal', esc(n.modo)), U.kpi('Proteína', F.num(n.prot, 0) + ' g', '4 tomas de ' + F.num(n.prot / 4, 0) + ' g'), U.kpi('Tipo de día', r.largo ? 'largo / evento' : r.desc ? 'descanso' : 'normal', r.libre ? 'comida libre medida (sábado)' : 'sin comida libre')], 'k3');
-    var ptab = U.tabla([{ t: 'Grupo' }, { t: 'Todo el día', n: 1 }],
+      U.kpis([U.kpi('Techo del día', F.num(kc, 0) + ' kcal', esc(n.modo)), U.kpi('Proteína', F.num(n.prot, 0) + ' g', '4 tomas de ' + F.num(n.prot / 4, 0) + ' g'), U.kpi('Tipo de día', r.rod ? { carga: 'carga de carbohidrato', rodada: 'rodada de 100 km', recup: 'recuperación' }[r.rod] : r.largo ? 'largo / evento' : r.desc ? 'descanso' : 'normal', r.libre ? 'comida libre medida (sábado)' : 'sin comida libre')], 'k3');
+    var ptab = r.rod ? U.tabla([{ t: r.rod === 'rodada' ? 'Momento' : 'Grupo' }, { t: r.rod === 'rodada' ? 'Cuánto' : 'Todo el día' }], RODADA_TABLA[r.rod].map(function (x) { return [esc(x[0]), esc(x[1])]; })) : U.tabla([{ t: 'Grupo' }, { t: 'Todo el día', n: 1 }],
       [['Proteína (pollo, pescado, huevo, res magra)', POR.prot[lv]], ['Tortillas de maíz', POR.tort[lv]], ['Arroz, plátano, camote o papa (extra)', POR.carb[lv] + (r.desc ? ' − 1 porción' : '')], ['Frijol', POR.frijol[lv]], ['Grasa añadida', POR.grasa[lv]], ['Verdura', 'libre: mínimo medio plato en 2 comidas']]);
     var lista = '<ul>' + r.comidas.map(function (c) { return '<li><b>' + esc(c[0]) + ':</b> ' + esc(c[1]) + '</li>'; }).join('') + '</ul>';
     var libre = r.libre ? U.note('Comida libre del sábado', 'Una sola comida «de las que te gustan», con la regla de la mitad: pide o sírvete la mitad, aparta la otra mitad en la caja antes de empezar y espera 15 min antes de decidir si quieres más. Sin postre extra ni bebida azucarada.', 'ok') : '';
-    return cab + libre + '<h4>Porciones del día</h4>' + ptab + '<h4>Qué comer</h4>' + lista +
+    return cab + libre + '<h4>' + (r.rod === 'rodada' ? 'Plan de comida y bebida de la rodada' : 'Porciones del día') + '</h4>' + ptab + '<h4>' + (r.rod === 'rodada' ? 'Hora por hora' : 'Qué comer') + '</h4>' + lista +
       '<p><small>Estimación orientativa; ajusta con cintura y peso cada 2 semanas. Si pesas tu comida un par de días, afinas el ojo para el resto.</small></p>';
+  }
+
+  /* Guía de la rodada de 100 km: visible hasta el lunes 2 nov. */
+  function guiaRodada() {
+    var hoy = new Date().toISOString().slice(0, 10);
+    if (hoy > '2026-11-02') return '';
+    return U.acc('Rodada de 100 km, 2.000 m D+ (dom 1 nov, 6:00): cómo comer y beber', '<p>Gasto estimado de la salida: <b>≈ 3 300 kcal</b> (6–7 h a 140–160 W) y ≈ 5 400 el día completo; el techo del día es el 90 % de eso. Es una estimación general: ajústala con cómo te sientas en las MTB largas de esta semana.</p>' +
+      '<ul><li><b>Carga (sáb 31):</b> 6 g de carbohidrato por kg ≈ 460 g, sin atiborrarte; la fibra y la grasa bajan desde la tarde y la última comida grande es a las 18:00.</li>' +
+      '<li><b>Durante:</b> 60 g de carbohidrato por hora desde el minuto 20 (hasta 90 g/h sólo si ya lo toleras entrenado), y no esperes al hambre. Un ejemplo de 390 g: 3 bidones de 750 ml con 40 g cada uno (120 g) + 4 geles (100 g) + 3 bananos (75 g) + 6 tortillas con miel (≈ 100 g).</li>' +
+      '<li><b>Bebida y sal:</b> 500–750 ml por hora (más con calor), con ≈ 400–800 mg de sodio por litro; los calambres de la última subida piden sal y no pasarte de ritmo. Si se repiten con todo bien hecho, mira el apartado de calambres en «Pie, espalda y equilibrio».</li>' +
+      '<li><b>Prueba antes, no el día D:</b> el gel, el bidón con electrolitos y las tortillas con miel se estrenan en las MTB de esta semana, no el domingo.</li>' +
+      '<li><b>Después:</b> 1–1,2 g/kg de carbohidrato y 0,3–0,4 g/kg de proteína en la primera hora, y comida completa 1–2 h más tarde. El lunes es descanso y sin déficit.</li></ul>' +
+      '<p><small>Información general de nutrición deportiva para adultos sanos, no una prescripción. Si tienes una condición médica o tomas medicamentos, consúltalo antes. Pide ayuda a un nutricionista deportivo si quieres afinar los números.</small></p>', true);
   }
 
   function reglas() {
@@ -146,7 +196,7 @@
     if (!SEL || ds.every(function (d) { return d.fecha !== SEL; })) SEL = ds.some(function (d) { return d.fecha === hoy; }) ? hoy : (ds[0] && ds[0].fecha);
     var meses = [[2026, 9], [2026, 10], [2026, 11], [2027, 0]];
     return U.modhead('15', 'Comida chapina: calendario con tope', 'El techo de kcal sale de tu plan activo. Hasta el 23 nov es comida de casa; del 24 nov al 14 ene (Charlotte) las mismas bases, con reglas para las porciones de EE. UU. Cada día muestra el tope, las porciones y el menú.') +
-      semana(ds) + reglas() + reglasUSA() +
+      semana(ds) + guiaRodada() + reglas() + reglasUSA() +
       "<div class='mlgd'><span class='mc gt'>GT</span> Guatemala <span class='mc ee'>EE. UU.</span> Charlotte <span class='mc lg'>largo</span> día largo o evento</div>" +
       meses.map(function (a) { return mes(ds, a[0], a[1]); }).join('') +
       "<div id='menuDia' class='coach' aria-live='polite'>" + (SEL ? detalle(ds.filter(function (d) { return d.fecha === SEL; })[0]) : '') + '</div>';

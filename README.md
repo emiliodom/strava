@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.13.2** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.14.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -39,6 +39,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
+| V-taper | Trabajo diario de dorsales y hombros (rutinas V/W/L de 5–14 min, sin cargar el pie), semana con casillas, medidas (cintura, pecho, hombros, brazo, peso), índice V = hombros ÷ cintura y copia JSON |
 | Preparación | Qué hacer 15, 10 y 5 días antes de cada evento del calendario |
 | Espalda y equilibrio | Dolor lumbar al subir, calambres y pérdida de equilibrio: causas, prevención, señales de alarma y dos rutinas (12 y 10 min) que también están en el calendario |
 | Orden correr/bici | Botón en el calendario que voltea el orden propuesto en los días con correr y bici (bici primero si la bici es lo principal; correr primero en el resto) |

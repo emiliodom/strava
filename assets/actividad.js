@@ -105,6 +105,7 @@
     }
 
     if (/core sin cargar/.test(dia.sesion || '')) out += bloque('🧱', 'Core y tren superior sin cargar el pie (' + P.RUTINAS.Z.min + ' min)', [], P.RUTINAS.Z.items, 'Mientras el pie se recupera: nada de zancadas, saltos ni elevaciones de talón.');
+    if (dia.vt && P.RUTINAS[dia.vt]) out += bloque('🔻', 'V-taper — ' + P.RUTINAS[dia.vt].nom + ' (' + P.RUTINAS[dia.vt].min + ' min)', [], P.RUTINAS[dia.vt].items, 'Espalda y hombros anchos contra cintura estrecha: la cintura baja con el déficit y los hombros crecen con esto, tres veces por semana de trabajo fuerte y laterales a diario. Márcalo como hecho y anota tus medidas en Cuerpo y ciencia → V-taper.');
     if (/prevención lumbar/.test(dia.sesion || '')) out += bloque('🧘', 'Prevención lumbar y cadera (' + P.RUTINAS.P.min + ' min)', [], P.RUTINAS.P.items, 'Protege la espalda en las subidas. Antes o después de la rodada; sin dolor.');
     if (/equilibrio \d/.test(dia.sesion || '')) out += bloque('⚖️', 'Equilibrio y estabilidad (' + P.RUTINAS.E.min + ' min)', [], P.RUTINAS.E.items, 'Piernas y cadera estables para no perder tracción en la cuesta. En casa, sin pesas.');
     if (dia.nat) out += bloque('🏊', 'Natación (opcional) — ' + dia.nat + ' min', ['Una vez por semana, sin penalización si no se hace.'], ['Calienta 100 m suaves.', 'Series cómodas a RPE 4–5 con 20 s de pausa.', 'Cierra con 100 m de espalda.'], 'Descarga las piernas: ideal el día siguiente a la calidad.');

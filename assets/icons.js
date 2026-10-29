@@ -24,6 +24,7 @@
     avion: "<path d='M21 4L3 11l6 2 2 6 3-4 5 3z'/>",
     reloj: "<circle cx='12' cy='13' r='7.5'/><path d='M12 9v4l2.5 2M5 4L3 6M19 4l2 2'/>",
     campana: "<path d='M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 21h4'/>",
+    vtaper: "<path d='M3 5h18l-6 7v8h-6v-8z'/>",
     pdf: "<path d='M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6'/>",
     imprimir: "<path d='M7 8V3h10v5M7 17H4v-7h16v7h-3M7 14h10v7H7z'/>",
     // páginas

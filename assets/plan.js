@@ -11,8 +11,11 @@
       nota: 'Travesía con ~800 m de desnivel positivo. Es salida larga con montaña: ritmo constante, hidratación y comida desde el inicio, sin competir.' },
     { id: 'capis', fecha: '2026-10-18', nombre: 'Rodada con los Capis', deporte: 'mtb',
       km: null, prioridad: 'C', lugar: 'Por confirmar', nota: 'Rodada de grupo. Sirve como salida larga en bici.' },
+    { id: 'rodada100', fecha: '2026-11-01', nombre: 'Rodada de 100 km, 2.000 m D+ (6:00)', deporte: 'bici',
+      km: 100, prioridad: 'B', lugar: 'Por confirmar', desnivel: 2000,
+      nota: 'Salida a las 6:00, 100 km con 2.000 m D+: tu salida más larga del año y, por desnivel, el ensayo de verdad para el sueño de 2.000 m. Ritmo Z2 constante, sube sentado y a cadencia 75–90, come 60 g de carbohidrato por hora desde la primera y bebe con sodio. Siete días antes de Campanabaj: si la espalda o el pie molestan, acorta, no aprietes. Al terminar, la milla de la racha y la prevención lumbar.' },
     { id: 'campana', fecha: '2026-11-08', nombre: 'Campanabaj MTB, Totonicapán', deporte: 'mtb',
-      km: 30, prioridad: 'B', lugar: 'Totonicapán', desnivel: 1200, nota: '30 km con 1.200 m de desnivel positivo y altura (~2.500 m). Tu mejor ensayo del año para el sueño de 2.000 m D+. Ese día sólo la milla de la racha, al bajarte de la bici.' },
+      km: 30, prioridad: 'B', lugar: 'Totonicapán', desnivel: 1200, nota: '30 km con 1.200 m de desnivel positivo y altura (~2.500 m). Con altura y 1.200 m D+, una semana después de los 100 km. Ese día sólo la milla de la racha, al bajarte de la bici.' },
     { id: 'senderos', fecha: '2026-11-15', nombre: 'Entre Senderos MTB', deporte: 'mtb',
       km: 50, prioridad: 'B', lugar: 'Por confirmar', desnivel: 1500, nota: '50 km con 1.500 m D+ de montaña, 6 días antes de la Guatemágica. Ritmo de Z2 constante, come desde la hora 1 y no compitas; luego la milla de la racha.' },
     { id: 'sanfelipe', fecha: '2026-11-19', nombre: '5K y 10K San Felipe', deporte: 'atletismo',
@@ -54,7 +57,11 @@
     E: { nom: 'equilibrio y estabilidad', min: 10, items: ['2 rondas', 'Equilibrio a una pierna con los ojos cerrados · 30 s por lado', 'Bajada lateral de escalón, 3 s · 8 por pierna', 'Caminata lateral con banda · 12 pasos por lado', 'Elevación de talón a una pierna, bajada de 3 s · 12 por pierna', 'Zancada con giro de tronco · 8 por lado'] },
     U: { nom: 'pesas sin cargar el pie', min: 30, items: ['3 rondas; todo sentado, tumbado o de rodillas, con el pie golpeado sin apoyo de puntas', 'Press de pecho en el suelo o en banco con mancuernas · 8–12', 'Remo a una mano con rodilla y mano en el banco · 10 por lado', 'Press de hombros sentado con mancuernas · 8–10', 'Dominadas con banda o negativas de 4 s · 3–6 (bájate sin saltar)', 'Curl de bíceps sentado + extensión de tríceps · 12 + 12', 'Puente de glúteo apoyando talones · 12–15 (sólo si no duele)', 'Plancha con rodillas apoyadas · 30–40 s'] },
     G: { nom: 'boxeo sin desplazamiento (sólo golpes)', min: 20, items: ['De pie y fijo, peso en el talón y en el pie sano; sin pivotar sobre la punta del pie golpeado, sin cuerda ni saltos', '5 rounds de 2 min al saco o al aire, 1 min de pausa: jab, directo, ganchos y uppercuts con giro de cadera, no de pie', 'Si al girar o al cargar el pie molesta, hazlo sentado en un banco (sólo brazos y tronco)', 'Cierra con 2 × 30 s de golpes rápidos sin potencia'] },
-    Z: { nom: 'core y tren superior sin cargar el pie', min: 15, items: ['2 rondas, todo sentado o tumbado; si el pie molesta, sáltalo', 'Plancha sobre los antebrazos con las rodillas apoyadas · 30 s', 'Dead-bug lento · 8 por lado', 'Press de hombros sentado con mancuernas · 10', 'Remo con banda sentado · 12', 'Elevación de piernas tumbado, rodillas flexionadas · 10', 'Plancha lateral sobre la rodilla · 20 s por lado'] }
+    Z: { nom: 'core y tren superior sin cargar el pie', min: 15, items: ['2 rondas, todo sentado o tumbado; si el pie molesta, sáltalo', 'Plancha sobre los antebrazos con las rodillas apoyadas · 30 s', 'Dead-bug lento · 8 por lado', 'Press de hombros sentado con mancuernas · 10', 'Remo con banda sentado · 12', 'Elevación de piernas tumbado, rodillas flexionadas · 10', 'Plancha lateral sobre la rodilla · 20 s por lado'] },
+    /* V-taper: espalda ancha y hombros contra cintura estrecha. Mancuerna de 25 lb, kettlebell, barra, banda y barra de dominadas; todo sentado o de pie sin cargar la punta del pie. */
+    V: { nom: 'V-taper · dorsales y hombro lateral', min: 14, items: ['3 rondas, sin llegar al fallo (deja 1–2 repeticiones en reserva) y 45–60 s de pausa entre ejercicios', 'Dominadas con banda o negativas de 4 s · 3–6 (agarre ancho, pecho hacia la barra, codos hacia las caderas)', 'Remo a una mano con mancuerna · 10 por lado (el codo va a la cadera; no encojas el hombro hacia la oreja)', 'Pull-over con una mancuerna tumbado · 12 (costillas abajo, sin arquear la espalda)', 'Elevación lateral con mancuerna ligera o botellas de 1,5 L · 12–15 (codo apenas flexionado, sube hasta la altura del hombro)'] },
+    W: { nom: 'V-taper · hombro posterior, lateral y postura', min: 12, items: ['3 rondas, ligero y con técnica; la bici y el escritorio redondean los hombros y esto lo corrige', 'Elevación lateral con mancuerna ligera o botellas · 12–15', 'Pájaro (elevación posterior) inclinado con mancuernas ligeras · 15', 'Jalón a la cara con banda (face pull) · 15, apretando los omóplatos 1 s', 'Retracción de omóplatos con banda, brazos en «W» · 10 + estiramiento de pectoral en el marco de la puerta · 30 s por lado'] },
+    L: { nom: 'V-taper · sólo laterales', min: 5, items: ['3 × 12–15 elevaciones laterales con mancuerna ligera o botellas, 45 s de pausa', 'Se hace incluso los días de fuerza fuerte y la víspera de un evento: es poco volumen y casi no fatiga'] }
   };
 
   // Fila = [fecha, tipo, descripción, km de carrera, minutos de bici, id de evento]
@@ -86,7 +93,7 @@
     ['2026-10-29', 'H', 'HIIT + fuerza A', 7, 0, null],
     ['2026-10-30', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-31', 'F', 'FTP en bici + 4 km fácil', 4, 75, null],
-    ['2026-11-01', 'L', 'L', 9, 0, null],
+    ['2026-11-01', 'B', 'Rodada de 100 km, 2.000 m D+ (salida 6:00, unas 6–7 h) + trote o caminata de la racha 1,6 km al terminar', 1.6, 390, 'rodada100'],
     ['2026-11-02', 'R', 'R', 2, 0, null],
     ['2026-11-03', 'Q', 'Q', 8.5, 0, null],
     ['2026-11-04', 'B', '4 km fácil AM + bici Z2 PM', 4, 60, null],
@@ -146,7 +153,7 @@
     ['2026-10-29', 'S', 'Sprints cortos AM + fuerza A PM', 6, 0, null],
     ['2026-10-30', 'R', 'R AM + bici suave + fuerza B PM', 3, 30, null],
     ['2026-10-31', 'B', 'Bici fondo + 4 km off-bike (brick)', 4, 120, null],
-    ['2026-11-01', 'L', 'L', 11, 0, null],
+    ['2026-11-01', 'B', 'Rodada de 100 km, 2.000 m D+ (salida 6:00, unas 6–7 h) + trote o caminata de la racha 1,6 km al terminar', 1.6, 390, 'rodada100'],
     ['2026-11-02', 'R', 'R AM + bici suave + fuerza C PM', 3, 30, null],
     ['2026-11-03', 'Q', 'Q AM + bici suave PM', 10, 30, null],
     ['2026-11-04', 'E', 'E AM + bici Z2 + fuerza A PM', 6, 40, null],
@@ -208,7 +215,7 @@
     ['2026-10-29', 'S', 'Sprints AM + fuerza A PM', 6, 0, null],
     ['2026-10-30', 'R', 'R + fuerza B', 2, 0, null],
     ['2026-10-31', 'F', 'FTP en bici + 3 km fácil', 3, 75, null],
-    ['2026-11-01', 'L', 'L', 10, 0, null],
+    ['2026-11-01', 'B', 'Rodada de 100 km, 2.000 m D+ (salida 6:00, unas 6–7 h) + trote o caminata de la racha 1,6 km al terminar', 1.6, 390, 'rodada100'],
     ['2026-11-02', 'R', 'R', 2, 0, null],
     ['2026-11-03', 'Q', 'Q', 9, 0, null],
     ['2026-11-04', 'F', 'FTP PM + 3 km off-bike (brick)', 3, 70, null],
