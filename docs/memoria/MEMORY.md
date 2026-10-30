@@ -1,4 +1,4 @@
 - [Git identity: emiliodom](git-identity-emiliodom.md) — commit/push this repo as emiliodom, verify `gh auth status` first
-- [Strava project state](strava-project-state.md) — v0.14.1 architecture, tooling, gotchas, open items
+- [Strava project state](strava-project-state.md) — v0.12.9 architecture, tooling, gotchas, open items
 - [User preferences](user-preferences.md) — language split, workflow expectations
 - [Health/pause handling](health-pause-feedback.md) — injuries: pause don't delete, general info only, don't push the streak

@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.14.2] — 2026-10-29
+
+### Cambiado
+- **Fin de semana de la rodada con la familia en Retalhuleu** (`ajuste.js`, `RETORNO`): viernes 30 oct MTB Z2 de ~30 km y ~500 m D+ (≈ 2 h, sin series; ensayo de comida y bebida) + la milla de la racha, sin pesas; sábado 31 sólo la milla de la racha + natación recreativa (`d.nat` = 30; nuevo 7.º elemento de la fila de `RETORNO`); domingo 1 nov la racha tras los 100 km es de 1,6 km mínimo o 2 km (`plan.js`).
+- **Semana del 2 nov, de vuelta al entrenamiento en serio:** lunes trote fácil 4 km + fuerza U + core (antes descanso), martes bici de calidad 5 × 4 min (antes Z2), miércoles trote fácil 5 km + fuerza G; el jueves de activación y Campanabaj (8 nov) no cambian.
+
 ## [0.14.1] — 2026-10-29
 
 ### Añadido

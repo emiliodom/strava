@@ -206,7 +206,7 @@
   /* RETORNO (22 oct–4 nov): el pie golpeado mejora (2 km caminando con algo de dolor, la bici sin dolor). Dos semanas iguales en los
      tres planes: la bici manda (calidad sentado, sin pararse sobre los pedales), la racha se cumple CAMINANDO (1,6–2 km), pesas sin
      cargar el pie (U) 3×/semana y boxeo sin desplazamiento (G) 2×/semana, un descanso los lunes. El trote vuelve como prueba el 31 oct
-     y el 3 nov sólo con 2 días caminando sin dolor. Fila: [tipo, km a pie, min de bici, sesión, recordatorio]. */
+     y el 3 nov sólo con 2 días caminando sin dolor. Fila: [tipo, km a pie, min de bici, sesión, recordatorio, trote (1), natación (min)]. */
   var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-07';
   var RETORNO = {
     '2026-10-22': ['B', 2, 45, 'Bici Z2 suave 45 min + caminata 2 km + fuerza U PM', null],
@@ -217,11 +217,11 @@
     '2026-10-27': ['F', 1.6, 60, 'AM 6:00: bici calidad 5 × 4 min fuerte (60 min), puedes pararte sobre los pedales si no duele + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'Sólo dos citas hoy: la bici de la mañana y el trote + pesas de la noche, todo seguido.', 1],
     '2026-10-28': ['B', 1.6, 60, 'AM 6:00: bici Z2 60 min + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
     '2026-10-29': ['F', 1.6, 60, 'AM 6:00: bici calidad 6 × 3 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', null, 1],
-    '2026-10-30': ['R', 2, 0, 'AM 6:00: trote suave 2 km a ~9:00/km (dolor máx. 3/10) + PM 18:30: fuerza U (pesas sin cargar el pie, las que faltan de esta semana) + prevención lumbar 12 min', 'Víspera de la víspera de los 100 km: nada que cansar. Revisa la bici, las llantas, la cadena y la comida del domingo.', 1],
-    '2026-10-31': ['B', 1.6, 40, 'AM 6:00: bici suave 40 min con 3 × 1 min a cadencia alta (activación) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', 'Mañana salida a las 6:00: cena temprano con mucho carbohidrato, prepara bidones con sodio y la ropa, acuéstate antes de las 21:00. Fin del horario de verano de Utah.', 1],
-    '2026-11-02': ['D', 1.6, 0, 'Descanso: sólo el trote suave de la racha 1,6 km + prevención lumbar 12 min', null, 1],
-    '2026-11-03': ['B', 1.6, 60, 'AM 5:30: bici Z2 suave 60 min, piernas sueltas tras los 100 km + PM 18:30: trote de la racha 1,6 km + fuerza U (pesas sin cargar el pie)', 'La calidad de esta semana es la activación del jueves y Campanabaj.', 1],
-    '2026-11-04': ['E', 4, 0, 'AM 5:30: trote fácil 4 km a ~9:00/km + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Si los trotes del 30 oct y de hoy fueron sin dolor, la calidad corriendo vuelve después de Campanabaj.', 1],
+    '2026-10-30': ['B', 1.6, 120, 'AM 6:00: MTB Z2 ~30 km con ~500 m D+ (unas 2 h, subidas sentado y conversando, sin series) + PM: trote de la racha 1,6 km (mínimo: llega la familia)', 'A dos días de los 100 km: rodada de fondo, no de calidad. Si en una subida no puedes hablar, baja el ritmo. Come y bebe durante la salida como ensayo del domingo.', 1],
+    '2026-10-31': ['R', 1.6, 0, 'Trote de la racha 1,6 km (mínimo) + natación recreativa con la familia (sin series)', 'Día de familia en Retalhuleu: nada más. Carga de carbohidrato, sombra y agua. Mañana salida a las 6:00: cena temprano, bidones con sodio, ropa lista y a dormir antes de las 21:00. Fin del horario de verano de Utah.', 1, 30],
+    '2026-11-02': ['E', 4, 0, 'AM 5:30: trote fácil 4 km a ~8:30/km (piernas sueltas tras los 100 km) + PM 18:30: fuerza U (pesas sin cargar el pie) + core 15 min', 'Vuelve el entrenamiento en serio. Si las piernas siguen muy pesadas o el pie molesta, recorta a la milla de la racha y deja las pesas.', 1],
+    '2026-11-03': ['F', 1.6, 60, 'AM 5:30: bici calidad 5 × 4 min fuerte (60 min) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', 'Calidades de la semana: hoy, la activación del jueves y Campanabaj el domingo.', 1],
+    '2026-11-04': ['E', 5, 0, 'AM 5:30: trote fácil 5 km a ~8:30/km + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Si los trotes de esta semana van sin dolor, la calidad corriendo vuelve después de Campanabaj.', 1],
     '2026-11-05': ['B', 1.6, 45, 'AM 5:30: bici activación 45 min con 4 × 1 min fuerte (3 días antes de Campanabaj) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
     '2026-11-06': ['R', 2, 0, 'Trote suave 2 km (racha) + prevención lumbar 12 min; revisa la bici, llantas y comida de la carrera', 'Víspera de la víspera: nada duro, duerme bien.', 1],
     '2026-11-07': ['B', 1.6, 30, 'Bici suave 30 min (soltar las piernas) + trote de la racha 1,6 km + prepara la mochila', 'Mañana Campanabaj: sal con luz y con el pie vendado o con calzado rígido si te lo indicó el médico.', 1]
@@ -235,7 +235,7 @@
       }
       var r = RETORNO[d.fecha]; if (!r) return;
       d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.recordatorio = [d.hito ? d.recordatorio : null, r[4]].filter(Boolean).join(' · ') || null;
-      d.nat = 0; d.caminar = r[5] ? 0 : r[1]; d.retorno = 1; delete d.lesion;
+      d.nat = r[6] || 0; d.caminar = r[5] ? 0 : r[1]; d.retorno = 1; delete d.lesion;
     });
   }
 
