@@ -3,11 +3,21 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
-## [0.14.2] — 2026-10-29
+## [0.14.3] — 2026-11-01
 
 ### Cambiado
 - **Fin de semana de la rodada con la familia en Retalhuleu** (`ajuste.js`, `RETORNO`): viernes 30 oct MTB Z2 de ~30 km y ~500 m D+ (≈ 2 h, sin series; ensayo de comida y bebida) + la milla de la racha, sin pesas; sábado 31 sólo la milla de la racha + natación recreativa (`d.nat` = 30; nuevo 7.º elemento de la fila de `RETORNO`); domingo 1 nov la racha tras los 100 km es de 1,6 km mínimo o 2 km (`plan.js`).
 - **Semana del 2 nov, de vuelta al entrenamiento en serio:** lunes trote fácil 4 km + fuerza U + core (antes descanso), martes bici de calidad 5 × 4 min (antes Z2), miércoles trote fácil 5 km + fuerza G; el jueves de activación y Campanabaj (8 nov) no cambian.
+- **Corrección de actividad duplicada (1 nov):** la MTB de 100,5 km, id `20823218119`, es la salida válida; la actividad «Morning Ride» de 121,6 km, id `20823224065`, se conserva visible pero se excluye por solaparse con ella. `metrics.js` excluye anomalías antes de unir tramos de bici, para no descartar también la salida válida.
+- **Corrección de actividad duplicada (1 nov):** la MTB de 100,5 km, id `20823218119`, es la salida válida; la actividad «Morning Ride» de 121,6 km, id `20823224065`, se conserva visible pero se excluye por solaparse con ella. `metrics.js` excluye anomalías antes de unir tramos de bici, para no descartar también la salida válida.
+
+### Añadido
+- **Módulo «Calidad e intensidad»** (`assets/modules/calidad.js`, página Cuerpo y ciencia, `#calidad`): niveles de 1/2/3 sesiones de calidad por semana (fácil/medio/brutal) como regla práctica, qué es calidad en bici, carrera y pesas (no sólo cargar más peso: cercanía al fallo, carga, volumen, rango, descanso), subidas/desnivel/altitud, frenos (pie, déficit de −500 kcal/RED-S, señales del cuerpo) y una lista de estudios citados con sus límites. Incluye el conteo real de calidad por semana de los tres planes (`App.calExport.dias`).
+- **Calendario:** cada semana muestra «Q n» (sesiones de calidad; no cuentan los días en pausa) y la leyenda enlaza al módulo. `App.plan.CALIDAD` define qué tipos cuentan (Q, H, S, T, F, V, M; el largo y las carreras van aparte).
+- Rutinas de pesas A, B y U: línea final de calidad (2–3 repeticiones en reserva, bajada de 3 s, 2 min de pausa en lo pesado).
+
+### Nota
+- La evidencia se verificó por búsqueda (Stöggl y Sperlich 2014, Esteve-Lanao 2007, Wilson 2012, Schoenfeld 2016/2017, Robinson 2024, Kassiano 2023, Wehrlin y Hallén 2006, Mountjoy 2018, entre otros). Se corrigieron afirmaciones previas: correr interfiere con la fuerza y pedalear no (Wilson 2012); el rango de 10–20 series por semana no está demostrado como tal. Los planes no equivalen literalmente a 1/2/3 sesiones de calidad.
 
 ## [0.14.1] — 2026-10-29
 

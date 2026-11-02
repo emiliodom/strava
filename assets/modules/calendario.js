@@ -451,7 +451,7 @@
     var idx = {}; lista.forEach(function (d) { idx[d.fecha] = d; });
     var cur = DT.addDays(ini, -DT.dowMon0(ini)), tope = DT.addDays(fin, 6 - DT.dowMon0(fin)), out = [];
     while (cur <= tope) {
-      var sem = { lunes: DT.iso(cur), num: String(DT.isoWeek(cur)).slice(-2), dias: [], plan: 0, real: 0, bici: 0, vt: 0, vtOk: 0 };
+      var sem = { lunes: DT.iso(cur), num: String(DT.isoWeek(cur)).slice(-2), dias: [], plan: 0, real: 0, bici: 0, vt: 0, vtOk: 0, q: 0 };
       for (var i = 0; i < 7; i++) {
         var k = DT.iso(cur), d = idx[k] || null;
         sem.dias.push({ k: k, d: d });
@@ -459,6 +459,7 @@
           if (d.pausa) sem.pausa = (sem.pausa || 0) + 1;
           sem.plan += kmRunPlan(d);
           if (!d.pausa && d.minBici) sem.bici += d.minBici;
+          if (!d.pausa && P.CALIDAD[d.tipo]) sem.q++;
           if (d.vt) { sem.vt++; if (vtHecho(k)) sem.vtOk++; }
           var r = realDe(k); if (r && r.km) sem.real += r.km;
         }
@@ -472,6 +473,7 @@
     if (s.pausa && !s.plan) return "<span class='kmw'><b>pausa</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') + '</span>';
     return "<span class='kmw'><b>" + F.num(s.plan, 0) + " km</b>" + (s.real ? "<small>real " + F.num(s.real, 0) + '</small>' : '') +
       (s.bici ? "<small>bici " + F.num(s.bici / 60, 1) + ' h</small>' : '') +
+      (s.q ? "<small title='Sesiones de calidad de la semana (ver Calidad)'>Q " + s.q + '</small>' : '') +
       (s.vt ? "<small>V " + s.vtOk + '/' + s.vt + '</small>' : '') + '</span>';
   }
   function rejilla(plan, lista, D) {
@@ -504,6 +506,7 @@
       I.FAMILIAS.map(function (f) { return "<span class='f-" + f[0] + "'><span class='ico " + f[0] + "'>" + I.svg({ suave: 'run', duro: 'rayo', monte: 'monte', bici: 'bici', carrera: 'carrera', libre: 'descanso' }[f[0]]) + '</span>' + esc(f[1]) + '</span>'; }).join('') +
       "<span class='sep'></span>" +
       "<span><span class='ico vtaper'>" + I.svg('vtaper') + '</span>V-taper (gris: pendiente; verde: hecho)</span>' +
+      "<span><b>Q n</b>&nbsp;sesiones de calidad de la semana (<a href='#calidad'>qué cuenta</a>)</span>" +
       "<span><span class='ring ok' style='--p:100'><b>✓</b></span>hecho (≥ 80 %)</span>" +
       "<span><span class='ring warn' style='--p:55'><b>55</b></span>parcial</span>" +
       "<span><span class='ring bad' style='--p:0'><b>✕</b></span>no hecho</span>" +

@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.14.2** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.14.3** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -39,6 +39,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |
 | Ciencia | Lactato, ultradistancia, combustible en carrera, suplementos y comidas favoritas |
+| Calidad e intensidad | Niveles de 1/2/3 sesiones de calidad por semana, qué es calidad en bici, carrera y pesas, subidas/altitud y los estudios detrás; conteo real de cada plan |
 | V-taper | Trabajo diario de dorsales y hombros (rutinas V/W/L de 5–14 min, sin cargar el pie), semana con casillas, medidas (cintura, pecho, hombros, brazo, peso), índice V = hombros ÷ cintura y copia JSON |
 | Preparación | Qué hacer 15, 10 y 5 días antes de cada evento del calendario |
 | Espalda y equilibrio | Dolor lumbar al subir, calambres y pérdida de equilibrio: causas, prevención, señales de alarma y dos rutinas (12 y 10 min) que también están en el calendario |
@@ -338,6 +339,9 @@ con alguna, crea `connector/anomalias.json`:
 ```
 
 `null` rehabilita una actividad que el detector marcó por error.
+Las actividades excluidas se conservan visibles, pero no se mezclan con otros tramos de bici ni cuentan
+para la carga o las estadísticas. El archivo de overrides se versiona para que la corrección persista
+en cada sincronización.
 
 ## Cuerpo 360 (experimental)
 

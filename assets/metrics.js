@@ -67,22 +67,25 @@
     var anomalias = {};
     (raw.estadisticas && raw.estadisticas.anomalias_datos || []).forEach(function (a) { anomalias[String(a.id)] = a.detalle; });
 
-    var acts = unirBicis(raw.actividades || []).map(function (a) {
-      var g = GRUPO[a.sport_type] || 'otros';
-      var min = (a.moving_time || 0) / 60;
-      var km = (a.distance || 0) / 1000;
-      var ms = a.avg_speed || (a.moving_time ? a.distance / a.moving_time : 0);
-      return {
-        id: String(a.id), nombre: a.name || '', deporte: a.sport_type, grupo: g,
-        fechaISO: String(a.start_local).slice(0, 10), hora: parseInt(String(a.start_local).slice(11, 13), 10) || 0,
-        min: min, km: km, elev: a.elevation_gain || 0, re: a.relative_effort,
-        kcal: a.calories || 0, ms: ms, paceSpk: ms > 0 ? 1000 / ms : null,
-        maxMs: a.max_speed || 0, elapsed: (a.elapsed_time || 0) / 60,
-        mkm: km > 0.5 ? (a.elevation_gain || 0) / km : null,
-        hr: a.avg_hr || null, hrMax: a.max_hr || null, cad: a.avg_cadence || null, watts: a.avg_watts || null, splits: a.splits || null,
-        anomalia: anomalias[String(a.id)] || null
-      };
-    }).sort(function (x, y) { return x.fechaISO < y.fechaISO ? -1 : 1; });
+    var actividades = raw.actividades || [];
+    var acts = unirBicis(actividades.filter(function (a) { return !anomalias[String(a.id)]; }))
+      .concat(actividades.filter(function (a) { return anomalias[String(a.id)]; }))
+      .map(function (a) {
+        var g = GRUPO[a.sport_type] || 'otros';
+        var min = (a.moving_time || 0) / 60;
+        var km = (a.distance || 0) / 1000;
+        var ms = a.avg_speed || (a.moving_time ? a.distance / a.moving_time : 0);
+        return {
+          id: String(a.id), nombre: a.name || '', deporte: a.sport_type, grupo: g,
+          fechaISO: String(a.start_local).slice(0, 10), hora: parseInt(String(a.start_local).slice(11, 13), 10) || 0,
+          min: min, km: km, elev: a.elevation_gain || 0, re: a.relative_effort,
+          kcal: a.calories || 0, ms: ms, paceSpk: ms > 0 ? 1000 / ms : null,
+          maxMs: a.max_speed || 0, elapsed: (a.elapsed_time || 0) / 60,
+          mkm: km > 0.5 ? (a.elevation_gain || 0) / km : null,
+          hr: a.avg_hr || null, hrMax: a.max_hr || null, cad: a.avg_cadence || null, watts: a.avg_watts || null, splits: a.splits || null,
+          anomalia: anomalias[String(a.id)] || null
+        };
+      }).sort(function (x, y) { return x.fechaISO < y.fechaISO ? -1 : 1; });
 
     var limpias = acts.filter(function (a) { return !a.anomalia; });
 
