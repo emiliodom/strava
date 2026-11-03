@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.14.4] — 2026-11-02
+
+### Añadido
+- **Pictogramas de ejercicios** (`assets/pictos.js`, junto a `icons.js`): 35 posturas dibujadas a mano en SVG en línea (sólo `currentColor`, válidas en tema claro, oscuro e impresión) para todas las rutinas del plan (A, B, C, G, P, E, U, Z, V, W y L). `deItem` reconoce el texto de cada línea de `RUTINAS.items` y `tira(items)` pinta la cuadrícula `.ejgrid` (ficha con el pictograma y el nombre del ejercicio); lo que no es ejercicio («3 rondas», notas de técnica y de calidad) queda como lista al pie.
+- **Dónde se ve:** el detalle de cualquier día del calendario y «Lo que te toca hoy» (`actividad.js` → `bloque`), las rutinas de la página «Pie, espalda y equilibrio» (`prevencion.js`), el modal «V-taper de hoy» (`resumen.js`) y la nueva sección «Los ejercicios» con V · W · L en la página V-taper (`vtaper.js`). Estilos nuevos en `app.css` (`.ejgrid`, `.ej`, `.ej figcaption`, `.ej-notas`, `.ej-tit`) con salto de página evitado en la impresión; versiones de los assets a `?v=0.14.4`.
+
+### Corregido
+- **El bloque «Core» no salía en los días con «core 15 min»** (`actividad.js`): la expresión regular sólo reconocía «core sin cargar» (filas de lesión) y las filas de RETORNO dicen «core 15 min»; ahora reconoce las dos formas y la rutina Z se pinta con sus pictogramas en esos días.
+
 ## [0.14.3] — 2026-11-01
 
 ### Cambiado

@@ -67,9 +67,15 @@
   }
 
   function bloque(icono, titulo, lineas, est, nota) {
+    /* Los ejercicios de una rutina salen como cuadrícula de pictogramas (pictos.js);
+       lo que no es ejercicio (o si no hay pictos) sigue siendo la lista de siempre. */
+    var lista = '';
+    if (est && est.length) {
+      lista = (App.pictos && App.pictos.tira(est)) ||
+        '<ul>' + est.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>';
+    }
     return "<div class='act'><h5>" + icono + ' ' + esc(titulo) + '</h5>' +
-      lineas.map(function (l) { return '<p>' + l + '</p>'; }).join('') +
-      (est && est.length ? '<ul>' + est.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' : '') +
+      lineas.map(function (l) { return '<p>' + l + '</p>'; }).join('') + lista +
       (nota ? "<p class='n'><small>" + esc(nota) + '</small></p>' : '') + '</div>';
   }
 
@@ -104,7 +110,7 @@
       if (ru) out += bloque('💪', 'Fuerza ' + m[1] + ' — ' + ru.nom + ' (' + ru.min + ' min)', [], ru.items, 'En casa, separada unas 6 h de la calidad si se puede (efecto de interferencia); si no, después del rodaje fácil.');
     }
 
-    if (/core sin cargar/.test(dia.sesion || '')) out += bloque('🧱', 'Core y tren superior sin cargar el pie (' + P.RUTINAS.Z.min + ' min)', [], P.RUTINAS.Z.items, 'Mientras el pie se recupera: nada de zancadas, saltos ni elevaciones de talón.');
+    if (/core sin cargar|core \d+ min/.test(dia.sesion || '')) out += bloque('🧱', 'Core y tren superior sin cargar el pie (' + P.RUTINAS.Z.min + ' min)', [], P.RUTINAS.Z.items, 'Mientras el pie se recupera: nada de zancadas, saltos ni elevaciones de talón.');
     if (dia.vt && P.RUTINAS[dia.vt]) out += bloque('🔻', 'V-taper — ' + P.RUTINAS[dia.vt].nom + ' (' + P.RUTINAS[dia.vt].min + ' min)', [], P.RUTINAS[dia.vt].items, 'Espalda y hombros anchos contra cintura estrecha: la cintura baja con el déficit y los hombros crecen con esto, tres veces por semana de trabajo fuerte y laterales a diario. Márcalo como hecho y anota tus medidas en Cuerpo y ciencia → V-taper.');
     if (/prevención lumbar/.test(dia.sesion || '')) out += bloque('🧘', 'Prevención lumbar y cadera (' + P.RUTINAS.P.min + ' min)', [], P.RUTINAS.P.items, 'Protege la espalda en las subidas. Antes o después de la rodada; sin dolor.');
     if (/equilibrio \d/.test(dia.sesion || '')) out += bloque('⚖️', 'Equilibrio y estabilidad (' + P.RUTINAS.E.min + ' min)', [], P.RUTINAS.E.items, 'Piernas y cadera estables para no perder tracción en la cuesta. En casa, sin pesas.');

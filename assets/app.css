@@ -250,6 +250,14 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 .act h5{margin:0 0 .25rem;font-size:.95rem}
 .act p{margin:.1rem 0}.act ul{margin:.2rem 0 .2rem 1.1rem;padding:0}.act li{font-size:.86rem}
 .act .n{color:var(--pico-muted-color)}
+/* Pictogramas de ejercicios (pictos.js): cuadrícula de fichas con la postura y el texto */
+.ejgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:.45rem;margin:.4rem 0 .5rem}
+.ej{margin:0;padding:.5rem .35rem .4rem;border:1px solid var(--pico-muted-border-color);border-radius:.7rem;text-align:center;background:var(--pico-card-background-color,transparent)}
+.ej svg{width:54px;height:54px;color:var(--ink)}
+.ej figcaption{display:block;font-size:.7rem;line-height:1.32;color:var(--pico-muted-color);margin-top:.3rem}
+.ej-notas{margin:.25rem 0 .35rem 1.1rem;padding:0;font-size:.8rem;color:var(--pico-muted-color)}
+.ej-notas li{margin:.12rem 0}
+.ej-tit{margin:.9rem 0 .2rem;font-size:.95rem}
 .difP{font-variant-numeric:tabular-nums}
 .difP b.bad{color:var(--bad)}.difP b.ok{color:var(--ok)}.difP b.warn{color:var(--warn)}
 
@@ -451,7 +459,7 @@ section{scroll-margin-top:calc(var(--hh,3.6rem) + 3rem)}
   main>section:not(.off):first-of-type{break-before:auto}
   body.imprimir-todo main>section:first-of-type{break-before:auto}
   #calendario{page:cal}
-  article,.kpi,.tile,.note,.tw,figure.ch,details.acc,.coach,.act,.ag-sem,.c{break-inside:avoid;box-shadow:none!important}
+  article,.kpi,.tile,.note,.tw,figure.ch,details.acc,.coach,.act,.ag-sem,.c,figure.ej{break-inside:avoid;box-shadow:none!important}
   h2,h3,h4{break-after:avoid}
   .cal{overflow:visible}
   .g8{min-width:0!important}

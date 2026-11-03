@@ -8,7 +8,9 @@
   function rutina(k, titulo) {
     var r = P.RUTINAS[k];
     if (!r) return '';
-    return '<p><b>' + esc(titulo) + ' · ' + r.min + ' min</b></p><ol>' + r.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ol>';
+    return '<p><b>' + esc(titulo) + ' · ' + r.min + ' min</b></p>' +
+      ((App.pictos && App.pictos.tira(r.items)) ||
+        '<ol>' + r.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ol>');
   }
 
   function render() {

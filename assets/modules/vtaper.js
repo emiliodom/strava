@@ -157,6 +157,18 @@
     return { lunes: l, dias: dias, hechos: hechosSem, filas: filas, series: series, serieProg: dias.length * SERIES_LAT };
   }
 
+  /* Los ejercicios de cada rutina (V · W · L) en pictogramas — pictos.js. */
+  function rutinasVT() {
+    var out = '';
+    ['V', 'W', 'L'].forEach(function (k) {
+      var r = P.RUTINAS[k];
+      if (!r) return;
+      var t = App.pictos && App.pictos.tira(r.items);
+      if (t) out += "<h4 class='ej-tit'>" + esc(r.nom) + ' · ' + r.min + ' min</h4>' + t;
+    });
+    return out || '<p><small>Los pictogramas no están disponibles.</small></p>';
+  }
+
   function formulario() {
     return "<form id='vtForm' class='vt-form' autocomplete='off'>" +
       "<label>Fecha<input type='date' name='f' value='" + hoyISO() + "' required></label>" +
@@ -227,6 +239,8 @@
       "<progress value='" + s.hechos + "' max='" + Math.max(1, s.dias.length) + "' aria-label='Sesiones de V-taper de la semana'></progress>" +
       "<ul class='vt-sem'>" + s.filas.join('') + '</ul>' +
       '<p><small>Cada día suma 3 series de elevación lateral; los lunes y jueves, además, 9 de dorsales; martes y viernes, 9 de hombro posterior y postura. Los días de fuerza B/U y la víspera de un evento sólo llevan los laterales. Lo marcado también se ve como ✓ en el calendario.</small></p>' +
+
+      '<h3>Los ejercicios</h3>' + rutinasVT() +
 
       '<h3>Tus medidas</h3>' + U.note('Cómo medir', 'Cada 7–14 días, el mismo día de la semana, por la mañana, en ayunas y sin ropa gruesa. <b>Cintura:</b> a la altura del ombligo, exhalando. <b>Pecho:</b> a la altura de los pezones, brazos relajados. <b>Hombros:</b> el contorno completo alrededor de los deltoides por el punto más ancho, con los brazos caídos (necesitas que alguien te ayude). <b>Cuello–hombro:</b> del borde del cuello a la punta del hombro; si baja o sube con los meses, es el trapecio que cambia. <b>Brazo:</b> el bíceps flexionado. Usa siempre la misma cinta y la misma postura: lo que importa es la tendencia, no un valor aislado.', 'info') +
       formulario() + graficos(ms) + tablaMedidas(ms) +

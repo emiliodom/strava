@@ -35,3 +35,6 @@ registro/datos/*
 !registro/datos/.htaccess
 !registro/datos/.gitkeep
 data/comidas/
+
+# Trabajo de sesión: hojas de contactos de pictogramas, pruebas y librerías de render (se regenera).
+artifacts/

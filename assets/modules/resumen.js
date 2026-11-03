@@ -72,7 +72,8 @@
       var VT = App.vtaper, vts = VT.semana(), vhoy = (H.hoyDia && H.hoyDia.vt) || null, vh = VT.hechos(), vOk = !!vh[H.hoyISO];
       var vr = vhoy ? App.plan.RUTINAS[vhoy] : null;
       fichas.push(ficha('vtaper', 'V-taper', vts.hechos + ' / ' + vts.dias.length, vr ? (vOk ? 'hoy hecho ✓' : 'hoy: ' + esc(vr.min + ' min')) : 'hoy libre', vhoy && !vOk ? 'warn' : vOk ? 'ok' : ''));
-      modales.push(plantilla('vtaper', 'V-taper de hoy', (vr ? '<p><b>' + esc(vr.nom) + ' · ' + vr.min + ' min</b></p><ol>' + vr.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ol>' +
+      modales.push(plantilla('vtaper', 'V-taper de hoy', (vr ? '<p><b>' + esc(vr.nom) + ' · ' + vr.min + ' min</b></p>' +
+        ((App.pictos && App.pictos.tira(vr.items)) || '<ol>' + vr.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ol>') +
         "<p><button type='button' data-vt-hecho='" + esc(H.hoyISO) + "' class='" + (vOk ? 'secondary' : '') + "'>" + (vOk ? 'Quitar la marca de hoy' : 'Marcar como hecho') + '</button></p>' : '<p>Hoy no hay V-taper programado.</p>') +
         "<p><small>Las medidas y el avance están en <a href='#vtaper'>Cuerpo y ciencia → V-taper</a>.</small></p>"));
     }
