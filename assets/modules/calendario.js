@@ -49,8 +49,8 @@
       componentes.push({ deporte: 'running', nombre: nombreRun, objetivo: d.km, unidad: 'km' });
     }
     if (d.minBici >= 20) componentes.push({ deporte: 'bici', nombre: 'Bici', objetivo: d.minBici, unidad: 'min' });
-    var fuerza = /fuerza ([ABCGU])/i.exec(d.sesion || '');
-    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: /[CG]/.test(fuerza[1].toUpperCase()) ? 'Boxeo' : 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
+    var fuerza = /fuerza ([ABCGUKO])/i.exec(d.sesion || '');
+    if (fuerza) componentes.push({ deporte: 'fuerza', nombre: /[CGO]/.test(fuerza[1].toUpperCase()) ? 'Boxeo' : 'Fuerza ' + fuerza[1].toUpperCase(), objetivo: 15, unidad: 'min' });
     if (d.nat) componentes.push({ deporte: 'nado', nombre: 'Natación (opcional)', objetivo: d.nat, unidad: 'min', opcional: true });
     return componentes;
   }
@@ -635,8 +635,10 @@
   function hitosHtml() {
     var hoy = isoHoy(), I = App.icons;
     var H = [['2026-11-01', 'reloj', 'Termina el horario de verano de EE. UU.', 'Domingo 1 nov: Utah queda una hora más tarde; Guatemala no cambia.'],
-      ['2026-11-25', 'avion', 'Vuelo a Charlotte', 'Aterrizas 15:27. Calidad por la mañana, rutina de noche desde las 18:00.'],
-      ['2027-01-13', 'avion', 'Regreso a Retalhuleu', 'Vuelo 14:00 · la milla de la racha a las 22:00 de Guatemala.']];
+      ['2026-11-25', 'avion', 'Vuelo a Charlotte', 'Aterrizas hacia las 15:30 (1 h por delante de Guatemala). Entrenas de 6:00 a 9:30; trabajas de 10:00 a 19:00.'],
+      ['2026-12-19', 'avion', 'West Jordan, Utah (tentativo)', '19 y 20 dic: si viajas, sólo la milla mínima. Utah va 2 h detrás de Charlotte.'],
+      ['2027-01-13', 'avion', 'Regreso a Retalhuleu', 'Vuelo 14:00 · la milla mínima por la noche en Guatemala.'],
+      ['2027-01-14', 'reloj', 'Rutina del colegio', 'Correr 5:00–6:00, bici de noche; respaldo 7:00–9:00 (trabajo a las 9:00 de Guatemala).']];
     var prox = H.filter(function (x) { return x[0] >= hoy; });
     if (!prox.length) return '';
     return "<div class='hitos'>" + prox.map(function (x) {
@@ -758,7 +760,7 @@
         'Para un solo día, usa el enlace «Google» de la tabla de competencias. ' +
         '<b>Apple Calendar / Outlook:</b> abre el .ics con doble clic.'))}
 
-      ${raw(U.acc('Horario y rutinas en que se basa el plan', '<p>Cada día tiene su pestaña «Horario». Hasta el 1 de nov (verano de Utah): mañana 5:30–6:45, trabajo 7:00–16:00. Del 2 de nov al 24 de nov: Utah una hora más tarde, mañana hasta 7:30. En Charlotte (25 nov–13 ene, trabajo 9:00–18:00 allá): dos sesiones entre 6:00 y 8:30 y la calidad siempre por la mañana. Las «fuerza A/B/C» son rutinas en casa (módulo Cuerpo 360); la C es boxeo.</p>'))}
+      ${raw(U.acc('Horario y rutinas en que se basa el plan', '<p>Cada día tiene su pestaña «Horario». El trabajo es de 8:00 a 17:00 de Utah. Hasta el 1 de nov (verano de Utah): mañana 5:30–6:45. Del 2 al 24 de nov: trabajo 9:00–18:00 de Guatemala, mañana 5:30–8:30. En Charlotte (25 nov–13 ene, trabajo 10:00–19:00 allá): dos sesiones entre 6:00 y 9:30, la calidad siempre por la mañana y fuerza sin pesas (K: peso corporal; O: boxeo de sombra). Desde el 14 ene, rutina del colegio: correr 5:00–6:00 y la bici de noche. Las «fuerza A/B/C» son rutinas en casa; la C es boxeo. Las tres zonas horarias, en la página Horarios.</p>'))}
       <h3>Competencias del bloque</h3>
       ${raw(P.CONFLICTOS.map(function (c) { return U.note(c.titulo, esc(c.texto), c.nivel); }).join(''))}
 

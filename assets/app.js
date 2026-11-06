@@ -3,15 +3,16 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'dia', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu'];
+  var ORDEN = ['resumen', 'dia', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas'];
   // Cada «página» agrupa módulos afines; la URL es #pagina (o #modulo, que abre su página y baja hasta él).
   var PAGINAS = [
     { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia'] },
-    { id: 'calendario', nom: 'Calendario', icono: 'p_cal', mods: ['calendario'] },
-    { id: 'rendimiento', nom: 'Rendimiento', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
+    { id: 'calendario', nom: 'Calendario', corto: 'Calend.', icono: 'p_cal', mods: ['calendario'] },
+    { id: 'rendimiento', nom: 'Rendimiento', corto: 'Rendim.', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
     { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['proyeccion', 'suenos', 'preparacion'] },
     { id: 'cuerpo', nom: 'Cuerpo y ciencia', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper'] },
     { id: 'comida', nom: 'Comida', icono: 'p_comida', mods: ['menu'] },
+    { id: 'horarios', nom: 'Horarios', icono: 'p_reloj', mods: ['zonas'] },
     { id: 'registro', nom: 'Registro', icono: 'p_registro', mods: ['registro', 'recursos'] }
   ];
   var MODELO = null, MODS = {}, PAGINA = null;
@@ -42,7 +43,7 @@
       return "<li><a href='#" + p.id + "' data-p='" + p.id + "'>" + App.esc(p.nom) + '</a></li>';
     }).join('');
     $('#tab').innerHTML = PAGINAS.map(function (p) {
-      return "<a href='#" + p.id + "' data-p='" + p.id + "'>" + App.icons.svg(p.icono) + App.esc(p.nom.split(' ')[0]) + '</a>';
+      return "<a href='#" + p.id + "' data-p='" + p.id + "'>" + App.icons.svg(p.icono) + App.esc(p.corto || p.nom.split(' ')[0]) + '</a>';
     }).join('');
   }
 

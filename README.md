@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.14.3** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.15.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -52,7 +52,7 @@ Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
 
 ## Páginas, PDF y contraste
 
-La página se organiza en siete **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Comida · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…).
+La página se organiza en ocho **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Comida · Horarios · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…). «Horarios» (`#horarios`, módulo `zonas.js`) muestra la hora de Guatemala, Charlotte y West Jordan (Utah), un convertidor y las etapas del viaje con el trabajo (8:00–17:00 de Utah) en hora local.
 
 ```bash
 node connector/pdf.mjs [salida.pdf]   # informe completo en PDF (A4, tema claro, calendario apaisado)
@@ -65,6 +65,18 @@ Al publicar una versión nueva, cambia `?v=…` de los `<script>`/`<link>` de `i
 ## Pausa por lesión
 
 `assets/ajuste.js` define `PAUSA` (`activa`, `desde`, `hasta`, `motivo`). Mientras esté activa, los días desde `desde` llevan `d.pausa = 1`: la portada y el calendario se ven en gris, no exigen nada, no cuentan para la carga proyectada y la comida va sin déficit. **No se borra nada del plan**: para reanudar basta `activa: false` (o fijar `hasta`). Tras la pausa del 21 oct, `RETORNO` (22 oct–4 nov) sobrescribe esos días en los tres planes: bici como base, racha caminando, pesas sin cargar el pie (rutina U) y boxeo sin desplazamiento (rutina G).
+
+## Agenda real, viaje y zonas horarias
+
+`assets/ajuste.js` aplica, después de `RETORNO`, estas capas iguales en los tres planes:
+
+| Constante | Qué hace | Cómo cambiarla |
+|---|---|---|
+| `AGENDA` | Filas fijas `[tipo, km, min bici, sesión, recordatorio, -, natación]` del 7 al 26 nov (eventos de noviembre, viaje del 24–25 nov, Thanksgiving) y del 13–14 ene. Los días con evento no se tocan. | Edita o añade filas por fecha. |
+| `RUTINA_ENE` | Semana tipo desde el 15 ene (rutina del colegio): correr 5:00–6:00, bici a las 18:30, respaldo 7:00–9:00. El plan llega hasta `FIN_PLAN` (31 ene). | Cambia la plantilla lunes…domingo. |
+| `SIN_PESAS` | En Charlotte, fuerza A/B/U → K (peso corporal) y C/G → O (boxeo de sombra). | `false` si consigues pesas. |
+| `UTAH` | Viaje tentativo a West Jordan (19–20 dic). Sin confirmar sólo avisa. | `confirmado: true` → milla mínima y hora de Utah esos días. |
+| `ZONAS`, `TRABAJO_UT` | Zonas IANA y horario de trabajo (8–17 de Utah). `horarioDe` calcula con `Intl` las fases verano · invierno · charlotte · utah · colegio. | Cambia `TRABAJO_UT` si cambia tu jornada. |
 
 ## Versionado
 

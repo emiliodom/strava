@@ -3,6 +3,20 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.15.0] — 2026-11-06
+
+### Añadido
+- **Página «Horarios»** (módulo 17, `assets/modules/zonas.js`, icono `p_reloj`): relojes en vivo de Guatemala, Charlotte y West Jordan (Utah), convertidor de horas por fecha, etapas del viaje con el trabajo en hora local (8:00–17:00 de Utah = 9:00–18:00 GT = 10:00–19:00 Charlotte) y las ventanas de entrenamiento, y tabla hora por hora de cualquier día. Las diferencias se calculan con `Intl` (`P.desfase`/`P.convertir` en `ajuste.js`), así que el cambio de horario de EE. UU. del 14 mar 2027 ya sale bien.
+- **Rutinas sin pesas para Charlotte** (`plan.js`): K (peso corporal) sustituye a A, B y U, y O (boxeo de sombra) a C y G mientras `d.viaje === 'charlotte'` (`ajuste.js` → `SIN_PESAS`, ponlo en `false` si consigues pesas). El V-taper allí indica «botellas, mochila o banda». Las regex de fuerza pasan a `[ABCGUKO]`.
+- **Viaje tentativo a Utah** (19–20 dic, `ajuste.js` → `UTAH {fechas, confirmado:false}`): por ahora sólo un aviso; con `confirmado: true` esos días quedan en la milla mínima y el horario pasa a la hora de la montaña.
+- **Rutina del colegio desde el 14 ene** (`RUTINA_ENE`, plan extendido hasta el 31 ene): correr 5:00–6:00, bici de ruta o MTB a las 18:30, respaldo 7:00–9:00; fase `colegio` en el horario del día.
+
+### Cambiado
+- **Eventos** (`plan.js`): Campanabaj 32 km / 1.000 m D+ en San Miguel Totonicapán (técnico, lodo y frío); Entre Senderos 50 km / 1.200 m, ~5 h; Guatemágica pasa a prioridad B (para disfrutarla, sin buscar marca); Xab Sibaná 25 km / 700 m (150 min) y se descarta la alternativa de Santo Tomás.
+- **Agenda del 7 nov al 26 nov** (`ajuste.js` → `AGENDA`, igual en los tres planes): sábado 7 MTB 3 h / 700 m en Z2; lunes 9, 16 y 23 sin recuperación de paseo (bici Z2 con trabajo + trote + fuerza B); calidad corriendo el 10 y el 17, largo de 10 km el 12; víspera de Entre Senderos y de la Guatemágica; 24 nov viaje a la capital y 25 nov vuelo con la milla mínima (o 5 km); 26 nov Thanksgiving con ~50 km de bici de ruta en el Sugar Creek Greenway + 5 km de trote. 13 ene: milla mínima por la noche (o caminata en el aeropuerto); 14 ene MTB + trote.
+- **Horario del día** (`horarioDe`): trabajo 8:00–17:00 de Utah en todas las fases desde noviembre (en Charlotte 10:00–19:00, con las dos sesiones entre 6:00 y 9:30); hitos del calendario con Utah tentativo y la rutina del colegio.
+- Barra de pestañas móvil: etiquetas cortas «Calend.» y «Rendim.» para que quepan ocho páginas.
+
 ## [0.14.4] — 2026-11-02
 
 ### Añadido

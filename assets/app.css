@@ -579,3 +579,6 @@ header.top nav.container{max-width:min(100%,1400px)}
 @media(min-width:700px){.vt-form{grid-template-columns:repeat(6,1fr)}.vt-form button{grid-column:auto}}
 .vt-msg{min-height:1.2rem;font-size:.8rem;color:var(--bad)}
 .vt-imp{display:inline-block;font-size:.8rem;margin-left:.5rem}
+/* Horarios (zonas.js) */
+#zonas .t td{vertical-align:top}
+#zonas .tw .wrap{min-width:16rem}

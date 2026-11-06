@@ -23,7 +23,7 @@
   /* ¿Se cumplió? '✓' todo, '≈' parte, '✗' nada, '·' sin requisitos */
   function cumple(dia, r) {
     var req = [], ok = [];
-    var fz = /fuerza [ABCGU]/.test(dia.sesion);
+    var fz = /fuerza [ABCGUKO]/.test(dia.sesion);
     if (dia.km >= 3) { req.push(1); if (r && r.kmRun >= 0.8 * dia.km) ok.push(1); }
     if (dia.minBici >= 30) { req.push(1); if (r && r.bici >= 0.8 * dia.minBici) ok.push(1); }
     if (fz) { req.push(1); if (r && r.fuerza >= 15) ok.push(1); }

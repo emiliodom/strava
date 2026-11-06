@@ -104,7 +104,7 @@
     if (hib) out += "<p class='n'><small>" + esc(motivo(ord, dia)) + ' Cambia el orden con el botón «Orden» del calendario.</small></p>';
     out += ord === 'bici' ? bBici + bRun : bRun + bBici;
 
-    var m = /fuerza ([ABCGU])/.exec(dia.sesion || '');
+    var m = /fuerza ([ABCGUKO])/.exec(dia.sesion || '');
     if (m) {
       var ru = P.RUTINAS[m[1]];
       if (ru) out += bloque('💪', 'Fuerza ' + m[1] + ' — ' + ru.nom + ' (' + ru.min + ' min)', [], ru.items, 'En casa, separada unas 6 h de la calidad si se puede (efecto de interferencia); si no, después del rodaje fácil.');

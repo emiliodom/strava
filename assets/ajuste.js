@@ -1,6 +1,6 @@
 /* ajuste.js — reglas de vida real sobre los tres planes base (plan.js), aplicadas una sola vez al cargar:
    1. Racha: ningún día sin correr. Mínimo 1 milla (1,6 km) hasta la meta del 6 ene 2027; no hay descanso absoluto de correr.
-   2. Extiende cada plan hasta el 13 ene 2027 (regreso de Charlotte), con calidad por la mañana.
+   2. Extiende cada plan hasta el 31 ene 2027: Charlotte hasta el 13 ene y, desde el 14, la rutina del colegio (correr 5:00–6:00, bici de noche).
    3. Viaje a Charlotte (25 nov – 13 ene): con bici, calidad en el Sugar Creek Greenway por la mañana, un parque de montaña cada sábado, recordatorios.
    4. Natación opcional, una vez por semana. Boxeo (fuerza C) repartido: al menos una vez por semana.
    Además calcula el horario de cada día (Guatemala / Utah / Charlotte, con el fin del horario de verano de EE. UU.). */
@@ -11,11 +11,11 @@
   var RACHA = { inicio: '2026-01-06', meta: '2027-01-06', milla: 1.6 };
   var VIAJE = { ida: '2026-11-25', vuelta: '2027-01-13', aterrizaje: '15:27', regreso: '14:00', llegadaGT: '22:00' };
   var FIN_VERANO = '2026-11-01';          // domingo: EE. UU. vuelve al horario estándar (Guatemala no cambia nunca)
-  var FIN_PLAN = '2027-01-13';
+  var FIN_PLAN = '2027-01-31';            // dos semanas y media de la rutina del colegio tras volver de Charlotte
   var DESDE_EXTRAS = '2026-10-17';        // natación y boxeo se reparten desde esta fecha en adelante
 
   var DUROS = { Q: 1, H: 1, S: 1, T: 1, L: 1, C: 1 };
-  var RE_FZ = /fuerza ([ABCGU])/i;
+  var RE_FZ = /fuerza ([ABCGUKO])/i;
 
   /* ---------- 1. extensión del 1 dic al 13 ene (plantilla semanal por plan; lun…dom) ---------- */
   var FACTOR = [1, 1.06, 1.12, 0.8, 1.1, 1.16, 0.8];   // 3 semanas de carga y una de descarga (Navidad)
@@ -162,10 +162,10 @@
       if (d.fecha < VT_DESDE || d.evento || d.hito) return;
       var r = VT_RUT[dow(d)], sig = dias[i + 1], ant = dias[i - 1];
       if (!r) return;
-      if (/fuerza [BU]/i.test(d.sesion || '')) r = 'L';
+      if (/fuerza [BUK]/i.test(d.sesion || '')) r = 'L';
       if ((sig && sig.evento) || (ant && ant.evento && MTB_LARGAS[ant.evento])) r = 'L';
       d.vt = r;
-      d.sesion += ' + V-taper ' + P.RUTINAS[r].min + ' min (' + (r === 'V' ? 'dorsales' : r === 'W' ? 'hombro posterior y postura' : 'laterales') + ')';
+      d.sesion += ' + V-taper ' + P.RUTINAS[r].min + ' min (' + (r === 'V' ? 'dorsales' : r === 'W' ? 'hombro posterior y postura' : 'laterales') + (d.viaje === 'charlotte' && SIN_PESAS ? '; sin pesas: botellas, mochila o banda' : '') + ')';
     });
   }
 
@@ -207,7 +207,7 @@
      tres planes: la bici manda (calidad sentado, sin pararse sobre los pedales), la racha se cumple CAMINANDO (1,6–2 km), pesas sin
      cargar el pie (U) 3×/semana y boxeo sin desplazamiento (G) 2×/semana, un descanso los lunes. El trote vuelve como prueba el 31 oct
      y el 3 nov sólo con 2 días caminando sin dolor. Fila: [tipo, km a pie, min de bici, sesión, recordatorio, trote (1), natación (min)]. */
-  var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-07';
+  var RETORNO_DESDE = '2026-10-22', RETORNO_HASTA = '2026-11-06';
   var RETORNO = {
     '2026-10-22': ['B', 2, 45, 'Bici Z2 suave 45 min + caminata 2 km + fuerza U PM', null],
     '2026-10-23': ['R', 2, 0, 'Caminata 2 km + fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', null],
@@ -224,18 +224,90 @@
     '2026-11-04': ['E', 5, 0, 'AM 5:30: trote fácil 5 km a ~8:30/km + PM 18:30: fuerza G (boxeo sin desplazamiento) + prevención lumbar 12 min', 'Si los trotes de esta semana van sin dolor, la calidad corriendo vuelve después de Campanabaj.', 1],
     '2026-11-05': ['B', 1.6, 45, 'AM 5:30: bici activación 45 min con 4 × 1 min fuerte (3 días antes de Campanabaj) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null, 1],
     '2026-11-06': ['R', 2, 0, 'Trote suave 2 km (racha) + prevención lumbar 12 min; revisa la bici, llantas y comida de la carrera', 'Víspera de la víspera: nada duro, duerme bien.', 1],
-    '2026-11-07': ['B', 1.6, 30, 'Bici suave 30 min (soltar las piernas) + trote de la racha 1,6 km + prepara la mochila', 'Mañana Campanabaj: sal con luz y con el pie vendado o con calzado rígido si te lo indicó el médico.', 1]
   };
   function aplicarRetorno(dias) {
     dias.forEach(function (d) {
       if (d.fecha < RETORNO_DESDE || d.evento) return;
-      if (d.fecha > RETORNO_HASTA) {
-        if (d.fecha === '2026-11-09') d.recordatorio = 'Vuelve la calidad corriendo sólo si los trotes de la semana pasada fueron sin dolor; si no, sigue con bici y lo reajustamos.';
-        return;
-      }
+      if (d.fecha > RETORNO_HASTA) return;
       var r = RETORNO[d.fecha]; if (!r) return;
-      d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.recordatorio = [d.hito ? d.recordatorio : null, r[4]].filter(Boolean).join(' · ') || null;
-      d.nat = r[6] || 0; d.caminar = r[5] ? 0 : r[1]; d.retorno = 1; delete d.lesion;
+      ponerFila(d, r); d.caminar = r[5] ? 0 : r[1]; d.retorno = 1; delete d.lesion;
+    });
+  }
+  function ponerFila(d, r) {
+    d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.recordatorio = [d.hito ? d.recordatorio : null, r[4]].filter(Boolean).join(' · ') || null;
+    d.nat = r[6] || 0;
+  }
+
+  /* AGENDA (6 nov): la vida real de aquí al regreso, igual en los tres planes. Noviembre encadena cuatro eventos (Campanabaj 8, Entre
+     Senderos 15, Guatemágica 21 sin buscar marca y Sibaná 22); los lunes no son de paseo (bici Z2 con trabajo + trote + fuerza). El 24 y el
+     25 nov, viaje a la capital y a Charlotte: sólo la milla segura. El 26, Thanksgiving: bici de ruta en el Sugar Creek Greenway. Del 14 ene en
+     adelante, la rutina del colegio (RUTINA_ENE). Fila: [tipo, km a pie, min de bici, sesión, recordatorio, -, natación (min)]. */
+  var AGENDA = {
+    '2026-11-07': ['B', 1.6, 180, 'MTB 3 h con ~700 m D+ en Z2 (víspera de Campanabaj: conversando, subidas sentado, sin atacar) + PM: trote de la racha 1,6 km', 'Mañana Campanabaj (32 km, 1.000 m, técnico, lodo y frío): hoy come carbohidrato en cada comida y 60 g/h en la salida. Deja lista la ropa de frío, guantes largos, impermeable ligero, luz y la llanta con agarre. A dormir temprano.'],
+    '2026-11-09': ['B', 4, 75, 'AM 5:30: bici Z2 75 min con 6 × 30 s a cadencia alta (no es un paseo) + PM 18:30: trote 4 km fácil + fuerza B', 'Lunes de trabajo, no de recuperación muy suave: si las piernas siguen cargadas de Campanabaj, quita los 30 s y deja el resto.'],
+    '2026-11-10': ['Q', 7, 0, 'AM 5:30: calidad corriendo, 2 km de calentamiento + 4 × 1 km cómodo-duro (RPE 7, ~6:00–6:20/km) con 2 min trotando + 1 km suave + PM 18:30: fuerza A', 'Primera calidad corriendo desde el golpe del pie: si duele más de 3/10, termina trotando.'],
+    '2026-11-11': ['F', 1.6, 75, 'AM 5:30: bici 3 × 10 min en subida a umbral, sentado (75 min) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null],
+    '2026-11-12': ['L', 10, 0, 'AM 5:30: largo corriendo 10 km fácil (~7:15/km, terreno plano) + PM 18:30: fuerza C (boxeo)', 'Tu carrera más larga desde octubre y el ensayo de la Guatemágica: agua cada 20 min y nada de apurar el final.'],
+    '2026-11-13': ['B', 1.6, 60, 'AM 5:30: bici Z2 60 min suave + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', 'Revisa la bici para Entre Senderos: pastillas, cadena, presión y repuestos.'],
+    '2026-11-14': ['R', 2, 30, 'AM: bici 30 min con 3 × 1 min fuerte (activación) + trote 2 km suave; prepara la comida de 5 h', 'Mañana Entre Senderos (50 km, 1.200 m, ~5 h): 300 g de carbohidrato repartidos para la salida (geles, barras, bebida con sodio). Cena temprano.'],
+    '2026-11-16': ['B', 4, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 4 km fácil + fuerza B (2 rondas)', 'Lunes sin paseo, pero tras 5 h de montaña: si las piernas no responden, deja la bici en 45 min.'],
+    '2026-11-17': ['Q', 7, 0, 'AM 5:30: afinación 15K, 2 km + 3 × 1,5 km a tu ritmo de carrera (cómodo y parejo) con 2 min trotando + 1 km suave + PM: fuerza A ligera (2 rondas)', null],
+    '2026-11-18': ['B', 3, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 3 km fácil + prevención lumbar 12 min', 'Desde hoy, carbohidrato normal-alto y a dormir temprano: vienen Guatemágica y Sibaná seguidas.'],
+    '2026-11-20': ['R', 2, 0, 'Trote 2 km suave + 4 rectas de 20 s (víspera de la Guatemágica) + revisa la bici para Sibaná', 'Mañana 15K a las 19:00 y el domingo Sibaná a las 8:00: deja la mochila de la MTB lista desde hoy.'],
+    '2026-11-23': ['B', 3, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 3 km fácil + fuerza B (2 rondas); empieza a hacer maletas', 'Lunes de trabajo tras el fin de semana doble: Z2 de verdad, sin calidad.'],
+    '2026-11-24': ['R', 1.6, 0, 'Viaje a la Ciudad de Guatemala: sólo la milla de la racha, temprano y segura, antes de salir', 'Mañana vuelas a Charlotte: deja la ropa de correr en el equipaje de mano.'],
+    '2026-11-25': ['R', 1.6, 0, 'Vuelo a Charlotte (aterrizas ~15:30): por la noche, la milla mínima o 5 km suaves si llegas con piernas (desde las 18:00 de Charlotte)', 'Mañana Thanksgiving: bici de ruta por el Sugar Creek Greenway. Infla las llantas y revisa la bici hoy.'],
+    '2026-11-26': ['B', 5, 150, 'Thanksgiving: bici de ruta Z2 ~50 km por el Sugar Creek Greenway (unas 2 h 30) + trote 5 km fácil al bajarte', 'Sal temprano para llegar a la cena: Charlotte está una hora por delante de Guatemala.'],
+    '2027-01-13': ['R', 1.6, 0, 'Vuelo de Charlotte a las 14:00 · milla mínima por la noche al llegar (si el vuelo se complica, una caminata en el aeropuerto; la meta de la racha ya se cumplió el 6 ene)', null],
+    '2027-01-14': ['B', 5, 90, 'Primer día en casa: MTB 90 min + trote 5 km fácil; desde mañana, la rutina del colegio (correr 5:00–6:00, bici de noche)', 'Si la mañana se complica con el colegio, la ventana de respaldo es 7:00–9:00 (antes de las 8:00 de Utah = 9:00 aquí).']
+  };
+  /* Rutina del colegio (15 ene en adelante): la hija entra al colegio, así que se corre de 5:00 a 6:00 y la bici (ruta o MTB) va de noche;
+     respaldo 7:00–9:00, porque el trabajo empieza a las 8:00 de Utah (9:00 en Guatemala). Lunes…domingo. */
+  var RUTINA_ENE = [
+    ['E', 6, 60, 'AM 5:00–6:00: trote fácil 6 km + PM 18:30: bici de ruta Z2 60 min + fuerza B'],
+    ['Q', 8, 0, 'AM 5:00–6:00: calidad corriendo (tempo 3 × 2 km o 5 × 1 km), 8 km en total + PM 18:30: fuerza A'],
+    ['B', 5, 75, 'AM 5:00–6:00: trote fácil 5 km + PM 18:30: MTB Z2 75 min + prevención lumbar 12 min'],
+    ['H', 7, 0, 'AM 5:00–6:00: HIIT 6 × 3 min, 7 km en total + PM 18:30: fuerza C (boxeo)'],
+    ['F', 4, 60, 'AM 5:00–6:00: trote fácil 4 km + PM 18:30: bici 3 × 10 min a umbral (60 min)'],
+    ['M', 1.6, 180, 'MTB larga 3 h con subidas (7:00–10:00) + trote de la racha 1,6 km'],
+    ['L', 12, 0, 'Largo corriendo 12 km fácil desde las 7:00 + natación opcional 30 min']
+  ];
+  var RUTINA_DESDE = '2027-01-15';
+  function aplicarAgenda(dias) {
+    dias.forEach(function (d) {
+      if (d.evento) return;
+      var r = AGENDA[d.fecha];
+      if (!r && d.fecha >= RUTINA_DESDE) { r = RUTINA_ENE[dow(d)].concat([null, 0, /natación/.test(RUTINA_ENE[dow(d)][3]) ? 30 : 0]); d.colegio = 1; }
+      if (!r) return;
+      ponerFila(d, r); d.caminar = 0; d.agenda = 1;
+    });
+  }
+
+  /* Charlotte sin pesas: la fuerza con mancuernas (A, B, U) pasa a peso corporal (K) y el boxeo con saco (C, G) a boxeo de sombra (O).
+     Si consigues pesas o un gimnasio, cambia SIN_PESAS a false. */
+  var SIN_PESAS = true;
+  function aplicarSinPesas(dias) {
+    if (!SIN_PESAS) return;
+    dias.forEach(function (d) {
+      if (d.viaje !== 'charlotte') return;
+      d.sesion = (d.sesion || '').replace(/fuerza [ABU]\b/g, 'fuerza K').replace(/fuerza [CG]\b/g, 'fuerza O');
+    });
+  }
+
+  /* Viaje tentativo a West Jordan (Utah), 19–20 dic. Mientras no esté confirmado, el plan de Charlotte sigue y sólo hay un aviso; con
+     confirmado: true esos dos días quedan en la milla mínima y el horario pasa a la hora de la montaña (MST). */
+  var UTAH = { fechas: ['2026-12-19', '2026-12-20'], confirmado: false };
+  function aplicarUtah(dias) {
+    dias.forEach(function (d) {
+      if (UTAH.fechas.indexOf(d.fecha) < 0) return;
+      d.utah = UTAH.confirmado ? 1 : 2;
+      if (UTAH.confirmado) {
+        d.tipo = 'R'; d.km = 1.6; d.minBici = 0; d.nat = 0;
+        d.sesion = 'West Jordan (Utah): sólo la milla mínima, segura (frío y altura de 1.300 m: abrígate)';
+        d.recordatorio = 'Utah va 2 h detrás de Charlotte y 1 h detrás de Guatemala.';
+      } else {
+        d.recordatorio = [d.recordatorio, 'Viaje tentativo a West Jordan (Utah): si viajas, hoy sólo la milla mínima y el resto queda libre.'].filter(Boolean).join(' · ');
+      }
     });
   }
 
@@ -253,59 +325,104 @@
     aplicarPrevencion(dias);
     aplicarLesion(dias);
     aplicarRetorno(dias);
+    aplicarAgenda(dias);
+    aplicarSinPesas(dias);
+    aplicarUtah(dias);
     aplicarVTaper(dias);
     aplicarPausa(dias);
   });
 
-  /* ---------- horario del día (hora local de donde estás) ---------- */
+  /* ---------- horario del día (hora local de donde estás) ----------
+     Trabajo: 8:00–17:00 de Utah (West Jordan). Guatemala no cambia nunca de hora (UTC−6); Charlotte (America/New_York) y Utah
+     (America/Denver) usan el horario de verano de EE. UU. del 8 mar al 1 nov 2026 y desde el 14 mar 2027. Las diferencias se calculan
+     con Intl para cada fecha, así que siguen bien después de marzo. */
+  var ZONAS = {
+    gt: { nom: 'Guatemala', tz: 'America/Guatemala' },
+    clt: { nom: 'Charlotte', tz: 'America/New_York' },
+    ut: { nom: 'West Jordan (Utah)', tz: 'America/Denver' }
+  };
+  var TRABAJO_UT = [8, 17];
+  // minutos respecto a UTC de una zona a mediodía de la fecha dada
+  function desfase(tz, f) {
+    var t = new Date(f + 'T18:00:00Z');
+    var loc = new Date(t.toLocaleString('en-US', { timeZone: tz })), utc = new Date(t.toLocaleString('en-US', { timeZone: 'UTC' }));
+    return Math.round((loc - utc) / 6e4);
+  }
+  // hora decimal de la zona `a` equivalente a la hora `h` de la zona `de`
+  function convertir(h, de, a, f) { return h + (desfase(ZONAS[a].tz, f) - desfase(ZONAS[de].tz, f)) / 60; }
+  function hh(h) { h = (h + 24) % 24; var m = Math.round((h % 1) * 60); return Math.floor(h) + ':' + (m < 10 ? '0' : '') + m; }
+  function trabajoEn(z, f) { return [convertir(TRABAJO_UT[0], 'ut', z, f), convertir(TRABAJO_UT[1], 'ut', z, f)]; }
+  function equivalencia(f) {
+    return 'Trabajo 8:00–17:00 en Utah = ' + hh(convertir(8, 'ut', 'gt', f)) + '–' + hh(convertir(17, 'ut', 'gt', f)) + ' en Guatemala = ' +
+      hh(convertir(8, 'ut', 'clt', f)) + '–' + hh(convertir(17, 'ut', 'clt', f)) + ' en Charlotte.';
+  }
+
   function fase(f) {
+    if (UTAH.confirmado && UTAH.fechas.indexOf(f) >= 0) return 'utah';
     if (f >= VIAJE.ida && f <= VIAJE.vuelta) return 'charlotte';
+    if (f > VIAJE.vuelta) return 'colegio';
     return f < FIN_VERANO ? 'verano' : 'invierno';
   }
   // Bloques en horas decimales. tipo: sueno | sesion | trabajo | noche | viaje | libre
   function horarioDe(f, d) {
     var fs = fase(f), finde = dow({ fecha: f }) >= 5, bl = [], notas = [], zona, titulo, despertar;
-    if (fs === 'charlotte') {
-      zona = 'Charlotte (hora del este, EST)';
+    var w = trabajoEn(fs === 'charlotte' ? 'clt' : fs === 'utah' ? 'ut' : 'gt', f);
+    var bTrabajo = { h0: w[0], h1: w[1], t: 'trabajo', txt: 'Trabajo de Utah (8:00–17:00 allá)' };
+    if (fs === 'utah') {
+      zona = 'West Jordan, Utah (hora de la montaña, ' + (desfase(ZONAS.ut.tz, f) === -360 ? 'MDT' : 'MST') + ')';
+      titulo = 'Viaje a Utah'; despertar = '7:00';
+      bl.push({ h0: 7.5, h1: 8, t: 'sesion', txt: 'La milla mínima, abrigado' });
+      notas.push('Utah va 2 h detrás de Charlotte y 1 h detrás de Guatemala: las 7:30 de aquí son las 9:30 de Charlotte.');
+    } else if (fs === 'charlotte') {
+      zona = 'Charlotte (hora del este, EST, UTC−5): una hora por delante de Guatemala';
       if (f === VIAJE.ida) {
         titulo = 'Día de vuelo'; despertar = null;
-        bl.push({ h0: 15, h1: 15.45, t: 'viaje', txt: 'Aterrizas a las 15:27' }, { h0: 18, h1: 19, t: 'noche', txt: 'Trote suave de noche (mínimo la milla)' });
-        notas.push('Trabajo de Utah según tu itinerario ese día; al llegar, el horario normal de Charlotte empieza mañana.');
+        bl.push({ h0: 15.5, h1: 16, t: 'viaje', txt: 'Aterrizas hacia las 15:30' }, { h0: 18, h1: 19, t: 'noche', txt: 'La milla mínima o 5 km suaves' });
+        notas.push('Las 15:30 de Charlotte son las 14:30 de Guatemala y las 13:30 de Utah.');
       } else if (f === VIAJE.vuelta) {
-        titulo = 'Día de regreso'; despertar = '5:15';
-        bl.push({ h0: 6, h1: 7.25, t: 'sesion', txt: 'Trote 3 km antes del vuelo' }, { h0: 14, h1: 15, t: 'viaje', txt: 'Vuelo 14:00' }, { h0: 23, h1: 23.5, t: 'noche', txt: 'Milla de la racha en Retalhuleu (22:00 GT)' });
-        notas.push('A las 23:00 de Charlotte son las 22:00 en Guatemala: ahí corres la milla de la racha.');
+        titulo = 'Día de regreso'; despertar = '7:00';
+        bl.push({ h0: 14, h1: 15, t: 'viaje', txt: 'Vuelo 14:00' }, { h0: 23, h1: 23.5, t: 'noche', txt: 'Milla mínima en Retalhuleu (22:00 GT)' });
+        notas.push('A las 23:00 de Charlotte son las 22:00 en Guatemala: ahí va la milla, o una caminata en el aeropuerto si el vuelo se complica.');
       } else if (finde) {
         titulo = 'Fin de semana en Charlotte'; despertar = '6:30';
-        bl.push({ h0: 7, h1: 9, t: 'sesion', txt: DUROS[d && d.tipo] ? 'Largo o sesión principal' : 'Sesión del día' }, { h0: 18, h1: 20, t: 'noche', txt: 'Pesas, boxeo, natación o la milla si falta' });
+        bl.push({ h0: 7, h1: 9.5, t: 'sesion', txt: DUROS[d && d.tipo] ? 'Largo o sesión principal' : 'Sesión del día' }, { h0: 18, h1: 19.5, t: 'noche', txt: 'Peso corporal, boxeo de sombra o la milla si falta' });
       } else {
-        titulo = 'Día laboral en Charlotte'; despertar = '5:15';
-        bl.push({ h0: 6, h1: 7.25, t: 'sesion', txt: 'Atletismo (calidad por la mañana)' }, { h0: 7.25, h1: 8.5, t: 'sesion', txt: 'Segunda sesión: fuerza, natación opcional o bici (Sugar Creek Greenway)' },
-          { h0: 9, h1: 18, t: 'trabajo', txt: 'Trabajo de Utah (7:00–16:00 allá)' }, { h0: 18, h1: 20, t: 'noche', txt: 'Rutina de noche: lo pendiente y la milla de la racha' });
-        notas.push('Tu reloj de Guatemala va una hora atrás: las 5:15 de Charlotte son las 4:15 de tu cuerpo. Acuéstate antes de las 21:30.');
+        titulo = 'Día laboral en Charlotte'; despertar = '5:30';
+        bl.push({ h0: 6, h1: 7.25, t: 'sesion', txt: 'Atletismo (calidad por la mañana)' }, { h0: 7.5, h1: 9.5, t: 'sesion', txt: 'Segunda sesión: bici por el Sugar Creek Greenway o peso corporal' },
+          bTrabajo, { h0: 19.5, h1: 20.5, t: 'noche', txt: 'Lo pendiente y la milla si falta' });
+        notas.push('Tu cuerpo viene de Guatemala: las 5:30 de Charlotte son las 4:30 de allá. Con el trabajo hasta las 19:00, la mañana es tu ventana grande.');
       }
-      notas.push('Utah (MST) va 2 h detrás de Charlotte: 7:00–16:00 allá = 9:00–18:00 aquí. Ambos cambiaron al horario estándar el 1 de noviembre.');
     } else if (fs === 'verano') {
       zona = 'Guatemala (UTC−6; Utah va en horario de verano, MDT, a la misma hora)';
       if (finde) { titulo = 'Fin de semana'; despertar = '5:00'; bl.push({ h0: 5.5, h1: 8.5, t: 'sesion', txt: DUROS[d && d.tipo] ? 'Largo o sesión principal' : 'Sesión del día' }, { h0: 18, h1: 20, t: 'noche', txt: 'Lo pendiente o pesas' }); }
       else {
         titulo = 'Día laboral · horario de verano de Utah'; despertar = '5:00';
         bl.push({ h0: 5.5, h1: 6.75, t: 'sesion', txt: 'Sesión de la mañana (máx. 75 min)' }, { h0: 7, h1: 16, t: 'trabajo', txt: 'Trabajo de Utah (7:00–16:00, igual que Guatemala)' }, { h0: 18, h1: 20, t: 'noche', txt: 'Pesas o lo pendiente' });
-        notas.push('El domingo 1 de noviembre termina el horario de verano de EE. UU.: desde entonces tu jornada va una hora más tarde y ganas una hora de mañana.');
+      }
+    } else if (fs === 'colegio') {
+      zona = 'Guatemala (UTC−6; Utah una hora detrás, Charlotte una hora delante)';
+      if (finde) { titulo = 'Fin de semana'; despertar = '6:30'; bl.push({ h0: 7, h1: 10, t: 'sesion', txt: DUROS[d && d.tipo] || (d && d.tipo === 'M') ? 'Largo o MTB larga' : 'Sesión del día' }); }
+      else {
+        titulo = 'Día laboral con colegio'; despertar = '4:40';
+        bl.push({ h0: 5, h1: 6, t: 'sesion', txt: 'Correr (la sesión de atletismo)' }, { h0: 7, h1: 8.75, t: 'libre', txt: 'Respaldo si la mañana falla (colegio)' }, bTrabajo,
+          { h0: 18.5, h1: 20, t: 'noche', txt: 'Bici de ruta o MTB, o fuerza' });
+        notas.push('La ventana 7:00–9:00 es el respaldo: el trabajo empieza a las 8:00 de Utah, que son las 9:00 aquí. Acuéstate antes de las 21:30 para despertar a las 4:40.');
       }
     } else {
       zona = 'Guatemala (UTC−6; Utah en horario estándar, MST, una hora detrás)';
       if (finde) { titulo = 'Fin de semana'; despertar = '5:00'; bl.push({ h0: 5.5, h1: 8.5, t: 'sesion', txt: DUROS[d && d.tipo] ? 'Largo o sesión principal' : 'Sesión del día' }, { h0: 18, h1: 20, t: 'noche', txt: 'Lo pendiente o pesas' }); }
       else {
         titulo = 'Día laboral · horario estándar de Utah'; despertar = '5:00';
-        bl.push({ h0: 5.5, h1: 7.5, t: 'sesion', txt: 'Sesión de la mañana (hasta 2 h, entra la doble si toca)' }, { h0: 8, h1: 17, t: 'trabajo', txt: 'Trabajo de Utah (7:00–16:00 allá = 8:00–17:00 aquí)' }, { h0: 18, h1: 20, t: 'noche', txt: 'Pesas, boxeo o lo pendiente' });
+        bl.push({ h0: 5.5, h1: 8.5, t: 'sesion', txt: 'Sesión de la mañana (hasta 3 h)' }, bTrabajo, { h0: 18.5, h1: 20, t: 'noche', txt: 'Trote de la racha, pesas o boxeo' });
       }
     }
+    if (fs !== 'verano') notas.push(equivalencia(f));
+    if (d && d.utah === 2) notas.push('Viaje tentativo a West Jordan: si se confirma, ese día cambia a la hora de Utah y a la milla mínima.');
     return { fase: fs, zona: zona, titulo: titulo, despertar: despertar, bloques: bl, notas: notas };
   }
 
   /* ---------- racha: número de día ---------- */
   function diaRacha(f) { return Math.round((DT.d(f) - DT.d(RACHA.inicio)) / 864e5) + 1; }
 
-  P.RACHA = RACHA; P.VIAJE = VIAJE; P.horarioDe = horarioDe; P.diaRacha = diaRacha; P.FIN_VERANO = FIN_VERANO; P.FIN_PLAN = FIN_PLAN; P.PAUSA = PAUSA; P.RETORNO = { desde: RETORNO_DESDE, hasta: RETORNO_HASTA };
+  P.RACHA = RACHA; P.VIAJE = VIAJE; P.horarioDe = horarioDe; P.diaRacha = diaRacha; P.FIN_VERANO = FIN_VERANO; P.FIN_PLAN = FIN_PLAN; P.PAUSA = PAUSA; P.RETORNO = { desde: RETORNO_DESDE, hasta: RETORNO_HASTA }; P.UTAH = UTAH; P.ZONAS = ZONAS; P.desfase = desfase; P.convertir = convertir; P.TRABAJO_UT = TRABAJO_UT; P.faseDe = fase;
 })(this);
