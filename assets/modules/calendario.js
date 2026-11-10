@@ -588,7 +588,12 @@
       '<li><b>Z3</b> FC desde ' + lim.l2 + ' lpm: umbral y VO₂máx.</li>' +
       (z ? '<li><b>Ritmos:</b> intervalo ' + F.pace(z.intervalo) + ' · umbral ' + F.pace(z.umbral) + ' · maratón ' + F.pace(z.maraton) + ' · fácil ' + F.pace(z.facilRapido) + '–' + F.pace(z.facilLento) + ' /km.</li>' : '') + '</ul>';
   }
-  function analisisHtml(d) {
+  function notaHtml(f) {
+    var n = App.notas && App.notas[f];
+    return n ? "<div class='nota-dia'><b>" + esc(n.t) + '</b><p>' + esc(n.n) + '</p></div>' : '';
+  }
+  function analisisHtml(d) { return notaHtml(d.fecha) + analisisBase(d); }
+  function analisisBase(d) {
     var f = d.fecha, a = ANALISIS_FULL[f], tipo = d.tipoOriginal || d.tipo, T = TIPOS[tipo] || {}, lim = limitesFC(), z = D0 && D0.zonas;
     var plan = d.sesionOriginal || d.sesion;
     if (f < isoHoy()) {
@@ -635,7 +640,7 @@
   function hitosHtml() {
     var hoy = isoHoy(), I = App.icons;
     var H = [['2026-11-01', 'reloj', 'Termina el horario de verano de EE. UU.', 'Domingo 1 nov: Utah queda una hora más tarde; Guatemala no cambia.'],
-      ['2026-11-25', 'avion', 'Vuelo a Charlotte', 'Aterrizas hacia las 15:30 (1 h por delante de Guatemala). Entrenas de 6:00 a 9:30; trabajas de 10:00 a 19:00.'],
+      ['2026-11-25', 'avion', 'Vuelo a Charlotte', 'Despega 6:00 de Guatemala (en pie a las 3:00, duermes el 24 en la capital); Charlotte va 1 h por delante. Entrenas de 6:00 a 9:30; trabajas de 10:00 a 19:00.'],
       ['2026-12-19', 'avion', 'West Jordan, Utah (tentativo)', '19 y 20 dic: si viajas, sólo la milla mínima. Utah va 2 h detrás de Charlotte.'],
       ['2027-01-13', 'avion', 'Regreso a Retalhuleu', 'Vuelo 14:00 · la milla mínima por la noche en Guatemala.'],
       ['2027-01-14', 'reloj', 'Rutina del colegio', 'Correr 5:00–6:00, bici de noche; respaldo 7:00–9:00 (trabajo a las 9:00 de Guatemala).']];

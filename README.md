@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.15.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.17.0** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -52,7 +52,7 @@ Si conoces tu FC máxima, ponla en **Perfil**: las zonas se recalculan.
 
 ## Páginas, PDF y contraste
 
-La página se organiza en ocho **páginas** (Hoy · Calendario · Rendimiento · Metas · Cuerpo y ciencia · Comida · Horarios · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…). «Horarios» (`#horarios`, módulo `zonas.js`) muestra la hora de Guatemala, Charlotte y West Jordan (Utah), un convertidor y las etapas del viaje con el trabajo (8:00–17:00 de Utah) en hora local.
+La página Hoy incluye la bitácora «Los últimos 15 días» (textos en `assets/notas.js`). La página se organiza en nueve **páginas** (Hoy · Calendario · Rendimiento · Ruta Candelaria · Metas · Cuerpo y ciencia · Comida · Horarios · Registro); cada una agrupa módulos afines y tiene su URL (`#calendario`, `#rendimiento`…). «Horarios» (`#horarios`, módulo `zonas.js`) muestra la hora de Guatemala, Charlotte y West Jordan (Utah), un convertidor y las etapas del viaje con el trabajo (8:00–17:00 de Utah) en hora local. «Ruta Candelaria» (`#ruta`, módulo `candelaria.js`) separa cada pasada por la vuelta de ≈24 km/500 m por temporada (seca nov–abr, lluvias may–oct) y por la carga de bici de los 7 días previos, y explica con 12 estudios verificados cómo volver a los 20 km/h; las pasadas de 2024–2025 están fijas en `HISTORICO` (tomadas de Strava).
 
 ```bash
 node connector/pdf.mjs [salida.pdf]   # informe completo en PDF (A4, tema claro, calendario apaisado)

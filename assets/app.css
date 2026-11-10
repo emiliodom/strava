@@ -582,3 +582,13 @@ header.top nav.container{max-width:min(100%,1400px)}
 /* Horarios (zonas.js) */
 #zonas .t td{vertical-align:top}
 #zonas .tw .wrap{min-width:16rem}
+/* Bitácora (bitacora.js) y nota del día en el calendario */
+.bt{list-style:none;padding:0;margin:0}
+.bt-d{display:grid;grid-template-columns:3.4rem 1fr;gap:.75rem;padding:.7rem 0;border-bottom:1px solid var(--pico-muted-border-color)}
+.bt-d:last-child{border-bottom:0}
+.bt-f{display:flex;flex-direction:column;line-height:1.15}
+.bt-f b{font-size:.95rem}.bt-f small{color:var(--pico-muted-color);font-size:.72rem}
+.bt-c p{margin:0 0 .3rem}.bt-c .bt-t{margin-bottom:.15rem}
+.bt-a small,.bt-p small{color:var(--pico-muted-color)}
+.nota-dia{border-left:3px solid var(--pico-primary);background:color-mix(in srgb,var(--pico-primary) 8%,transparent);padding:.55rem .8rem;border-radius:6px;margin:0 0 .8rem}
+.nota-dia p{margin:.25rem 0 0;font-size:.9rem}

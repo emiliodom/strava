@@ -27,7 +27,7 @@
     var V = P.VIAJE, ut = P.UTAH;
     return [
       { de: '2026-11-07', a: '2026-11-24', z: 'gt', nom: 'Retalhuleu', ent: 'Mañana 5:30–8:30 (sesión principal) · noche 18:30–20:00 (trote de la racha y pesas)' },
-      { de: V.ida, a: V.ida, z: 'clt', nom: 'Vuelo a Charlotte', ent: 'Aterrizas hacia las 15:30; la milla mínima o 5 km desde las 18:00' },
+      { de: V.ida, a: V.ida, z: 'clt', nom: 'Vuelo a Charlotte', ent: 'En pie 3:00, despega 6:00 de Guatemala (7:00 de Charlotte); la milla mínima por la noche en Charlotte' },
       { de: '2026-11-26', a: '2027-01-12', z: 'clt', nom: 'Charlotte', ent: 'Mañana 6:00–7:15 (atletismo) y 7:30–9:30 (bici o peso corporal) · noche 19:30 lo pendiente' },
       { de: ut.fechas[0], a: ut.fechas[1], z: 'ut', nom: 'West Jordan, Utah' + (ut.confirmado ? '' : ' (tentativo)'), ent: 'Sólo la milla mínima los dos días' },
       { de: V.vuelta, a: V.vuelta, z: 'clt', nom: 'Regreso a Retalhuleu', ent: 'Vuelo 14:00 de Charlotte; la milla por la noche en Guatemala (o caminata en el aeropuerto)' },

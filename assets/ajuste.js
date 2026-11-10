@@ -245,20 +245,24 @@
   var AGENDA = {
     '2026-11-07': ['B', 1.6, 180, 'MTB 3 h con ~700 m D+ en Z2 (víspera de Campanabaj: conversando, subidas sentado, sin atacar) + PM: trote de la racha 1,6 km', 'Mañana Campanabaj (32 km, 1.000 m, técnico, lodo y frío): hoy come carbohidrato en cada comida y 60 g/h en la salida. Deja lista la ropa de frío, guantes largos, impermeable ligero, luz y la llanta con agarre. A dormir temprano.'],
     '2026-11-09': ['B', 4, 75, 'AM 5:30: bici Z2 75 min con 6 × 30 s a cadencia alta (no es un paseo) + PM 18:30: trote 4 km fácil + fuerza B', 'Lunes de trabajo, no de recuperación muy suave: si las piernas siguen cargadas de Campanabaj, quita los 30 s y deja el resto.'],
-    '2026-11-10': ['Q', 7, 0, 'AM 5:30: calidad corriendo, 2 km de calentamiento + 4 × 1 km cómodo-duro (RPE 7, ~6:00–6:20/km) con 2 min trotando + 1 km suave + PM 18:30: fuerza A', 'Primera calidad corriendo desde el golpe del pie: si duele más de 3/10, termina trotando.'],
-    '2026-11-11': ['F', 1.6, 75, 'AM 5:30: bici 3 × 10 min en subida a umbral, sentado (75 min) + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', null],
-    '2026-11-12': ['L', 10, 0, 'AM 5:30: largo corriendo 10 km fácil (~7:15/km, terreno plano) + PM 18:30: fuerza C (boxeo)', 'Tu carrera más larga desde octubre y el ensayo de la Guatemágica: agua cada 20 min y nada de apurar el final.'],
-    '2026-11-13': ['B', 1.6, 60, 'AM 5:30: bici Z2 60 min suave + PM 18:30: trote de la racha 1,6 km + prevención lumbar 12 min', 'Revisa la bici para Entre Senderos: pastillas, cadena, presión y repuestos.'],
-    '2026-11-14': ['R', 2, 30, 'AM: bici 30 min con 3 × 1 min fuerte (activación) + trote 2 km suave; prepara la comida de 5 h', 'Mañana Entre Senderos (50 km, 1.200 m, ~5 h): 300 g de carbohidrato repartidos para la salida (geles, barras, bebida con sodio). Cena temprano.'],
-    '2026-11-16': ['B', 4, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 4 km fácil + fuerza B (2 rondas)', 'Lunes sin paseo, pero tras 5 h de montaña: si las piernas no responden, deja la bici en 45 min.'],
-    '2026-11-17': ['Q', 7, 0, 'AM 5:30: afinación 15K, 2 km + 3 × 1,5 km a tu ritmo de carrera (cómodo y parejo) con 2 min trotando + 1 km suave + PM: fuerza A ligera (2 rondas)', null],
-    '2026-11-18': ['B', 3, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 3 km fácil + prevención lumbar 12 min', 'Desde hoy, carbohidrato normal-alto y a dormir temprano: vienen Guatemágica y Sibaná seguidas.'],
-    '2026-11-20': ['R', 2, 0, 'Trote 2 km suave + 4 rectas de 20 s (víspera de la Guatemágica) + revisa la bici para Sibaná', 'Mañana 15K a las 19:00 y el domingo Sibaná a las 8:00: deja la mochila de la MTB lista desde hoy.'],
-    '2026-11-23': ['B', 3, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: trote 3 km fácil + fuerza B (2 rondas); empieza a hacer maletas', 'Lunes de trabajo tras el fin de semana doble: Z2 de verdad, sin calidad.'],
-    '2026-11-24': ['R', 1.6, 0, 'Viaje a la Ciudad de Guatemala: sólo la milla de la racha, temprano y segura, antes de salir', 'Mañana vuelas a Charlotte: deja la ropa de correr en el equipaje de mano.'],
-    '2026-11-25': ['R', 1.6, 0, 'Vuelo a Charlotte (aterrizas ~15:30): por la noche, la milla mínima o 5 km suaves si llegas con piernas (desde las 18:00 de Charlotte)', 'Mañana Thanksgiving: bici de ruta por el Sugar Creek Greenway. Infla las llantas y revisa la bici hoy.'],
-    '2026-11-26': ['B', 5, 150, 'Thanksgiving: bici de ruta Z2 ~50 km por el Sugar Creek Greenway (unas 2 h 30) + trote 5 km fácil al bajarte', 'Sal temprano para llegar a la cena: Charlotte está una hora por delante de Guatemala.'],
-    '2027-01-13': ['R', 1.6, 0, 'Vuelo de Charlotte a las 14:00 · milla mínima por la noche al llegar (si el vuelo se complica, una caminata en el aeropuerto; la meta de la racha ya se cumplió el 6 ene)', null],
+    '2026-11-10': ['B', 3, 180, 'AM 6:00–9:00: MTB ~30 km con ~480 m D+ (Z2 con las subidas firmes, no a fondo: ayer fue Candelaria full gas) + PM 18:30: trote 3 km + fuerza A', 'Llevas 15 días seguidos de bici: hoy las subidas con ritmo, el llano suave. Come durante la salida.'],
+    '2026-11-11': ['F', 4, 75, 'AM 5:30: bici 3 series de 13 × 30 s fuerte / 15 s suave (75 min con calentamiento) + PM 18:30: trote 4 km fácil + fuerza B', 'Calidad corta e intensa (Rønnestad 2015). Fuera de los 30 s, Z1–Z2.'],
+    '2026-11-12': ['L', 8, 60, 'AM 5:30: bici Z2 60 min, de verdad suave + PM 18:30: trote 8 km fácil (~7:00/km), el ensayo largo del 15K + fuerza C (boxeo)', 'Si el pulso del trote pasa de 140 a ritmo fácil, corta a 5 km: es cansancio, no falta de ganas.'],
+    '2026-11-13': ['B', 3, 60, 'AM 5:30: bici Z2 60 min con 4 × 1 min fuerte + PM 18:30: trote 3 km + V-taper; revisa la bici para Entre Senderos', 'Pastillas, cadena, presión, repuestos y la comida de 5 h listos hoy.'],
+    '2026-11-14': ['R', 2, 30, 'AM: bici 30 min con 3 × 1 min fuerte (activación) + trote 2 km suave; prepara la comida de 5 h', 'Mañana Entre Senderos (50 km de montaña, 1.100 m, ~5 h, a tu ritmo): 300 g de carbohidrato repartidos para la salida (geles, barras, bebida con sodio). Cena temprano.'],
+    '2026-11-16': ['B', 4, 75, 'AM 5:30: bici Z2 75 min con 6 × 30 s a cadencia alta + PM 18:30: trote 4 km fácil + fuerza B (2 rondas)', 'Lunes sin paseo, pero tras 5 h de montaña: si las piernas no responden, deja la bici en 45 min.'],
+    '2026-11-17': ['Q', 7, 60, 'AM 5:30: bici Z2 60 min + PM 18:30: afinación 15K, 2 km + 3 × 1,5 km a 5:50–6:00/km con 2 min trotando + 1 km suave + fuerza A ligera (2 rondas)', 'El ritmo de la Guatemágica es ~6:00/km: hoy lo ensayas, no lo superas.'],
+    '2026-11-18': ['F', 3, 60, 'AM 5:30: bici 2 series de 13 × 30 s / 15 s (60 min) + PM 18:30: trote 3 km fácil + prevención lumbar 12 min', 'La última calidad antes del fin de semana doble. Desde hoy, carbohidrato normal-alto y a dormir temprano.'],
+    '2026-11-20': ['R', 2, 40, 'AM: bici suave 40 min + PM: trote 2 km + 4 rectas de 20 s (víspera de la Guatemágica) + revisa la bici para Sibaná', 'Mañana 15K a las 19:00 (~6:00/km) y el domingo Sibaná a las 8:00: deja la mochila de la MTB lista desde hoy.'],
+    '2026-11-23': ['B', 3, 90, 'AM: ruta de Candelaria en bici de ruta, Z2–tempo (no es la prueba: llegas del fin de semana doble) + PM: trote 3 km fácil + fuerza B (2 rondas); empieza a hacer maletas', 'Registra la Candelaria igual: la página Ruta la clasifica como «cargado». La prueba en condiciones sigue el 23 ene.'],
+    '2026-11-24': ['R', 1.6, 0, 'Viaje a la Ciudad de Guatemala (duermes allí): sólo la milla de la racha, temprano y segura, antes de salir', 'Mañana te levantas a las 3:00 y el vuelo sale a las 6:00: ropa de correr en el equipaje de mano, cena temprano y a dormir antes de las 21:00.'],
+    '2026-11-25': ['R', 1.6, 0, 'Vuelo a Charlotte: despierta 3:00, despega 6:00 de Guatemala (7:00 de Charlotte) · por la noche la milla mínima en Charlotte', 'Día largo y con poco sueño: sólo la milla. Mañana Thanksgiving.'],
+    '2026-11-26': ['B', 5, 60, 'Thanksgiving: bici corta ~60 min alrededor de Revolution Park + trote 5 km (unas millas)', 'Día de familia: entrena temprano y llega a la cena. Charlotte va una hora por delante de Guatemala.'],
+    '2026-11-27': ['B', 5, 180, 'Opción larga: bici de ruta ~60 km desde Barfield Dr por el Sugar Creek Greenway hacia Pineville (NC) y vuelta, Z2 + trote 5 km. Plan B según la familia: 60 min alrededor de Revolution Park + trote 5 km', 'Pineville está en Carolina del Norte, junto a la frontera con Carolina del Sur. Lleva agua y comida: el greenway tiene pocos servicios.'],
+    '2026-11-28': ['B', 6, 60, 'Trote 6 km + bici 60 min cerca de Revolution Park (o lo que permita el plan familiar)', null],
+    '2026-11-29': ['B', 1.6, 150, 'MTB en un parque de la zona (p. ej. los senderos del U.S. National Whitewater Center) si encaja con la familia + la milla de la racha', 'Domingo flexible: si el plan familiar no deja, basta la milla.'],
+    '2027-01-22': ['R', 3, 30, 'Víspera de la prueba de Candelaria: trote 3 km suave + bici 30 min soltando con 3 × 1 min', 'Mañana prueba: menos de 6 h de bici en la semana, cena con carbohidrato, revisa la presión y carga la banda de pulso.'],
+    '2027-01-23': ['F', 1.6, 90, 'Prueba de la ruta Candelaria (≈24 km, ≈500 m) a ritmo de prueba, 17:00–19:00, con banda de pulso y la misma presión + trote de la racha 1,6 km', 'Primera prueba en temporada seca. Meta: 19,5 km/h. Anota si llovió y regístrala; la página Ruta Candelaria la compara sola.'],
     '2027-01-14': ['B', 5, 90, 'Primer día en casa: MTB 90 min + trote 5 km fácil; desde mañana, la rutina del colegio (correr 5:00–6:00, bici de noche)', 'Si la mañana se complica con el colegio, la ventana de respaldo es 7:00–9:00 (antes de las 8:00 de Utah = 9:00 aquí).']
   };
   /* Rutina del colegio (15 ene en adelante): la hija entra al colegio, así que se corre de 5:00 a 6:00 y la bici (ruta o MTB) va de noche;
@@ -376,9 +380,9 @@
     } else if (fs === 'charlotte') {
       zona = 'Charlotte (hora del este, EST, UTC−5): una hora por delante de Guatemala';
       if (f === VIAJE.ida) {
-        titulo = 'Día de vuelo'; despertar = null;
-        bl.push({ h0: 15.5, h1: 16, t: 'viaje', txt: 'Aterrizas hacia las 15:30' }, { h0: 18, h1: 19, t: 'noche', txt: 'La milla mínima o 5 km suaves' });
-        notas.push('Las 15:30 de Charlotte son las 14:30 de Guatemala y las 13:30 de Utah.');
+        titulo = 'Día de vuelo'; despertar = '4:00 (3:00 de Guatemala)';
+        bl.push({ h0: 7, h1: 8, t: 'viaje', txt: 'Despega 6:00 de Guatemala = 7:00 de Charlotte' }, { h0: 18, h1: 19, t: 'noche', txt: 'La milla mínima en Charlotte' });
+        notas.push('Te levantas a las 3:00 en la Ciudad de Guatemala (4:00 en Charlotte). Con tan poco sueño, la milla y a dormir temprano.');
       } else if (f === VIAJE.vuelta) {
         titulo = 'Día de regreso'; despertar = '7:00';
         bl.push({ h0: 14, h1: 15, t: 'viaje', txt: 'Vuelo 14:00' }, { h0: 23, h1: 23.5, t: 'noche', txt: 'Milla mínima en Retalhuleu (22:00 GT)' });

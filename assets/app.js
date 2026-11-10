@@ -3,14 +3,15 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'dia', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas'];
+  var ORDEN = ['resumen', 'dia', 'bitacora', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas', 'candelaria'];
   // Cada «página» agrupa módulos afines; la URL es #pagina (o #modulo, que abre su página y baja hasta él).
   var PAGINAS = [
-    { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia'] },
+    { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia', 'bitacora'] },
     { id: 'calendario', nom: 'Calendario', corto: 'Calend.', icono: 'p_cal', mods: ['calendario'] },
     { id: 'rendimiento', nom: 'Rendimiento', corto: 'Rendim.', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
+    { id: 'ruta', nom: 'Ruta Candelaria', corto: 'Ruta', navNom: 'Ruta', icono: 'p_ruta', mods: ['candelaria'] },
     { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['proyeccion', 'suenos', 'preparacion'] },
-    { id: 'cuerpo', nom: 'Cuerpo y ciencia', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper'] },
+    { id: 'cuerpo', nom: 'Cuerpo y ciencia', navNom: 'Cuerpo', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper'] },
     { id: 'comida', nom: 'Comida', icono: 'p_comida', mods: ['menu'] },
     { id: 'horarios', nom: 'Horarios', icono: 'p_reloj', mods: ['zonas'] },
     { id: 'registro', nom: 'Registro', icono: 'p_registro', mods: ['registro', 'recursos'] }
@@ -40,7 +41,7 @@
 
   function pintarNav() {
     $('#nav').innerHTML = PAGINAS.map(function (p) {
-      return "<li><a href='#" + p.id + "' data-p='" + p.id + "'>" + App.esc(p.nom) + '</a></li>';
+      return "<li><a href='#" + p.id + "' data-p='" + p.id + "'>" + App.esc(p.navNom || p.nom) + '</a></li>';
     }).join('');
     $('#tab').innerHTML = PAGINAS.map(function (p) {
       return "<a href='#" + p.id + "' data-p='" + p.id + "'>" + App.icons.svg(p.icono) + App.esc(p.corto || p.nom.split(' ')[0]) + '</a>';

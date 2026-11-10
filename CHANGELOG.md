@@ -3,6 +3,25 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.0] — 2026-11-09
+
+### Añadido
+- **Bitácora «Los últimos 15 días»** (módulo 19, `assets/modules/bitacora.js`, en Hoy): resumen del bloque fuerte (26 oct–9 nov: 27,2 h de bici, 407 km, 8.424 m, 52 km a pie; la bici se multiplicó por más de 5 frente a los 15 días previos) y, por día, un análisis corto, las actividades de Strava y el plan. Los textos viven en `assets/notas.js` (`App.notas`, se carga antes de los módulos) y también salen arriba de la pestaña «Análisis» del día en el calendario (`notaHtml`).
+
+### Cambiado
+- **Agenda del 10 al 29 nov** (`AGENDA`): MTB de 30 km y 480 m el 10 (6:00–9:00) con trote y pesas de noche; calidad en bici 30/15 los días 11 y 18, trote largo de 8 km el 12, afinación del 15K a 5:50–6:00/km el 17; Candelaria en bici de ruta el 23 (no cuenta como prueba); 24 noche en la capital; 25 vuelo a las 6:00 de Guatemala (en pie a las 3:00) y la milla en Charlotte; 26 Thanksgiving con bici corta por Revolution Park y 5 km; 27 opción de ~60 km por el Sugar Creek Greenway hacia Pineville (NC) o plan B; 28 trote y bici; 29 MTB en un parque según la familia.
+- **San Felipe 5K (19 nov) queda como tentativo:** sigue en el plan con la nota de que, si no va, ese día es trote suave de 3 km.
+- **Eventos:** Entre Senderos 50 km de pura montaña con 1.100 m D+, a su ritmo; Guatemágica a ~6:00/km (≈ 1 h 30). Horario del día de vuelo, hito del calendario y etapa de Horarios con la salida de las 6:00.
+
+## [0.16.0] — 2026-11-06
+
+### Añadido
+- **Página «Ruta Candelaria»** (módulo 18, `assets/modules/candelaria.js`, icono `p_ruta`): todas las pasadas de 2026 por la vuelta de Candelaria (21–30 km, 430–640 m) más las de 2024–2025 que muestra Strava (`HISTORICO`), clasificadas por temporada (seca nov–abr / lluvias may–oct) y por fatiga (≥ 10 h o ≥ 2.500 m de bici en los 7 días previos). Gráfica de dispersión, KPIs, tabla y lectura: fresco en seca 19,6 km/h, fresco en lluvias 17,1, cargado 17,4; el 6 nov (17,3) llegó con 15 h y 4.718 m en la semana. Plan de seis pasos (prueba en condiciones fijas, polarizado con 30/15, fuerza pesada, peso sin déficit los días clave, descarga, bici y llantas) con 12 referencias comprobadas en PubMed/DOI.
+- **Prueba de la ruta en el calendario:** víspera suave el 22 ene 2027 y prueba el sábado 23 ene a las 17:00–19:00 (`AGENDA`).
+
+### Cambiado
+- Navegación de escritorio con nombres cortos (`navNom`: «Ruta», «Cuerpo») para que quepan nueve páginas.
+
 ## [0.15.0] — 2026-11-06
 
 ### Añadido
