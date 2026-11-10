@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.1] — 2026-11-10
+
+### Añadido
+- **Nota del 10 nov** en la bitácora (`assets/notas.js`): MTB de 27,3 km y 535 m con 151 W de media (la más alta en MTB desde el 29 oct) pero FC máx. 193 y esfuerzo relativo 160, tercer día fuerte seguido.
+
+### Cambiado
+- **Agenda 11–12 nov:** el miércoles 11 pasa a día suave de verdad (bici Z2 60 min con FC < ~130, trote 4 km y fuerza B) y los 30/15 se mueven al jueves 12, con el trote bajado de 8 a 5 km a tres días de Entre Senderos.
+
 ## [0.17.0] — 2026-11-09
 
 ### Añadido
