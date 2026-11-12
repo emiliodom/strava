@@ -17,7 +17,7 @@
     { id: 'campana', fecha: '2026-11-08', nombre: 'Campanabaj MTB, San Miguel Totonicapán', deporte: 'mtb',
       km: 32, prioridad: 'B', lugar: 'San Miguel Totonicapán', desnivel: 1000, nota: '32 km con 1.000 m D+ en terreno técnico, con lodo y frío, a ~2.500 m de altura. Llanta con más agarre y presión algo más baja, guantes largos, capa de viento e impermeable ligera; en el lodo, baja de la bici antes de caerte. Come desde la primera hora aunque el frío quite el hambre. Al bajarte, sólo la milla de la racha.' },
     { id: 'senderos', fecha: '2026-11-15', nombre: 'Entre Senderos MTB', deporte: 'mtb',
-      km: 50, prioridad: 'B', lugar: 'Por confirmar', desnivel: 1100, nota: '50 km de pura montaña con 1.100 m D+, unas 5 h, a tu ritmo y sin competir: tu segunda salida más larga del año. Z2 constante, 60 g de carbohidrato por hora desde la primera, sodio y agua; 6 días antes de la Guatemágica, así que no compitas. Luego la milla de la racha.' },
+      km: 50, prioridad: 'B', lugar: 'Por confirmar', desnivel: 1100, nota: '50 km con 1.100 m D+: subida de montaña sobre piedra, poca bajada en tierra (casi toda la bajada es en asfalto) y un tramo de 3 km de gravel. Unas 4–5 h, a tu ritmo y sin competir: tu segunda salida más larga del año. En la piedra, presión algo más baja, sentado y cadencia constante; las subidas en Z2–Z3 sin pasar al rojo en la primera hora (la espalda baja se quejó en la última subida de Colomba). En la bajada de asfalto con llanta de taco, frena antes de las curvas y no te inclines: el taco agarra poco. 60–80 g de carbohidrato por hora desde la primera, sodio y agua; 6 días antes de la Guatemágica. Luego la milla de la racha.' },
     { id: 'sanfelipe', fecha: '2026-11-19', nombre: '5K y 10K San Felipe (tentativo)', deporte: 'atletismo',
       km: 5, prioridad: 'C', lugar: 'San Felipe, Retalhuleu',
       nota: 'Tentativo: sigue en el plan, pero no está claro que se pueda. Dos días antes de la Guatemágica: sólo el 5K y a ritmo de 15K (~6:00/km); si no vas, ese día es trote suave de 3 km.' },
@@ -26,7 +26,7 @@
       nota: 'Se corre para disfrutarla, no para la marca: ~6:00/km (≈ 1 h 30), parejo y con los primeros 5 km algo más lentos (6:10) que los últimos, sin perseguir los 5:00/km tras dos semanas de MTB largas. Sale a las 19:00: bici suave de 40 min por la mañana o la tarde (terminada ≥3 h antes), comida principal a las 15:30.' },
     { id: 'xab', fecha: '2026-11-22', nombre: 'Xab Sibaná MTB (8:00)', deporte: 'mtb',
       km: 25, prioridad: 'C', lugar: 'Por confirmar', desnivel: 700,
-      nota: 'MTB de 25 km con 700 m D+, apenas 13 horas después de la Guatemágica. Rodada en Z2, sin competir; camina o baja el ritmo en las subidas y, al terminar, la milla de la racha.' }
+      nota: 'Travesía y competencia de 25 km con 700 m D+ entre asfalto y montaña, con descensos duros, apenas 13 horas después de la Guatemágica. Rodada en Z2, sin competir: llegas con las piernas del 15K y poco sueño, y tres días después vuelas a Charlotte, así que en los descensos técnicos baja con margen o a pie; una caída aquí cuesta el viaje. Revisa pastillas el viernes. Al terminar, la milla de la racha.' }
   ];
 
   /* ---------- Tipos de sesión ----------

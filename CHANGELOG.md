@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.2] — 2026-11-12
+
+### Añadido
+- **Notas del 11 y 12 nov** en la bitácora: día suave real (3 km y 6,6 km de bici a 60 W; semana del 9 nov con 3,7 h de bici frente a 12,7 y 20,2 h) y fin del entreno duro antes de Entre Senderos.
+
+### Cambiado
+- **Agenda 12, 13 y 18 nov:** el usuario paró lo duro: sin 30/15 el 12 (bici suave 45 min, trote 3 km, prevención lumbar), activación corta el 13 (Z2 50 min con 3 × 1 min, trote 3 km, sin pesas de pierna) y sin 30/15 el 18 (Z2 50 min con 4 × 1 min): la calidad de esa semana es la afinación del 17.
+- **Notas de Entre Senderos y Xab Sibaná** con el terreno real: subida en piedra, bajada casi toda en asfalto y 3 km de gravel (Senderos); asfalto y montaña con descensos duros, 13 h después del 15K y 3 días antes del vuelo (Sibaná).
+
 ## [0.17.1] — 2026-11-10
 
 ### Añadido
