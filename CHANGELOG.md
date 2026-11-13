@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.3] — 2026-11-12
+
+### Cambiado
+- **Nota del 12 nov** con lo registrado: bici suave de 24,2 km y 246 m a 74 W, trote de 2,6 km a FC 125 (frente a 140 el 5 nov a ritmo parecido: la fatiga baja) y 19 min de pierna, la última antes de Entre Senderos.
+
 ## [0.17.2] — 2026-11-12
 
 ### Añadido

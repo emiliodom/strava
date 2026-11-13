@@ -69,3 +69,5 @@ Static, no-build site (Spanish UI) analysing Emilio's Strava data; pushed as v0.
 **v0.17.1 (2026-11-10):** nota del 10 nov en `notas.js`; agenda: 11 nov suave (Z2 60 + trote 4 + B), 30/15 al 12 nov con trote 5 km. Tras cada sync, añadir la nota del día a `App.notas`.
 
 **v0.17.2 (2026-11-12):** el usuario paró el entreno duro antes de Entre Senderos. Agenda: 12 nov suave (sin 30/15), 13 activación corta sin pesas de pierna, 18 sin 30/15 (la calidad de esa semana es la afinación del 17). Terreno real: Senderos = subida en piedra, bajada casi toda en asfalto, 3 km de gravel; Sibaná = asfalto + montaña con descensos duros. San Felipe (19 nov) sigue tentativo. Notas del 11 y 12 en `notas.js`. Su único 15K previo fue a 6:36/km (23 ago, FC 143); desde el golpe del pie (20 oct) ningún trote pasa de 6,1 km: 6:00/km en la Guatemágica es ambicioso, sugerido salir a 6:20–6:30.
+
+**v0.17.3 (2026-11-12):** nota del 12 nov con el trote a FC 125 (fatiga bajando frente a 140 el 5 nov); pierna del 12 fue la última antes de Entre Senderos.
