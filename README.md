@@ -14,7 +14,7 @@ flowchart LR
   J -->|fetch| P[index.html en el navegador]
 ```
 
-> **Versión 0.17.3** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
+> **Versión 0.17.4** · ver [CHANGELOG.md](CHANGELOG.md) · comandos rápidos en [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Los datos son públicos a propósito
 
@@ -35,6 +35,7 @@ Nunca se publican las credenciales (`connector/.env`, `.tokens.json`) ni el crud
 | Running | VDOT de Daniels, ritmos de entrenamiento, metas, zonas por frecuencia cardiaca, eficiencia aeróbica y deriva |
 | Bici | VAM, desnivel, MTB frente a ruta |
 | Proyecciones | Corto, mediano y largo plazo |
+| Pre Race Day | Análisis reciente (14 días) y guías de víspera/race day para MTB, 5K y 10K (ejercicios, notas mentales y checklist) |
 | Calendario | **Tres caminos** (estructurado, intermedio y brutal) sobre las seis competencias, ahora con **entrenamiento híbrido** (bici + correr el mismo día): dobles AM/PM y bricks bici→carrera dosificados por nivel. Las actividades de Strava marcan automáticamente los días pasados y puntúan cada componente del plan por separado (carrera, bici, fuerza), además de mostrar un total global y los últimos 7 días frente al plan. Cada día abre el **detalle por deporte** y permite añadir notas o ajustar el registro. Cada día muestra **iconos** de lo que toca y, en los días pasados, un **anillo de cumplimiento**; hay tres diseños (cuadrícula, compacta, agenda) e interruptores para elegir qué datos ver. Exportable a `.ics` |
 | Sueños | Maratón, 2.000 m D+, 150–200 km, mini Ironman |
 | Cuerpo 360 | Escáner corporal: medidas, % de grasa estimado y rutas de composición (ver abajo) |

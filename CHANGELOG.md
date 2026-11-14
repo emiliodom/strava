@@ -3,6 +3,18 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.4] — 2026-11-14
+
+### Añadido
+- **Pestaña y módulo "Pre Race Day"** (`assets/modules/prerace.js`, en la página Metas): resumen de análisis reciente (últimos 14 días, con carga, km de running, km de bici, desnivel MTB y últimas sesiones relevantes) y tres guías de carrera para **MTB, 5K y 10K** con:
+  - ejercicios de víspera, activación de race day y descarga post-carrera;
+  - notas mentales positivas listas para repetir en competencia;
+  - checklist de preparación (equipo, nutrición, ritmo y logística).
+
+### Cambiado
+- Navegación de Metas: ahora agrupa `Proyección`, `Sueños`, `Pre Race Day` y `Preparación`.
+- Integración de scripts y assets en `index.html` para cargar el módulo nuevo.
+
 ## [0.17.3] — 2026-11-12
 
 ### Cambiado
