@@ -5,6 +5,13 @@ Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulo
 
 ## [0.17.4] — 2026-11-14
 
+## [0.17.5] — 2026-11-14
+
+### Cambiado
+- **Bitácora «Los últimos 15 días» actualizada** (`assets/notas.js`): el bloque visible ahora se centra en el tramo más reciente (29 oct–12 nov) en lugar del resumen viejo de 26 oct–9 nov.
+- `assets/modules/bitacora.js` ahora filtra el listado día por día por `resumen.desde` y `resumen.hasta`, para que lo mostrado en Hoy coincida exactamente con la ventana activa y no se vea antiguo.
+- Se mantiene la nota por fecha para la pestaña «Análisis» del calendario, pero la portada de bitácora enseña sólo el rango vigente.
+
 ### Añadido
 - **Pestaña y módulo "Pre Race Day"** (`assets/modules/prerace.js`, en la página Metas): resumen de análisis reciente (últimos 14 días, con carga, km de running, km de bici, desnivel MTB y últimas sesiones relevantes) y tres guías de carrera para **MTB, 5K y 10K** con:
   - ejercicios de víspera, activación de race day y descarga post-carrera;

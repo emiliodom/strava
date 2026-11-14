@@ -73,3 +73,5 @@ Static, no-build site (Spanish UI) analysing Emilio's Strava data; pushed as v0.
 **v0.17.3 (2026-11-12):** nota del 12 nov con el trote a FC 125 (fatiga bajando frente a 140 el 5 nov); pierna del 12 fue la última antes de Entre Senderos.
 
 **v0.17.4 (2026-11-14):** módulo 20 `prerace.js` (página Metas, id `prerace`) con tab interno MTB/5K/10K. Incluye análisis reciente de 14 días (carga, running, bici/MTB y últimas sesiones) y guía de pre race day con ejercicios, notas mentales positivas y checklist por disciplina. `app.js` agrega `prerace` a `ORDEN` y `PAGINAS.metas.mods`; `index.html` lo carga antes de `app.js`.
+
+**v0.17.5 (2026-11-14):** refresco de bitácora «Los últimos 15 días». `assets/notas.js` mueve `resumen` al bloque vigente (29 oct–12 nov) y `assets/modules/bitacora.js` filtra por `resumen.desde/hasta`, para que la portada no muestre bloques viejos aunque existan notas históricas para el tab «Análisis» del calendario.

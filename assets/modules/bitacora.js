@@ -24,7 +24,9 @@
   function render(D) {
     var N = App.notas;
     if (!N || !N.resumen) return '';
-    var R = N.resumen, fechas = Object.keys(N).filter(function (k) { return /^\d{4}-/.test(k); }).sort().reverse();
+    var R = N.resumen, fechas = Object.keys(N).filter(function (k) {
+      return /^\d{4}-/.test(k) && k >= R.desde && k <= R.hasta;
+    }).sort().reverse();
     var filas = fechas.map(function (f) {
       var d = planDe(f), acts = D.limpias.filter(function (a) { return a.fechaISO === f; }), dt = new Date(f + 'T12:00:00');
       return "<li class='bt-d'><div class='bt-f'><b>" + DOW[dt.getDay()] + ' ' + dt.getDate() + '</b><small>' + F.fecha(f).replace(/^\d+ /, '') + '</small></div>' +
