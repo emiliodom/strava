@@ -3,7 +3,13 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
-## [0.17.4] — 2026-11-14
+## [0.17.6] — 2026-11-15
+
+### Añadido
+- **Análisis de Entre Senderos** (`assets/notas.js`): métricas de la carrera (43,8 km, 1.041 m, 3 h 08, FC media 158, máx 207, 146 W y esfuerzo relativo 474) y la sección final con lo que fue grande, bueno, malo y peor, incluyendo el mareo precoz, la estrategia de hidratación y la pérdida de piernas en un segmento.
+
+### Cambiado
+- **Bitácora actualizada** con la ventana reciente hasta el 15 nov, y borrado de la versión vieja de caché (`README.md`, `index.html` y `?v=0.17.6`).
 
 ## [0.17.5] — 2026-11-14
 
