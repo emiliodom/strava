@@ -3,6 +3,17 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.17.8] — 2026-11-17
+
+### Cambiado
+- **Análisis de Entre Senderos reescrito con datos** (`assets/notas.js`): 43,8 km y 1.041 m en 3 h 08 a 13,9 km/h, FC 158 / máx. 207, 146 W, esfuerzo relativo 474 (151 por hora, el más alto del año). Comparado con la Travesía entre Fincas del 26 jul (misma FC 158): 41 % más distancia, 21 % más desnivel, 14 % más velocidad y 9 W más. Errores medibles: 3 min detenido en 3 h 11 (poca comida y bebida para ~1.650 kJ, coherente con el mareo) y un calentamiento a 200 W que llevó la FC a 183 antes de salir.
+- **Bitácora 3–17 nov**: resumen nuevo y notas del 13 (chequeo médico, FC 127 en el trote), 14 (víspera ligera), 16 (Candelaria a 17,3 km/h al día siguiente; trote nocturno a FC 123) y 17 (hito de 10.000 km; FC 148 con 118 W, tercer día fuerte seguido).
+- **Agenda 17–18 nov**: afinación reducida a 2 × 1,5 km a 6:10–6:15/km sin pesas; el 18 pasa a descanso real (Z1 40 min o nada, trote 3 km).
+- **Eventos**: San Felipe, si va, sólo el 5K a 6:15–6:30; Guatemágica con ritmo realista según el 15K de agosto (6:36/km) y el 10K de octubre (6:19/km): salida a 6:20–6:25 y final a 6:00 si va entero (≈ 1 h 34); Sibaná con la lección de comida y calentamiento.
+
+### Corregido
+- `connector/anomalias.json`: excluida la copia sin pulso del calentamiento del 15 nov (20998150055), que salía dos veces.
+
 ## [0.17.7] — 2026-11-15
 
 ### Cambiado
