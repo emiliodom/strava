@@ -3,17 +3,18 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'dia', 'bitacora', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'prerace', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas', 'candelaria'];
+  var ORDEN = ['resumen', 'dia', 'bitacora', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'prerace', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas', 'candelaria', 'guia', 'fuerza', 'trampas', 'sesiones', 'leccion'];
   // Cada «página» agrupa módulos afines; la URL es #pagina (o #modulo, que abre su página y baja hasta él).
   var PAGINAS = [
     { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia', 'bitacora'] },
     { id: 'calendario', nom: 'Calendario', corto: 'Calend.', icono: 'p_cal', mods: ['calendario'] },
     { id: 'rendimiento', nom: 'Rendimiento', corto: 'Rendim.', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
     { id: 'ruta', nom: 'Ruta Candelaria', corto: 'Ruta', navNom: 'Ruta', icono: 'p_ruta', mods: ['candelaria'] },
+    { id: 'resistencia', nom: 'Guía de resistencia', corto: 'Guía', navNom: 'Guía', icono: 'p_guia', mods: ['guia', 'fuerza', 'trampas', 'sesiones', 'leccion'] },
     { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['proyeccion', 'suenos', 'prerace', 'preparacion'] },
     { id: 'cuerpo', nom: 'Cuerpo y ciencia', navNom: 'Cuerpo', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper'] },
     { id: 'comida', nom: 'Comida', icono: 'p_comida', mods: ['menu'] },
-    { id: 'horarios', nom: 'Horarios', icono: 'p_reloj', mods: ['zonas'] },
+    { id: 'horarios', nom: 'Horarios', corto: 'Horas', icono: 'p_reloj', mods: ['zonas'] },
     { id: 'registro', nom: 'Registro', icono: 'p_registro', mods: ['registro', 'recursos'] }
   ];
   var MODELO = null, MODS = {}, PAGINA = null;
@@ -53,12 +54,14 @@
     PAGINA = r.pag.id;
     $$('main > section').forEach(function (s) { s.classList.toggle('off', r.pag.mods.indexOf(s.id) < 0); });
     $$('#tab a, #nav a').forEach(function (a) { a.setAttribute('aria-current', a.getAttribute('data-p') === r.pag.id ? 'page' : 'false'); });
+    var act = $('#tab a[aria-current=page]'); if (act && act.scrollIntoView) try { act.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) { /* navegadores viejos */ }
     // índice interno de la página, sólo si agrupa varios módulos
     var sub = $('#sub');
     sub.hidden = r.pag.mods.length < 2;
     sub.innerHTML = r.pag.mods.length < 2 ? '' : r.pag.mods.map(function (id) {
       return "<a href='#" + id + "'" + ((r.mod || r.pag.mods[0]) === id ? " aria-current='true'" : '') + '>' + App.esc(MODS[id].nom) + '</a>';
     }).join('');
+    var sa = sub.querySelector('[aria-current=true]'); if (sa && sa.scrollIntoView) try { sa.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) { /* navegadores viejos */ }
     document.title = r.pag.nom + ' · Análisis 2026 · Emilio';
     if (noScroll) return;
     var dest = r.mod && document.getElementById(r.mod);
@@ -217,6 +220,7 @@
     (App.mods || []).forEach(function (m) { MODS[m.id] = m; });
 
     App.data.cargar().then(function (raw) {
+      App.data.raw = raw;
       MODELO = App.metrics.construir(raw);
       global.__MODELO__ = MODELO;              // para inspeccionar desde la consola
       pintar(MODELO);

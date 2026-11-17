@@ -431,7 +431,8 @@ header.top .brand a::before{content:'';display:inline-block;width:.55rem;height:
 /* ---------- páginas ---------- */
 main>section.off{display:none}
 @media(min-width:900px){.links{flex:1 1 auto;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.links a{font-size:.82rem;padding:.3rem .55rem;white-space:nowrap}}
-.tabbar a{flex:1 1 0;min-width:0;padding-inline:.1rem}
+.tabbar a{flex:1 0 auto;min-width:2.9rem;padding-inline:.15rem;white-space:nowrap}
+.tabbar{scroll-padding-inline:.5rem}
 .subnav{justify-content:flex-start;position:sticky;top:var(--hh,3.6rem);z-index:30;display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;padding-block:.45rem;
   background:color-mix(in srgb,var(--pico-background-color) 92%,transparent);backdrop-filter:blur(10px)}
 .subnav[hidden]{display:none}
@@ -592,3 +593,15 @@ header.top nav.container{max-width:min(100%,1400px)}
 .bt-a small,.bt-p small{color:var(--pico-muted-color)}
 .nota-dia{border-left:3px solid var(--pico-primary);background:color-mix(in srgb,var(--pico-primary) 8%,transparent);padding:.55rem .8rem;border-radius:6px;margin:0 0 .8rem}
 .nota-dia p{margin:.25rem 0 0;font-size:.9rem}
+
+/* guía de resistencia (módulos 21–25) */
+.grefs{padding-left:1.4rem;font-size:.85rem}
+.grefs li{margin-bottom:.4rem;overflow-wrap:anywhere}
+sup.ref{font-size:.68em;color:var(--pico-muted-color);white-space:nowrap}
+.ses-k{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--pico-muted-color)}
+
+.gcards{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));margin-bottom:1rem}
+.gcard{border:1px solid var(--pico-muted-border-color);border-radius:.8rem;padding:.8rem .9rem;background:var(--pico-card-background-color)}
+.gcard h5{margin:0 0 .25rem;font-size:.95rem}
+.gcard p{margin:.35rem 0 0;font-size:.88rem}
+.gcard .ver{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:.1rem .5rem;border:1px solid var(--pico-muted-border-color)}

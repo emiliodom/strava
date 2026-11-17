@@ -35,6 +35,7 @@
     p_comida: "<path d='M4 11h16a8 8 0 0 1-16 0zM12 3v4M8 5v2M16 5v2'/>",
     p_cuerpo: "<circle cx='12' cy='5' r='2'/><path d='M12 8v7M8 10l4-2 4 2M9 21l3-6 3 6'/>",
     p_ruta: "<path d='M3 19l5-9 4 6 3-4 6 7z'/><circle cx='17' cy='5' r='1.6'/>",
+    p_guia: "<path d='M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z'/><path d='M4 21V5M9 8h6M9 12h6'/>",
     p_reloj: "<circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2M3 12h2M19 12h2'/>",
     p_registro: "<path d='M6 3h12v18H6zM9 8h6M9 12h6M9 16h4'/>"
   };

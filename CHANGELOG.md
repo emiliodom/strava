@@ -3,6 +3,22 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.18.0] — 2026-11-17
+
+### Añadido
+- **Página «Guía de resistencia»** (`#resistencia`, icono `p_guia`, «Guía» en la navegación) con cinco pestañas:
+  - **Ciencia del ultra** (módulo 21, `assets/modules/guia.js`): los tres determinantes (VO₂máx, fracción utilizable, economía) y la durabilidad; polarizado frente a zona gris; límites de cada deporte (correr, bici, natación); intestino, fatiga central y periférica, edad y genética.
+  - **Fuerza de piernas** (22): siete afirmaciones habituales («piernas fuertes = más rápido», «resistencia al lactato», rodillas, peso, peso corporal, interferencia, sustituir kilómetros) con lo que dicen los estudios y un veredicto; consejos frecuentes de r/Velo, r/AdvancedRunning, r/ultrarunning y r/cycling parafraseados y contrastados; cómo hacer fuerza con y sin pesas.
+  - **Trampas** (23): doce decisiones que parecen progreso y no lo son, cada una con su ejemplo en los datos de 2026.
+  - **Sesiones y semanas** (24, `sesiones.js`): las tres intensidades con tus FC, catálogo de 14 sesiones, cinco días tipo y semanas tipo de construcción, descarga, doble carrera, Charlotte sin pesas y rutina con colegio.
+  - **Tu 2026** (25, `leccion.js`): KPIs del año, volumen por mes, intensidad por FC media (bici 3 % fácil frente a 62 % a pie), metros por latido de los trotes fáciles por mes, tabla de eventos (desde los registros originales, sin unir tramos), siete lecciones y pronósticos (fin de año, día 365 de la racha, Guatemágica por Riegel, Sibaná, Candelaria del 23 ene).
+- 28 referencias comprobadas por DOI y PubMed (`App.guiaRefs`), con las correcciones de la revisión: fatiga central y periférica en Millet 2011, edades de Knechtle 2012, 80 % de las sesiones en Seiler 2010, heredabilidad máxima del 47 % en Bouchard 1999, exponente de Riegel 1,06–1,08.
+- `App.data.raw` guarda el JSON original para módulos que necesitan las actividades sin unir.
+
+### Cambiado
+- Barra inferior del móvil: con diez páginas las pestañas se desplazan en lugar de encimarse (Horarios pasa a «Horas») y la pestaña activa, igual que la subpestaña, se desplaza a la vista.
+- Nota de la Guatemágica: ≈ 1 h 34–1 h 38, alineada con el pronóstico.
+
 ## [0.17.8] — 2026-11-17
 
 ### Cambiado
