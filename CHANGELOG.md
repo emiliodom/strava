@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.20.0] — 2026-11-17
+
+### Añadido
+- **Pestaña «Bici o correr»** en la Guía de resistencia (módulo 27, `assets/modules/salsa.js`): ¿dónde están los números buenos (no élite)?
+  - Veredicto: la bici es la oportunidad más cercana (base de horas ya hecha, volumen sin impacto, fugas que se arreglan en meses); a pie, un nivel «bueno» pide años.
+  - KPIs en vivo: horas de bici y a pie de los últimos 12 meses, 10K equivalente (Riegel desde la mejor carrera de 8–16 km desde julio) y nivel por edad aproximado (estándar abierto de 10 km 26:24).
+  - Qué es «bueno»: nivel por edad 60–70 % a pie (≈ 44 y 38–39 min en 10K) y 3,3–3,8 W/kg de FTP en bici, en vatios para tu peso (`App.data.atleta()`).
+  - Por qué la bici está más cerca y en qué no; la «salsa secreta» en 10 ingredientes; un año «bici primero» como propuesta.
+  - 11 referencias nuevas comprobadas en Crossref más 6 compartidas con Ciencia del ultra (`App.guiaRefs.raw`).
+
 ## [0.19.0] — 2026-11-17
 
 ### Añadido

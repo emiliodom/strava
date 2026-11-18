@@ -46,7 +46,7 @@
       return '<li>' + App.esc(r[1]) + (r[2] ? " <a href='https://doi.org/" + r[2] + "' target='_blank' rel='noopener'>doi:" + r[2] + '</a>' : '') + '</li>';
     }).join('') + '</ol>';
   }
-  App.guiaRefs = { cita: cita, lista: listaRefs };
+  App.guiaRefs = { cita: cita, lista: listaRefs, raw: REFS };
 
   /* ---------- 21 · Qué crea a un atleta de resistencia ---------- */
   function renderGuia() {
