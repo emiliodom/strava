@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.18.1] — 2026-11-17
+
+### Cambiado
+- 17 nov: la sesión de la tarde pasa de calidad (2 × 1,5 km a 6:10–6:15/km) a trote fácil de 4–5 km a 7:00–7:30/km con FC por debajo de 140: era el cuarto día fuerte seguido tras Entre Senderos, con FC 148 a 118 W por la mañana.
+
+### Corregido
+- «Lo que te toca hoy» y el calendario mostraban el ritmo genérico del tipo de día (p. ej. «umbral 5:24/km») aunque la sesión escribía otro; ahora, si la sesión trae su propio ritmo en «m:ss/km», se muestra ése (`corto()` en `actividad.js`).
+
 ## [0.18.0] — 2026-11-17
 
 ### Añadido

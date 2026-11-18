@@ -61,6 +61,9 @@
     var z = D && D.zonas, T = P.TIPOS[dia.tipo] || {};
     var r = esRun(dia, T), b = esBici(dia, T);
     var sr = r ? (CORTO_RUN[dia.tipo] || CORTO_RUN.E)(z) : '';
+    /* Si la sesión escribe su propio ritmo (p. ej. «6:10–6:15/km»), manda sobre el ritmo genérico del tipo. */
+    var rs = r && dia.sesion && String(dia.sesion).match(/(\d:\d\d(?:\s*[–-]\s*\d:\d\d)?)\s*\/km/);
+    if (rs) sr = rs[1] + '/km';
     var sb = b ? (CORTO_BICI[dia.tipo] || 'Z2') : '';
     if (r && b) return primero(dia, T) === 'bici' ? sb + ' → ' + sr : sr + ' → ' + sb;   // día híbrido, en orden
     return sr || sb || '';
