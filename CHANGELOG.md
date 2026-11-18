@@ -3,6 +3,21 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.19.0] — 2026-11-17
+
+### Añadido
+- **Pestaña «Barra»** en la Guía de resistencia (módulo 26, `assets/modules/barra.js`): de cero a 10 dominadas estrictas.
+  - Qué cuenta como dominada (estándar estricto, agarres) y calidad frente a cantidad (carga, fallo, frecuencia, volumen, descansos, negativas) con sus estudios.
+  - Cinco niveles (cimientos, primera dominada, 1–3, 4–7, 8–10) con sesión A de fuerza (lunes) y B de volumen (jueves), opcionales y criterio para pasar de nivel.
+  - Tiempos: calentamiento, sesión, semana, bloque de 4 semanas con descarga, semanas de carrera y Charlotte.
+  - Lesiones: hombro (control escapular), codo (el tendón se adapta más lento), manos, regla del dolor y cuándo consultar.
+  - Ocho trampas, consejos de r/bodyweightfitness, r/fitness y r/overcominggravity parafraseados y contrastados, y el «modo bestia» después de las 10.
+  - Estimador: escribes tu máximo y muestra nivel, semanas y mes estimado para las 10 (se guarda sólo en el navegador, `strava.barra.max`).
+  - 12 referencias comprobadas en Crossref.
+
+### Cambiado
+- Rutina V-taper V: las dominadas remiten al bloque de tu nivel en Guía › Barra.
+
 ## [0.18.1] — 2026-11-17
 
 ### Cambiado
