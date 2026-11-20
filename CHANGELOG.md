@@ -3,6 +3,24 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.21.0] — 2026-11-20
+
+### Añadido
+- Bitácora del 18 al 20 nov y resumen nuevo (6–20 nov): el 5K por la dignidad de las mujeres en 23:56 (4:48/km, VDOT ≈ 40) cambia los ritmos de referencia.
+- «Bici o correr»: KPIs de umbral a pie («FTP» de carrera, desde el VDOT de la mejor carrera) y FTP de bici estimada (las 3 salidas de ≥ 2,5 h con pulso y más potencia desde julio, con fracción de FTP por duración), y un acordeón que explica cuánto fiarse de cada una.
+
+### Cambiado
+- Veredicto de «Bici o correr» corregido y dinámico: con el 5K, a pie estás a ≈ 13 % del nivel local (≈ 44 min en 10K) y en bici, con vatios estimados, a una distancia parecida de 3,3 W/kg; la propuesta pasa de «bici primero» a «dos frentes» (bici para el volumen, carrera para la velocidad).
+- La base de los pronósticos a pie (Tu 2026 y Bici o correr) acepta carreras de 4,5–16 km; con base corta, Riegel usa exponente 1,07–1,10.
+- Guatemágica: ritmos 5:40–5:45 → 5:30–5:35 → 5:20–5:25 (≈ 1 h 21–1 h 25) en lugar de 6:20 → 6:00.
+- Sesiones: umbral a pie ~5:00–5:10/km y fácil 6:05–7:30/km.
+- San Felipe marcado como no corrido.
+
+### Corregido
+- El «10K a 6:19» del 16 oct que servía de referencia incluía una parada de ~12 min en el km 2; ya no manda en los pronósticos.
+- VDOT del sitio: un 5K que el GPS mide en 4,90–4,99 km no genera el «mejor 5 km» de Strava; `metrics.js` ahora toma esa salida completa y, si mejora, sustituye al 5 km (el VDOT pasa de 37,2 a 40,2 y con él todas las zonas y ritmos de «Hoy» y del calendario).
+- Con empate de 10K equivalente, una carrera con dorsal gana a un entreno como base de los pronósticos.
+
 ## [0.20.0] — 2026-11-17
 
 ### Añadido

@@ -118,13 +118,13 @@
       var f365 = new Date(Date.parse(X.racha.f + 'T00:00:00Z') + (365 - X.racha.n) * 864e5).toISOString().slice(0, 10);
       filas.push(['<b>Racha #365</b>', 'Día 365 el <b>' + F.fecha(f365) + ' ' + f365.slice(0, 4) + '</b>', "<span class='wrap'>Último registro: día " + X.racha.n + ' el ' + F.fecha(X.racha.f) + '. Cae en Charlotte: planea la milla de ese día.</span>']);
     }
-    var base = X.runs.filter(function (a) { return a.km >= 8 && a.km <= 16 && a.fechaISO >= '2026-07-01' && a.min * 60 / a.km < 450; })
-      .map(function (a) { return { a: a, t15: function (e) { return a.min * Math.pow(15 / a.km, e); } }; })
-      .sort(function (x, y) { return x.t15(1.06) - y.t15(1.06); });
+    var base = X.runs.filter(function (a) { return a.km >= 4.5 && a.km <= 16 && a.fechaISO >= '2026-07-01' && a.min * 60 / a.km < 450; })
+      .map(function (a) { return { a: a, w: /5k|10k|15k|21k|carrera|race/i.test(a.nombre || '') ? 0.99 : 1, t15: function (e) { return a.min * Math.pow(15 / a.km, e); } }; })   // una carrera con dorsal gana los empates
+      .sort(function (x, y) { return x.t15(1.06) * x.w - y.t15(1.06) * y.w; });
     if (base.length) {
-      var b0 = base[0], lo = b0.t15(1.06), hi = b0.t15(1.08);
+      var b0 = base[0], corta = b0.a.km < 8, e1 = corta ? 1.07 : 1.06, e2 = corta ? 1.10 : 1.08, lo = b0.t15(e1), hi = b0.t15(e2);
       filas.push(['<b>Guatemágica 15K</b>', '<b>' + hm(lo) + '–' + hm(hi) + '</b> (' + ritmo(lo * 4) + '–' + ritmo(hi * 4) + '/km)',
-        "<span class='wrap'>Fórmula de Riegel (exponente 1,06–1,08)" + c('riegel') + ' desde tu mejor carrera de 8–16 km desde julio: ' + F.num(b0.a.km, 1) + ' km a ' + ritmo(b0.a.min * 60 / b0.a.km) + '/km el ' + F.fecha(b0.a.fechaISO) + '. Bajar de 1 h 30 (6:00/km) pide un día perfecto; la tirada más larga reciente es corta y vienes de Entre Senderos.</span>']);
+        "<span class='wrap'>Fórmula de Riegel (exponente " + (corta ? '1,07–1,10, más conservador porque la base es corta' : '1,06–1,08') + ')' + c('riegel') + ' desde tu mejor carrera de 4,5–16 km desde julio: ' + F.num(b0.a.km, 1) + ' km a ' + ritmo(b0.a.min * 60 / b0.a.km) + '/km el ' + F.fecha(b0.a.fechaISO) + '. Supone que aguantas la distancia: tu tirada más larga reciente es de 6 km, el calor de la noche en Retalhuleu y el 5K del día anterior suman 2–4 min; sal en el extremo lento.</span>']);
     }
     filas.push(['<b>Xab Sibaná</b>', '<b>1 h 55–2 h 15</b> en movimiento', "<span class='wrap'>25 km y 700 m (28 m/km) a 11–13 km/h, como Campanabaj (12,3 km/h, 31 m/km) y la Travesía entre Fincas (12,2, 28 m/km), 13 h después del 15K y en Z2.</span>"]);
     filas.push(['<b>Candelaria, 23 ene</b>', '<b>19–20,5 km/h</b>', "<span class='wrap'>Fresco en temporada seca promedias 19,6 km/h (página Ruta). Siete semanas en Charlotte con 2 sesiones de intensidad por semana mantienen casi toda la forma aeróbica; sin ellas, el VO₂máx empieza a caer en 2–4 semanas" + c('mujikaPadilla') + '. Clave: 9 días tranquilos antes de la prueba.</span>']);
@@ -142,7 +142,7 @@
         '<li><b>El volumen funcionó.</b> Entre Senderos frente a la Travesía entre Fincas: misma FC 158, 41 % más distancia, 14 % más velocidad y 36 min más. Eso es durabilidad' + c('maunder') + '.</li>' +
         '<li><b>En bici te falta el «fácil».</b> Casi todas tus horas con banda caen en FC media de 135–149. Más salidas a FC < 135 dejarían frescura para que lo duro sea más duro' + c('seiler') + '.</li>' +
         '<li><b>Compites mucho.</b> Unos dos eventos al mes, y en noviembre cuatro en 15 días. Cada uno cuesta 3–4 días entre víspera y recuperación; elige 4–6 carreras A al año y el resto como entreno.</li>' +
-        '<li><b>A pie, el corazón va por delante del pie.</b> Tus trotes fáciles volvieron a FC 125–128, pero la tirada más larga reciente es corta y en octubre hubo un golpe. Sube los kilómetros despacio' + c('lauersen') + '.</li>' +
+        '<li><b>A pie eres más rápido de lo que dice tu volumen.</b> El 5K del 20 nov en 24:00 (4:48/km, VDOT ≈ 40) y los 4,6 km a 4:46 del 4 oct muestran velocidad; lo que falta es resistencia: la tirada más larga reciente es de 6 km y en octubre hubo un golpe. Sube los kilómetros despacio' + c('lauersen') + '. Ojo: el «10K a 6:19» del 16 oct incluía una parada de ~12 min en el km 2.</li>' +
         '<li><b>La fuerza llegó tarde.</b> Casi toda está en octubre y noviembre. Mantenerla todo el año (incluso sin pesas en Charlotte) es la mejora más barata que te queda' + c('ronnestadMujika') + '.</li>' +
         '<li><b>Comer es entrenar.</b> El déficit siguió en pleno bloque fuerte y en Entre Senderos comiste poco: dos decisiones que cuestan rendimiento' + c('mountjoy', 'jeukendrup') + '.</li></ol>') +
       U.acc('Volumen por mes', graficas(X), true) +

@@ -49,11 +49,25 @@
     var A = D.limpias.filter(function (a) { return a.fechaISO > desde; });
     var bh = 0, rh = 0, rkm = 0;
     A.forEach(function (a) { if (bici(a)) bh += a.min / 60; if (a.grupo === 'running') { rh += a.min / 60; rkm += a.km; } });
-    var base = A.filter(function (a) { return a.grupo === 'running' && a.km >= 8 && a.km <= 16 && a.fechaISO >= '2026-07-01' && a.min * 60 / a.km < 450; })
-      .map(function (a) { return { a: a, t10: a.min * Math.pow(10 / a.km, 1.06) }; })
-      .sort(function (x, y) { return x.t10 - y.t10; })[0] || null;
+    var base = A.filter(function (a) { return a.grupo === 'running' && a.km >= 4.5 && a.km <= 16 && a.fechaISO >= '2026-07-01' && a.min * 60 / a.km < 450; })
+      .map(function (a) { return { a: a, t10: a.min * Math.pow(10 / a.km, 1.06), w: /5k|10k|15k|21k|carrera|race/i.test(a.nombre || '') ? 0.99 : 1 }; })   // una carrera con dorsal gana los empates
+      .sort(function (x, y) { return x.t10 * x.w - y.t10 * y.w; })[0] || null;
+    var M = App.metrics, umbral = null;
+    if (base && M && M.vdotDeCarrera) {
+      var v = M.vdotDeCarrera(base.a.min * 60, base.a.km * 1000);
+      umbral = { vdot: v, seg: M.zonasRitmo(v).umbral };
+    }
+    // FTP de bici estimada con los vatios ESTIMADOS de Strava (sin potenciómetro): salidas ≥ 2,5 h con pulso desde julio,
+    // potencia media ÷ fracción típica de FTP para esa duración (2,5–3,5 h ≈ 0,72–0,80; más larga ≈ 0,62–0,72); las 3 más altas.
+    var raw = App.data && App.data.raw, fuera = {}, ftp = null;
+    ((raw && raw.estadisticas && raw.estadisticas.anomalias_datos) || []).forEach(function (x) { fuera[String(x.id)] = 1; });
+    var est = ((raw && raw.actividades) || []).filter(function (x) {
+      return /Ride/.test(x.sport_type) && x.avg_watts && x.avg_hr && x.moving_time >= 9000 && !fuera[String(x.id)] && x.start_local >= '2026-07';
+    }).map(function (x) { var h = x.moving_time / 3600; return x.avg_watts / (h <= 3.5 ? 0.76 : 0.67); })
+      .sort(function (p, q) { return q - p; }).slice(0, 3);
+    if (est.length) ftp = { lo: est[est.length - 1], hi: est[0], n: est.length };
     var at = (App.data.atleta && App.data.atleta()) || {};
-    return { bh: bh, rh: rh, rkm: rkm, base: base, kg: +at.peso || 77, edad: +at.edad || 39 };
+    return { bh: bh, rh: rh, rkm: rkm, base: base, umbral: umbral, ftp: ftp, kg: +at.peso || 77, edad: +at.edad || 39 };
   }
 
   function render(D) {
@@ -61,20 +75,32 @@
     var ag = X.base ? EST_10K / X.base.t10 * 100 : null;
     var w = function (wkg, m) { return Math.round(wkg * m) + ' W'; };
 
-    var veredicto = U.coach('La respuesta corta',
-      '<p><b>Sí: tu oportunidad más cercana de «números buenos» está en la bici, pero no por la razón que se suele dar.</b> No es que la bici sea más fácil; es que tú ya tienes la base de horas, que la bici admite más volumen sin lesiones por impacto' + c('videbaek', 'clarsen') + ', y que tus mayores fugas (zona gris, no medir potencia, comer poco en la bici) se arreglan en meses, no en años. A pie también mejorarías, pero llegar a un nivel «bueno» exige años de kilómetros que el tendón y el pie tienen que tolerar' + c('saunders') + '.</p>' +
+    var gapRun = X.base ? (X.base.t10 / 44 - 1) * 100 : null;
+    var ftpMid = X.ftp ? (X.ftp.lo + X.ftp.hi) / 2 : null, gapBike = ftpMid ? (3.3 * kg / ftpMid - 1) * 100 : null;
+    var veredicto = U.coach('La respuesta corta (corregida el 20 nov)',
+      (gapRun !== null && gapRun < 20 ?
+        '<p><b>Los dos están más cerca de lo que parecía, y la bici no gana por goleada.</b> Con tu mejor carrera reciente a pie, tu 10K equivalente es ' + mmss(X.base.t10) + ': te separa un ≈ ' + F.num(gapRun, 0) + ' % del nivel local (≈ 44 min). En bici, con vatios <i>estimados</i>, estarías a un ≈ ' + (gapBike !== null ? F.num(Math.max(0, gapBike), 0) : '?') + ' % de 3,3 W/kg. La primera versión de esta página partía de un «10K a 6:19» que en realidad incluía una parada de 12 min: el dato era malo, y la conclusión con él.</p>' +
+        '<p>La diferencia real está en el <b>riesgo</b>: a pie la velocidad ya existe, pero la resistencia (tiradas largas) y el pie tienen que construirse despacio' + c('videbaek') + '; en bici tienes las horas y el límite es ordenarlas' + c('neal') + '. La mejor apuesta: <b>la bici para el volumen y el motor, la carrera para la velocidad</b>, subiendo kilómetros con paciencia.</p>' :
+        '<p><b>Sí: tu oportunidad más cercana de «números buenos» está en la bici, pero no por la razón que se suele dar.</b> No es que la bici sea más fácil; es que tú ya tienes la base de horas, que la bici admite más volumen sin lesiones por impacto' + c('videbaek', 'clarsen') + ', y que tus mayores fugas (zona gris, no medir potencia, comer poco en la bici) se arreglan en meses, no en años. A pie también mejorarías, pero llegar a un nivel «bueno» exige años de kilómetros que el tendón y el pie tienen que tolerar' + c('saunders') + '.</p>') +
       '<p>La salsa secreta no es secreta: <b>constancia durante años + la mayor parte fácil de verdad + dos sesiones duras bien hechas + comer y dormir para absorberlo</b>' + c('joyner', 'seiler') + '. Lo que separa a los buenos amateurs es que la hacen 48 semanas al año, no que conozcan un truco.</p>');
 
     var kp = U.kpis([
       U.kpi('Bici, últimos 12 meses', F.num(X.bh, 0) + ' h', 'tu base ya existe'),
       U.kpi('A pie, últimos 12 meses', F.num(X.rh, 0) + ' h', F.num(X.rkm, 0) + ' km'),
-      U.kpi('10K equivalente', X.base ? mmss(X.base.t10) : '—', X.base ? 'desde ' + F.num(X.base.a.km, 1) + ' km el ' + F.fecha(X.base.a.fechaISO) : 'sin carrera de 8–16 km'),
-      U.kpi('Nivel por edad a pie', ag ? '≈ ' + F.num(ag, 0) + ' %' : '—', '60 % = nivel local', ag && ag < 50 ? 'warn' : '')
+      U.kpi('10K equivalente', X.base ? mmss(X.base.t10) : '—', X.base ? 'desde ' + F.num(X.base.a.km, 1) + ' km el ' + F.fecha(X.base.a.fechaISO) : 'sin carrera de 4,5–16 km'),
+      U.kpi('Nivel por edad a pie', ag ? '≈ ' + F.num(ag, 0) + ' %' : '—', '60 % = nivel local', ag && ag < 50 ? 'warn' : ''),
+      U.kpi('Umbral a pie («FTP» de carrera)', X.umbral ? mmss(X.umbral.seg / 60) + '/km' : '—', X.umbral ? 'VDOT ≈ ' + F.num(X.umbral.vdot, 1) : ''),
+      U.kpi('FTP de bici (estimada)', X.ftp ? Math.round(X.ftp.lo / 5) * 5 + '–' + Math.round(X.ftp.hi / 5) * 5 + ' W' : '—', X.ftp ? F.num(X.ftp.lo / kg, 1) + '–' + F.num(X.ftp.hi / kg, 1) + ' W/kg · sin potenciómetro' : '', 'warn')
     ]);
+
+    var ftpTxt = U.acc('Tu FTP: cómo se estimó y cuánto fiarse', U.coach('Dos «FTP» distintas',
+      '<p><b>A pie (umbral):</b> ' + (X.umbral ? 'de ' + F.num(X.base.a.km, 2) + ' km en ' + mmss(X.base.a.min) + ' el ' + F.fecha(X.base.a.fechaISO) + ' sale un VDOT ≈ ' + F.num(X.umbral.vdot, 1) + ' y un ritmo de umbral de <b>' + mmss(X.umbral.seg / 60) + '/km</b> (lo que aguantarías unos 50–60 min en carrera). Es una estimación sólida porque sale de una carrera real, cronometrada y con parciales parejos.' : 'sin carrera válida.') + '</p>' +
+      '<p><b>En bici:</b> ' + (X.ftp ? 'con las ' + X.ftp.n + ' salidas de ≥ 2,5 h con más potencia desde julio, dividiendo la potencia media entre la fracción típica de FTP para esa duración, sale <b>' + Math.round(X.ftp.lo) + '–' + Math.round(X.ftp.hi) + ' W</b>. Pero Strava <i>estima</i> esos vatios con peso, velocidad y desnivel, sin viento ni terreno: en tu año las estimaciones van de ~150 a ~275 W según la salida. Tómalo como «ni idea con forma de rango».' : 'sin datos.') + '</p>' +
+      '<p><b>Cómo saberlo de verdad:</b> 20 min a tope en una subida constante (o en rodillo con potenciómetro) tras 15 min de calentamiento; FTP ≈ 95 % de la potencia media. Sin potenciómetro, repite siempre la misma subida y compara tiempos.</p>'));
 
     var niveles = U.acc('¿Qué es «bueno» en cada deporte? (no élite)', cards([
       ['Correr: nivel por edad', '<p>Se compara tu tiempo con el récord para tu edad y sexo: 60 % es nivel local, 70 % regional, 80 % nacional. Para un hombre de ' + X.edad + ' años en 10 km:</p><ul><li><b>60 %:</b> ≈ 44 min (4:24/km)</li><li><b>70 %:</b> ≈ 38–39 min (3:50/km)</li></ul>' +
-        (ag ? '<p>Tú estás en ≈ ' + F.num(ag, 0) + ' % (10K equivalente ' + mmss(X.base.t10) + '). Llegar a 60 % es bajar ' + F.num(X.base.t10 - 44, 0) + ' min: posible, pero con 3–5 años de 40–60 km semanales.</p>' : '') +
+        (ag ? '<p>Tú estás en ≈ ' + F.num(ag, 0) + ' % (10K equivalente ' + mmss(X.base.t10) + '). Llegar a 60 % es bajar ' + F.num(X.base.t10 - 44, 0) + ' min: ' + (X.base.t10 - 44 < 8 ? 'realista en 1–2 años con 30–40 km semanales y una sesión de umbral, si el pie lo tolera.' : 'posible, pero con 3–5 años de 40–60 km semanales.') + '</p>' : '') +
         '<p><small>Cálculo aproximado con el estándar abierto de 10 km (26:24); a los 39 años el ajuste por edad apenas cambia el resultado.</small></p>', 'Años'],
       ['Bici: vatios por kilo (FTP)', '<p>La FTP es la potencia que sostienes cerca de una hora; dividida por el peso, ordena a los ciclistas en subida' + c('jeukendrup00', 'pinot') + '. Tablas de Coggan y datos de usuarios de potencia (las fuentes difieren):</p><ul><li><b>&lt; 2,5 W/kg:</b> principiante</li><li><b>2,5–3,0:</b> recreativo en forma (cerca de la mediana de quien entrena con potencia)</li><li><b>3,3–3,8:</b> <b>bueno</b>: cuartil alto de los amateurs con potenciómetro</li><li><b>&gt; 4,0:</b> competitivo regional</li></ul>' +
         '<p>Con ' + F.num(kg, 0) + ' kg, «bueno» es <b>' + w(3.3, kg) + '–' + w(3.8, kg) + '</b>; con ' + F.num(kg - 4, 0) + ' kg, ' + w(3.3, kg - 4) + '–' + w(3.8, kg - 4) + '.</p>', 'Meses a pocos años']
@@ -103,16 +129,16 @@
       ['10 · Correr con cabeza', 'Saber ir a rueda, dosificar las subidas y comer a tiempo gana minutos sin un vatio más. Se aprende en salidas de grupo y carreras «B».']
     ], function (s) { return "<article class='gcard'><h5>" + s[0] + '</h5><p>' + s[1] + '</p></article>'; }), true);
 
-    var plan = U.acc('Cómo se vería un año «bici primero»', U.coach('Propuesta para 2027 (se ajusta en el plan con tu visto bueno)',
+    var plan = U.acc('Cómo se vería un año con los dos frentes', U.coach('Propuesta para 2027 (se ajusta en el plan con tu visto bueno)',
       '<ul><li><b>Semana tipo (8–10 h):</b> 3 salidas Z2 (una larga de 3–4 h comiendo), 2 sesiones de calidad en bici (martes series cortas, jueves o viernes umbral), fuerza 2 × 30 min, carrera fácil 3–4 días + la milla de la racha.</li>' +
-        '<li><b>Correr:</b> mantener fácil y constante con una sesión suave de ritmo; sin perseguir marcas hasta tener 6 meses sin dolor de pie.</li>' +
+        '<li><b>Correr:</b> ya tienes velocidad (5K en 24:00); lo que falta es resistencia. Sube de ~20–25 a 30–40 km semanales en 6 meses (no más de un 10 % por semana y una semana de descarga cada 4), una tirada larga que crezca hasta 14–16 km y una sesión de umbral a ~5:05/km. Meta razonable: 10K por debajo de 47 min en 2027 y de 45 min en 2028.</li>' +
         '<li><b>Bloques:</b> 3 semanas de carga + 1 de descarga; test de 20 min (o de FTP con potenciómetro) al final de cada 2 bloques.</li>' +
         '<li><b>Carreras:</b> 4–6 objetivos «A» al año; el resto, entrenamientos con dorsal.</li>' +
         '<li><b>Metas realistas:</b> la comunidad suele contar +10–20 % de FTP en el primer año estructurado de alguien con base; luego, pocos % por año. Si tu FTP real ronda 2,5 W/kg, llegar a 3,3 W/kg es un plan de 2–3 años: alcanzable, no inmediato.</li></ul>' +
         '<p><small>Los porcentajes de mejora anual son lo que repite la comunidad (r/Velo, foros de TrainerRoad y Zwift), no un dato de estudio. Tu primer test te dirá de dónde partes.</small></p>'));
 
     return U.modhead('27', 'Bici o correr: ¿dónde están tus números buenos?', 'No élite, pero bueno de verdad. Qué significa «bueno» en cada deporte, dónde estás tú hoy (calculado con tus datos) y qué dice la evidencia que lo produce.') +
-      veredicto + kp + niveles + porQue + salsa + plan + U.acc('Referencias', lista());
+      veredicto + kp + ftpTxt + niveles + porQue + salsa + plan + U.acc('Referencias', lista());
   }
 
   App.mods.push({ id: 'salsa', nom: 'Bici o correr', tab: 'Bici o correr', icono: 'M5 17a3 3 0 1 0 0 .01M19 17a3 3 0 1 0 0 .01M5 17l4-8h6l4 8M9 9l3 8', render: render });

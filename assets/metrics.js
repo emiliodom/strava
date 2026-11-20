@@ -398,6 +398,13 @@
     if (mejor5k && !mejorPorDist.some(function (x) { return x.metros === 5000; })) {
       mejorPorDist.push({ dist: '5 km', metros: 5000, seg: mejor5k.segundos, fecha: mejor5k.fecha, id: mejor5k.id, vdot: vdotDeCarrera(mejor5k.segundos, 5000) });
     }
+    // Un «5K» que el GPS midió en 4,90–4,99 km no genera el mejor esfuerzo de 5 km de Strava (pasó el 20 nov 2026:
+    // 4,985 km en 23:56). Se toma la salida completa con su distancia real y, si mejora, sustituye al 5 km.
+    var casi5 = runs.filter(function (a) { return a.km >= 4.9 && a.km < 5 && a.paceSpk; })
+      .map(function (a) { var s = a.paceSpk * a.km; return { dist: '5 km', metros: 5000, seg: Math.round(s * Math.pow(5 / a.km, 1.06)), fecha: a.fechaISO, id: a.id, vdot: vdotDeCarrera(s, a.km * 1000) }; })
+      .sort(function (x, y) { return y.vdot - x.vdot; })[0];
+    var i5 = -1; mejorPorDist.forEach(function (x, i) { if (x.metros === 5000) i5 = i; });
+    if (casi5 && (i5 < 0 || casi5.vdot > mejorPorDist[i5].vdot)) { if (i5 < 0) mejorPorDist.push(casi5); else mejorPorDist[i5] = casi5; }
     var vdot5k = mejor5k ? vdotDeCarrera(mejor5k.segundos, 5000) : null;
     var vdot1k = mejor1k ? vdotDeCarrera(mejor1k.segundos, 1000) : null;
 
