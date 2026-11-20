@@ -127,6 +127,7 @@
         "<span class='wrap'>Fórmula de Riegel (exponente " + (corta ? '1,07–1,10, más conservador porque la base es corta' : '1,06–1,08') + ')' + c('riegel') + ' desde tu mejor carrera de 4,5–16 km desde julio: ' + F.num(b0.a.km, 1) + ' km a ' + ritmo(b0.a.min * 60 / b0.a.km) + '/km el ' + F.fecha(b0.a.fechaISO) + '. Supone que aguantas la distancia: tu tirada más larga reciente es de 6 km, el calor de la noche en Retalhuleu y el 5K del día anterior suman 2–4 min; sal en el extremo lento.</span>']);
     }
     filas.push(['<b>Xab Sibaná</b>', '<b>1 h 55–2 h 15</b> en movimiento', "<span class='wrap'>25 km y 700 m (28 m/km) a 11–13 km/h, como Campanabaj (12,3 km/h, 31 m/km) y la Travesía entre Fincas (12,2, 28 m/km), 13 h después del 15K y en Z2.</span>"]);
+    filas.push(['<b>5K Bomberos, 17 ene</b>', '<b>23:30–24:30</b>', "<span class='wrap'>Desde los 23:56 del 20 nov, con seis semanas de carrera en Charlotte a favor y el calor de Retalhuleu en contra a tres días de volver (se reaclimata en 1–2 semanas). Si la contrarreloj del 7 ene sale por debajo de 23:30, apunta al extremo rápido.</span>"]);
     filas.push(['<b>Candelaria, 23 ene</b>', '<b>19–20,5 km/h</b>', "<span class='wrap'>Fresco en temporada seca promedias 19,6 km/h (página Ruta). Siete semanas en Charlotte con 2 sesiones de intensidad por semana mantienen casi toda la forma aeróbica; sin ellas, el VO₂máx empieza a caer en 2–4 semanas" + c('mujikaPadilla') + '. Clave: 9 días tranquilos antes de la prueba.</span>']);
     return "<div class='t'>" + U.tabla([{ t: 'Qué' }, { t: 'Pronóstico' }, { t: 'De dónde sale' }], filas) + '</div>' +
       U.note('Honestidad', 'Son estimaciones con reglas sencillas, no predicciones exactas: el calor, el sueño, el terreno y cómo comas el día de la prueba mueven más que cualquier fórmula.', '');
@@ -145,6 +146,14 @@
         '<li><b>A pie eres más rápido de lo que dice tu volumen.</b> El 5K del 20 nov en 24:00 (4:48/km, VDOT ≈ 40) y los 4,6 km a 4:46 del 4 oct muestran velocidad; lo que falta es resistencia: la tirada más larga reciente es de 6 km y en octubre hubo un golpe. Sube los kilómetros despacio' + c('lauersen') + '. Ojo: el «10K a 6:19» del 16 oct incluía una parada de ~12 min en el km 2.</li>' +
         '<li><b>La fuerza llegó tarde.</b> Casi toda está en octubre y noviembre. Mantenerla todo el año (incluso sin pesas en Charlotte) es la mejora más barata que te queda' + c('ronnestadMujika') + '.</li>' +
         '<li><b>Comer es entrenar.</b> El déficit siguió en pleno bloque fuerte y en Entre Senderos comiste poco: dos decisiones que cuestan rendimiento' + c('mountjoy', 'jeukendrup') + '.</li></ol>') +
+      U.coach('Decisiones para 2027 (lo que concluimos)', '<ol>' +
+        '<li><b>Bici para el volumen, carrera para la velocidad.</b> A pie ya tienes un 5K de 23:56 (VDOT ≈ 40, umbral ≈ 5:04/km); lo que falta es resistencia. Metas: 10K por debajo de 47 min en 2027 y de 45 en 2028; en bici, conocer tu FTP real y acercarte a 3,3 W/kg en 2–3 años (Guía › Bici o correr).</li>' +
+        '<li><b>Fácil de verdad en bici:</b> la mayoría de las salidas por debajo de FC 135 y dos sesiones duras de verdad por semana' + c('seiler') + '.</li>' +
+        '<li><b>Medir:</b> referencias de bici en el Greenway (7 dic y 4 ene), 5K contrarreloj (7 ene), Candelaria (23 ene) y FTP de 20 min en subida (30 ene, con la calculadora de la Guía). Repetir cada 6–8 semanas.</li>' +
+        '<li><b>Elegir carreras:</b> 4–6 objetivos A al año. Arranque de 2027: 5K por los Bomberos o Travesía San Pablo (17 ene, una de las dos), Tecpanpana (6 feb, objetivo B) y, opcional, la travesía de la Pana Epic (7 feb). Las etapas de la Pana Epic son de élite: no esta temporada.</li>' +
+        '<li><b>Charlotte:</b> crecer a pie (tirada larga hasta 11–15 km según el plan), mantener la bici con 3 × 8 min fuertes una vez por semana, fuerza con peso corporal y barra (Guía › Charlotte y › Barra).</li>' +
+        '<li><b>Comer y dormir para absorberlo:</b> 60–90 g/h de carbohidrato en salidas largas, sin déficit en los bloques duros y 7–8 h de sueño' + c('jeukendrup', 'mountjoy') + '.</li>' +
+        '<li><b>Fuerza todo el año:</b> 1–2 sesiones por semana, la barra de dominadas por niveles y la prevención lumbar' + c('ronnestadMujika') + '.</li></ol>') +
       U.acc('Volumen por mes', graficas(X), true) +
       U.acc('¿Polarizado o gris? Tu intensidad', intensidad(X)) +
       U.acc('Trotes fáciles: pulso y ritmo por mes', trotes(X)) +

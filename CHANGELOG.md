@@ -3,6 +3,16 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.23.0] — 2026-11-20
+
+### Añadido
+- **Eventos de enero y febrero** (`EVENTOS` de `plan.js`): 5K por los Bomberos y Travesía San Pablo (17 ene, el mismo día: se recomienda el 5K como control en calor), Travesía Tecpanpana (6 feb, objetivo B, en altura) y la travesía del domingo de la Pana Epic Race (7 feb, opcional). Las etapas de élite de la Pana Epic quedan fuera de esta temporada, con la explicación en la nota.
+- `DIAS_EVENTO` y `aplicarEventosNuevos` en `ajuste.js`: ponen el evento en días que genera `extender` (que no los traía). Víspera y recuperación en `AGENDA` (16 y 18 ene, 4, 5 y 8 feb).
+- «Tu 2026»: **Decisiones para 2027**, un resumen de todo lo concluido (bici para el volumen y carrera para la velocidad, fácil de verdad, pruebas, elección de carreras, Charlotte, comer y dormir, fuerza), y pronóstico del 5K del 17 ene (23:30–24:30).
+
+### Cambiado
+- `FIN_PLAN` pasa al 14 feb 2027 para incluir el fin de semana de Panajachel.
+
 ## [0.22.0] — 2026-11-20
 
 ### Añadido

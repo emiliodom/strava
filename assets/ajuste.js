@@ -11,7 +11,7 @@
   var RACHA = { inicio: '2026-01-06', meta: '2027-01-06', milla: 1.6 };
   var VIAJE = { ida: '2026-11-25', vuelta: '2027-01-13', aterrizaje: '15:27', regreso: '14:00', llegadaGT: '22:00' };
   var FIN_VERANO = '2026-11-01';          // domingo: EE. UU. vuelve al horario estándar (Guatemala no cambia nunca)
-  var FIN_PLAN = '2027-01-31';            // dos semanas y media de la rutina del colegio tras volver de Charlotte
+  var FIN_PLAN = '2027-02-14';            // incluye el fin de semana de Panajachel (6–7 feb)
   var DESDE_EXTRAS = '2026-10-17';        // natación y boxeo se reparten desde esta fecha en adelante
 
   var DUROS = { Q: 1, H: 1, S: 1, T: 1, L: 1, C: 1 };
@@ -265,6 +265,11 @@
     '2027-01-04': ['F', 3, 50, 'AM: referencia de bici 2 en el Greenway: la misma prueba del 7 dic (15 min suave + 20 min a tope + 15 min suave) + PM: trote 3 km fácil', 'Compara con el 7 dic: más velocidad con el mismo pulso, o igual con menos, es que la bici se mantuvo.'],
     '2027-01-07': ['Q', 9, 0, 'AM: contrarreloj 5K en el Greenway: 2 km suaves + 4 rectas de 20 s + 5 km a tope + 2 km suaves', 'Referencia: 23:56 el 20 nov. Con frío y seis semanas de constancia, 23:00–23:30 es razonable. Sal a 4:45 y aprieta desde el km 3.'],
     '2027-01-30': ['F', 1.6, 75, 'Prueba de FTP de 20 min en subida: 20 min de calentamiento con 3 × 1 min fuerte, 5 min suave, 20 min a tope en una subida constante sin bajadas, 15 min suave + trote de la racha 1,6 km', 'Anota tiempo, distancia y desnivel del tramo y calcúlala en Guía › Bici o correr. Repite cada 6–8 semanas en la misma subida. Si choca con una carrera de enero, se mueve.'],
+    '2027-01-16': ['R', 2, 45, 'Víspera del 5K (o de la travesía): bici suave 45 min + trote 2 km con 4 rectas de 20 s', 'Llegaste el 13 por la noche: duerme, bebe con sal y no hagas la MTB larga del sábado.'],
+    '2027-01-18': ['E', 4, 45, 'Recuperación: trote 4 km fácil + bici Z1 45 min', 'Semana de la prueba de Candelaria (sábado 23): martes y jueves normales, viernes suave.'],
+    '2027-02-04': ['E', 5, 45, 'Semana de Panajachel: trote 5 km fácil + bici 45 min con 3 × 1 min fuerte (sin HIIT largo)', 'El sábado Tecpanpana: desde hoy carbohidrato normal-alto y revisa la bici (pastillas, cubiertas, cambios).'],
+    '2027-02-05': ['R', 1.6, 30, 'Viaje a Tecpán: bici 30 min soltando (si se puede) + milla de la racha; cena temprano', 'Altura: más agua, nada de alcohol y a dormir temprano. Ropa para el frío de la madrugada y de la bajada al lago.'],
+    '2027-02-08': ['R', 3, 40, 'Recuperación tras Panajachel: bici Z1 40 min + trote 3 km muy suave', 'Dos días de montaña en altura: sin intensidad hasta el miércoles.'],
     '2027-01-22': ['R', 3, 30, 'Víspera de la prueba de Candelaria: trote 3 km suave + bici 30 min soltando con 3 × 1 min', 'Mañana prueba: menos de 6 h de bici en la semana, cena con carbohidrato, revisa la presión y carga la banda de pulso.'],
     '2027-01-23': ['F', 1.6, 90, 'Prueba de la ruta Candelaria (≈24 km, ≈500 m) a ritmo de prueba, 17:00–19:00, con banda de pulso y la misma presión + trote de la racha 1,6 km', 'Primera prueba en temporada seca. Meta: 19,5 km/h. Anota si llovió y regístrala; la página Ruta Candelaria la compara sola.'],
     '2027-01-14': ['B', 5, 90, 'Primer día en casa: MTB 90 min + trote 5 km fácil; desde mañana, la rutina del colegio (correr 5:00–6:00, bici de noche)', 'Si la mañana se complica con el colegio, la ventana de respaldo es 7:00–9:00 (antes de las 8:00 de Utah = 9:00 aquí).']
@@ -281,6 +286,19 @@
     ['L', 12, 0, 'Largo corriendo 12 km fácil desde las 7:00 + natación opcional 30 min']
   ];
   var RUTINA_DESDE = '2027-01-15';
+  /* Eventos que caen en días generados (extender no les pone evento). Fila: [tipo, km a pie, min de bici, sesión, id de evento]. */
+  var DIAS_EVENTO = {
+    '2027-01-17': ['C', 5, 0, '5K por los Bomberos (Retalhuleu) o Travesía San Pablo (MTB): elige una; recomendación, el 5K como control en calor', 'bomberos'],
+    '2027-02-06': ['M', 1.6, 240, 'Travesía Tecpanpana (Tecpán → Panajachel), MTB o ruta: por pulso, comiendo 60–90 g/h + milla de la racha', 'tecpanpana'],
+    '2027-02-07': ['B', 1.6, 150, 'Opcional: travesía de la Pana Epic Race (≈25 km, 600 m) en Z2 sin competir; si las piernas no responden, sólo la milla', 'panaepic']
+  };
+  function aplicarEventosNuevos(dias) {
+    dias.forEach(function (d) {
+      var r = DIAS_EVENTO[d.fecha];
+      if (!r) return;
+      d.tipo = r[0]; d.km = r[1]; d.minBici = r[2]; d.sesion = r[3]; d.evento = r[4];
+    });
+  }
   function aplicarAgenda(dias) {
     dias.forEach(function (d) {
       if (d.evento) return;
@@ -333,6 +351,7 @@
     aplicarPrevencion(dias);
     aplicarLesion(dias);
     aplicarRetorno(dias);
+    aplicarEventosNuevos(dias);
     aplicarAgenda(dias);
     aplicarSinPesas(dias);
     aplicarUtah(dias);
