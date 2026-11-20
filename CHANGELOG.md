@@ -3,6 +3,19 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.22.0] — 2026-11-20
+
+### Añadido
+- **Pestaña «Charlotte»** en la Guía de resistencia (módulo 28, `assets/modules/charlotte.js`): qué se puede mejorar en los 49 días (a pie, resistencia y velocidad con frío; en bici, mantener; fuerza con peso corporal y barra), ropa por temperatura para correr y para la bici, oscuridad e hidratación, las cuatro pruebas de referencia y la vuelta al calor de Retalhuleu. Cinco referencias nuevas comprobadas en Crossref más tres compartidas.
+- **Calculadora de FTP en subida sin potenciómetro** en «Bici o correr» (`App.potenciaSubida`): tiempo, distancia, desnivel, peso, bici y superficie → potencia media, FTP estimada, W/kg y VAM.
+- **Pruebas en el plan** (`AGENDA` de `ajuste.js`, en los tres planes): referencia de bici de 20 min en el Greenway el 7 dic y el 4 ene, contrarreloj de 5K el 7 ene y prueba de FTP de 20 min en subida el 30 ene en Retalhuleu.
+
+### Cambiado
+- Charlotte: la salida semanal de bici pasa de Z2 a 3 × 8 min fuertes (FC 158–168) dentro de la salida, para conservar la forma de bici.
+
+### Pendiente
+- Las nuevas carreras de enero (MTB y atletismo): faltan nombre, fecha, distancia y desnivel.
+
 ## [0.21.0] — 2026-11-20
 
 ### Añadido

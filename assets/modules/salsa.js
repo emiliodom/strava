@@ -96,7 +96,17 @@
     var ftpTxt = U.acc('Tu FTP: cómo se estimó y cuánto fiarse', U.coach('Dos «FTP» distintas',
       '<p><b>A pie (umbral):</b> ' + (X.umbral ? 'de ' + F.num(X.base.a.km, 2) + ' km en ' + mmss(X.base.a.min) + ' el ' + F.fecha(X.base.a.fechaISO) + ' sale un VDOT ≈ ' + F.num(X.umbral.vdot, 1) + ' y un ritmo de umbral de <b>' + mmss(X.umbral.seg / 60) + '/km</b> (lo que aguantarías unos 50–60 min en carrera). Es una estimación sólida porque sale de una carrera real, cronometrada y con parciales parejos.' : 'sin carrera válida.') + '</p>' +
       '<p><b>En bici:</b> ' + (X.ftp ? 'con las ' + X.ftp.n + ' salidas de ≥ 2,5 h con más potencia desde julio, dividiendo la potencia media entre la fracción típica de FTP para esa duración, sale <b>' + Math.round(X.ftp.lo) + '–' + Math.round(X.ftp.hi) + ' W</b>. Pero Strava <i>estima</i> esos vatios con peso, velocidad y desnivel, sin viento ni terreno: en tu año las estimaciones van de ~150 a ~275 W según la salida. Tómalo como «ni idea con forma de rango».' : 'sin datos.') + '</p>' +
-      '<p><b>Cómo saberlo de verdad:</b> 20 min a tope en una subida constante (o en rodillo con potenciómetro) tras 15 min de calentamiento; FTP ≈ 95 % de la potencia media. Sin potenciómetro, repite siempre la misma subida y compara tiempos.</p>'));
+      '<p><b>Cómo saberlo de verdad:</b> 20 min a tope en una subida constante (o en rodillo con potenciómetro) tras 15 min de calentamiento; FTP ≈ 95 % de la potencia media. Sin potenciómetro, hazla en una subida constante y usa la calculadora de abajo; repite siempre la misma subida. En el plan: referencias en el Greenway el 7 dic y el 4 ene, y la prueba en subida el 30 ene.</p>') +
+      U.coach('Calculadora de FTP en subida (sin potenciómetro)',
+        "<div class='ftpcalc' style='display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))'>" +
+        "<label>Tiempo (mm:ss)<input id='fc-t' value='20:00' inputmode='numeric'></label>" +
+        "<label>Distancia (km)<input id='fc-d' type='number' step='0.01' value='5'></label>" +
+        "<label>Desnivel (m)<input id='fc-h' type='number' step='1' value='300'></label>" +
+        "<label>Tu peso (kg)<input id='fc-m' type='number' step='0.5' value='" + kg + "'></label>" +
+        "<label>Bici y equipo (kg)<input id='fc-b' type='number' step='0.5' value='12'></label>" +
+        "<label>Superficie<select id='fc-s'><option value='r'>Asfalto (bici de ruta)</option><option value='m'>Tierra o MTB</option></select></label></div>" +
+        "<div id='fc-out'></div>" +
+        '<p><small>Física de la subida: gravedad + rodadura + aire (densidad 1,15, CdA 0,40–0,45, rodadura 0,005 en asfalto y 0,012 en tierra, 3 % de pérdidas de transmisión). En subidas de más de 5 % y sin viento el error ronda ± 5–10 %; en llano o con viento no sirve. FTP ≈ 95 % de la potencia de 20 min.</small></p>'));
 
     var niveles = U.acc('¿Qué es «bueno» en cada deporte? (no élite)', cards([
       ['Correr: nivel por edad', '<p>Se compara tu tiempo con el récord para tu edad y sexo: 60 % es nivel local, 70 % regional, 80 % nacional. Para un hombre de ' + X.edad + ' años en 10 km:</p><ul><li><b>60 %:</b> ≈ 44 min (4:24/km)</li><li><b>70 %:</b> ≈ 38–39 min (3:50/km)</li></ul>' +
@@ -141,5 +151,31 @@
       veredicto + kp + ftpTxt + niveles + porQue + salsa + plan + U.acc('Referencias', lista());
   }
 
-  App.mods.push({ id: 'salsa', nom: 'Bici o correr', tab: 'Bici o correr', icono: 'M5 17a3 3 0 1 0 0 .01M19 17a3 3 0 1 0 0 .01M5 17l4-8h6l4 8M9 9l3 8', render: render });
+  /* Potencia en subida sin potenciómetro: P = (gravedad + rodadura + aire) / 0,97. */
+  function potenciaSubida(seg, km, h, kg, bici, tierra) {
+    var m = kg + bici, g = 9.81, d = km * 1000, v = d / seg, pend = Math.min(0.3, h / d), cos = Math.cos(Math.atan(pend));
+    var crr = tierra ? 0.012 : 0.005, cda = tierra ? 0.45 : 0.40;
+    return (m * g * h / seg + m * g * crr * cos * v + 0.5 * 1.15 * cda * v * v * v) / 0.97;
+  }
+  App.potenciaSubida = potenciaSubida;
+  function montar(el) {
+    var q = function (id) { return el.querySelector('#' + id); }, out = q('fc-out');
+    if (!out) return;
+    function calc() {
+      var t = String(q('fc-t').value).split(':'), seg = t.length > 1 ? (+t[0]) * 60 + (+t[1]) : (+t[0]) * 60;
+      var km = +q('fc-d').value, h = +q('fc-h').value, kg = +q('fc-m').value, b = +q('fc-b').value;
+      if (!(seg > 0 && km > 0 && h >= 0 && kg > 0)) { out.innerHTML = '<p>Completa los datos.</p>'; return; }
+      var p = potenciaSubida(seg, km, h, kg, b || 0, q('fc-s').value === 'm'), pend = h / (km * 10), ftp = p * (seg >= 1080 && seg <= 1500 ? 0.95 : seg > 1500 ? 0.98 : 0.9);
+      out.innerHTML = U.kpis([
+        U.kpi('Potencia media', Math.round(p) + ' W', 'pendiente media ' + F.num(pend, 1) + ' %'),
+        U.kpi('FTP estimada', Math.round(ftp) + ' W', F.num(ftp / kg, 2) + ' W/kg'),
+        U.kpi('VAM', Math.round(h / seg * 3600) + ' m/h', 'metros que subes por hora')
+      ]) + (pend < 4 ? '<p><small>Con menos de 4 % de pendiente el aire y la rodadura pesan mucho y el cálculo pierde precisión.</small></p>' : '') +
+        (seg < 1080 || seg > 1500 ? '<p><small>La fórmula del 95 % es para 18–25 min; para otras duraciones se ajusta y el resultado es más incierto.</small></p>' : '');
+    }
+    if (!el._fc) { el._fc = true; el.addEventListener('input', function (ev) { if (ev.target && /^fc-/.test(ev.target.id)) calc(); }); el.addEventListener('change', function (ev) { if (ev.target && /^fc-/.test(ev.target.id)) calc(); }); }
+    calc();
+  }
+
+  App.mods.push({ id: 'salsa', nom: 'Bici o correr', tab: 'Bici o correr', icono: 'M5 17a3 3 0 1 0 0 .01M19 17a3 3 0 1 0 0 .01M5 17l4-8h6l4 8M9 9l3 8', render: render, montar: montar });
 })(this);

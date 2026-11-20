@@ -61,7 +61,7 @@
           d.sesion = 'Trail de montaña (salida única de la semana): ' + m; d.lugar = m + '. Sal temprano: el desnivel manda, no el ritmo.';
         } else { d.sesion = cal[1] + fzTxt; d.lugar = GREENWAY + ': tramo plano y sin cruces, el mejor lugar de Charlotte para velocidad. Calienta 2 km, lo duro en el tramo recto y vuelve trotando.'; }
       } else if (w === bici[0] && (d.tipo === 'E' || d.tipo === 'R') && !d.hito) {
-        d.minBici = bici[1]; d.sesion = d.tipo + ' + bici Z2 por el ' + GREENWAY + fzTxt;
+        d.minBici = bici[1]; d.sesion = d.tipo + ' + bici por el ' + GREENWAY + ': 10 min suave + 3 × 8 min fuerte (FC 158–168) con 3 min suave + resto Z2' + fzTxt;   // la intensidad conserva la forma de bici en Charlotte
         d.lugar = 'Bici de Freedom Park a Pineville por el Sugar Creek Greenway (ida y vuelta); ajusta el retorno a los minutos del plan.';
       }
       if (DUROS[d.tipo] && !d.evento) {
@@ -261,6 +261,10 @@
     '2026-11-27': ['B', 5, 180, 'Opción larga: bici de ruta ~60 km desde Barfield Dr por el Sugar Creek Greenway hacia Pineville (NC) y vuelta, Z2 + trote 5 km. Plan B según la familia: 60 min alrededor de Revolution Park + trote 5 km', 'Pineville está en Carolina del Norte, junto a la frontera con Carolina del Sur. Lleva agua y comida: el greenway tiene pocos servicios.'],
     '2026-11-28': ['B', 6, 60, 'Trote 6 km + bici 60 min cerca de Revolution Park (o lo que permita el plan familiar)', null],
     '2026-11-29': ['B', 1.6, 150, 'MTB en un parque de la zona (p. ej. los senderos del U.S. National Whitewater Center) si encaja con la familia + la milla de la racha', 'Domingo flexible: si el plan familiar no deja, basta la milla.'],
+    '2026-12-07': ['F', 3, 50, 'AM: referencia de bici 1 en el Greenway: 15 min suave + 20 min a tope en el tramo plano (mismo sentido; anota distancia, velocidad, FC media y viento) + 15 min suave + PM: trote 3 km fácil', 'Sin potenciómetro no es la FTP: es tu punto de partida en Charlotte. Se repite el 4 ene en el mismo tramo, sentido y hora.'],
+    '2027-01-04': ['F', 3, 50, 'AM: referencia de bici 2 en el Greenway: la misma prueba del 7 dic (15 min suave + 20 min a tope + 15 min suave) + PM: trote 3 km fácil', 'Compara con el 7 dic: más velocidad con el mismo pulso, o igual con menos, es que la bici se mantuvo.'],
+    '2027-01-07': ['Q', 9, 0, 'AM: contrarreloj 5K en el Greenway: 2 km suaves + 4 rectas de 20 s + 5 km a tope + 2 km suaves', 'Referencia: 23:56 el 20 nov. Con frío y seis semanas de constancia, 23:00–23:30 es razonable. Sal a 4:45 y aprieta desde el km 3.'],
+    '2027-01-30': ['F', 1.6, 75, 'Prueba de FTP de 20 min en subida: 20 min de calentamiento con 3 × 1 min fuerte, 5 min suave, 20 min a tope en una subida constante sin bajadas, 15 min suave + trote de la racha 1,6 km', 'Anota tiempo, distancia y desnivel del tramo y calcúlala en Guía › Bici o correr. Repite cada 6–8 semanas en la misma subida. Si choca con una carrera de enero, se mueve.'],
     '2027-01-22': ['R', 3, 30, 'Víspera de la prueba de Candelaria: trote 3 km suave + bici 30 min soltando con 3 × 1 min', 'Mañana prueba: menos de 6 h de bici en la semana, cena con carbohidrato, revisa la presión y carga la banda de pulso.'],
     '2027-01-23': ['F', 1.6, 90, 'Prueba de la ruta Candelaria (≈24 km, ≈500 m) a ritmo de prueba, 17:00–19:00, con banda de pulso y la misma presión + trote de la racha 1,6 km', 'Primera prueba en temporada seca. Meta: 19,5 km/h. Anota si llovió y regístrala; la página Ruta Candelaria la compara sola.'],
     '2027-01-14': ['B', 5, 90, 'Primer día en casa: MTB 90 min + trote 5 km fácil; desde mañana, la rutina del colegio (correr 5:00–6:00, bici de noche)', 'Si la mañana se complica con el colegio, la ventana de respaldo es 7:00–9:00 (antes de las 8:00 de Utah = 9:00 aquí).']
