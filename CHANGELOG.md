@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.26.2] — 2026-11-22
+
+### Cambiado
+- Calendario de Charlotte (`aplicarViaje` en `ajuste.js`), con lo hablado sobre trail:
+  - Sábados alternos en el Whitewater Center como **bici + trail** (~1 h de ida y vuelta en bici, 60–90 min de trail; plan B en coche). Crowders Mountain queda en coche con la familia (≈50 km).
+  - Miércoles fáciles: trote en tierra en Revolution Park o Renaissance Park ya con luz (amanece ~7:20), dentro de la ventana 6:00–9:30 de Charlotte.
+  - Domingos «L» con texto: tirada larga en el Sugar Creek Greenway a 6:30–7:00/km y comida si pasa de 75 min.
+
 ## [0.26.1] — 2026-11-22
 
 ### Cambiado

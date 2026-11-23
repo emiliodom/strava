@@ -58,11 +58,24 @@
         d.tipo = cal[0]; d.km = cal[2]; d.minBici = 0;
         if (cal[0] === 'T') {
           var m = MONTANAS[semMonte++ % MONTANAS.length];
-          d.sesion = 'Trail de montaña (salida única de la semana): ' + m; d.lugar = m + '. Sal temprano: el desnivel manda, no el ritmo.';
+          if (/Whitewater/.test(m)) {   // a ~20 km de Barfield Dr: se llega en bici (senderos gratis; el parking sólo si vas en coche)
+            d.minBici = 120;
+            d.sesion = 'Bici + trail: ~1 h en bici hasta el ' + m + ' (de día, sin avenidas grandes), 60–90 min de trail (subidas caminando fuerte, bajadas con pasos cortos) y vuelta en bici · plan B: en coche con la familia';
+            d.lugar = m + ': senderos gratis; sólo se paga el parking si vas en coche. Lleva agua, algo de comer y luz trasera para la vuelta.';
+          } else {
+            d.sesion = 'Trail de montaña: ' + m + ' (≈50 km, en coche y con la familia): 1 h 30–2 h en pie, subidas caminando fuerte y bajadas técnicas';
+            d.lugar = m + '. Sal temprano: el desnivel manda, no el ritmo.';
+          }
         } else { d.sesion = cal[1] + fzTxt; d.lugar = GREENWAY + ': tramo plano y sin cruces, el mejor lugar de Charlotte para velocidad. Calienta 2 km, lo duro en el tramo recto y vuelve trotando.'; }
       } else if (w === bici[0] && (d.tipo === 'E' || d.tipo === 'R') && !d.hito) {
         d.minBici = bici[1]; d.sesion = d.tipo + ' + bici por el ' + GREENWAY + ': 10 min suave + 3 × 8 min fuerte (FC 158–168) con 3 min suave + resto Z2' + fzTxt;   // la intensidad conserva la forma de bici en Charlotte
         d.lugar = 'Bici de Freedom Park a Pineville por el Sugar Creek Greenway (ida y vuelta); ajusta el retorno a los minutos del plan.';
+      }
+      if (d.tipo === 'E' && w === 2 && !d.hito && !d.minBici) {   // trail corto entre semana, dentro de 6:00–9:30 de Charlotte
+        d.sesion += ' · trote en tierra: Revolution Park (≈3 km de sendero) o Renaissance Park (≈6 km), ya con luz (amanece ~7:20; antes, greenway iluminado)';
+      }
+      if (d.tipo === 'L' && /^L$/.test(d.sesion || '')) {
+        d.sesion = 'L · tirada larga en el ' + GREENWAY + ' a 6:30–7:00/km con FC baja; agua y algo de comer si pasa de 75 min';
       }
       if (DUROS[d.tipo] && !d.evento) {
         d.recordatorio = d.tipo === 'L'
