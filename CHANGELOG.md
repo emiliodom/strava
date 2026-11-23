@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.25.0] — 2026-11-22
+
+### Añadido
+- «Tu 2026» → **El año en gráficas** (abierto por defecto, todo calculado en vivo): horas por mes y deporte (ruta, MTB, a pie, apiladas), km a pie por semana con la media, la salida a pie más larga de cada mes frente a 15 km y 21,1 km, y la **brecha de resistencia**: ritmo previsto de 5K a 42K con el exponente de Riegel de un corredor entrenado (1,06) frente al tuyo de hoy (5K→15K de noviembre), con tus dos carreras marcadas.
+
+### Cambiado
+- «Volumen por mes» queda cerrado debajo de las gráficas nuevas.
+
 ## [0.24.0] — 2026-11-22
 
 ### Añadido

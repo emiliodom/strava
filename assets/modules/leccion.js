@@ -71,6 +71,48 @@
         label: 'Kilómetros a pie por mes en 2026', caption: 'Kilómetros a pie por mes (racha incluida).' });
   }
 
+  // «El año en gráficas»: horas por deporte, km a pie por semana, tirada más larga por mes y la brecha de resistencia.
+  function lunes(iso) { var d = new Date(iso + 'T00:00:00Z'); return new Date(d - ((d.getUTCDay() + 6) % 7) * 864e5).toISOString().slice(0, 10); }
+  function pace(v) { var m = Math.floor(v), s = Math.round((v - m) * 60); if (s === 60) { m++; s = 0; } return m + ':' + (s < 10 ? '0' : '') + s; }
+  function exponente(X) {
+    var g15 = X.runs.filter(function (a) { return a.fechaISO === '2026-11-21' && a.km >= 14; })[0];
+    var k5 = X.runs.filter(function (a) { return a.fechaISO === '2026-11-20' && a.km >= 4.9 && a.km < 5.2; })[0];
+    return g15 && k5 ? { e: Math.log(g15.min / k5.min) / Math.log(g15.km / k5.km), k5: k5, g15: g15 } : null;
+  }
+  function graficasAno(X) {
+    var ks = Object.keys(X.meses).sort(), lab = ks.map(function (k) { return MES[+k.slice(5, 7) - 1]; });
+    var hM = function (g) { return ks.map(function (k) { return sum(X.A.filter(function (a) { return a.grupo === g && a.fechaISO.slice(0, 7) === k; }), function (a) { return a.min / 60; }); }); };
+    var out = C.legend([{ name: 'Ruta', color: 'var(--z1)' }, { name: 'MTB', color: 'var(--z2)' }, { name: 'A pie', color: 'var(--accent)' }]) +
+      C.stacked({ labels: lab, labelEvery: 1, height: 200, fmtY: function (v) { return F.num(v, 0) + ' h'; }, label: 'Horas por mes y deporte en 2026',
+        series: [{ name: 'Ruta', color: 'var(--z1)', values: hM('ruta') }, { name: 'MTB', color: 'var(--z2)', values: hM('mtb') }, { name: 'A pie', color: 'var(--accent)', values: hM('running') }],
+        caption: 'Horas en movimiento por mes. La bici es casi todo tu volumen: el motor aeróbico se construyó pedaleando.' });
+    // km a pie por semana
+    var sem = {}; X.runs.forEach(function (a) { var k = lunes(a.fechaISO); sem[k] = (sem[k] || 0) + a.km; });
+    var sk = Object.keys(sem).sort(), sv = sk.map(function (k) { return sem[k]; }), media = sum(sv, function (v) { return v; }) / (sv.length || 1);
+    var maxI = sv.indexOf(Math.max.apply(null, sv));
+    out += C.bars({ values: sv, labels: sk.map(function (k) { return F.fecha(k); }), labelEvery: 6, height: 170, mean: media, meanLabel: 'media ' + F.num(media, 0) + ' km',
+      color: 'var(--accent)', fmtVal: function (v) { return F.num(v, 1) + ' km'; }, label: 'Kilómetros a pie por semana en 2026',
+      caption: 'Km a pie por semana (racha incluida). La más alta: ' + F.num(sv[maxI], 0) + ' km la semana del ' + F.fecha(sk[maxI]) + '. Para un medio maratón hacen falta semanas de 30–40 km sostenidas; para un ultra, de 50 o más.' });
+    // tirada más larga por mes
+    var lg = ks.map(function (k) { return Math.max.apply(null, X.runs.filter(function (a) { return a.fechaISO.slice(0, 7) === k; }).map(function (a) { return a.km; }).concat([0])); });
+    out += C.lines({ labels: lab, height: 190, forceMin: 0, fmtY: function (v) { return F.num(v, 0) + ' km'; }, fmtVal: function (v) { return F.num(v, 1) + ' km'; }, label: 'Salida a pie más larga de cada mes',
+      series: [{ name: 'Más larga', color: 'var(--accent)', values: lg, dots: true }],
+      hline: [{ v: 21.1, label: 'medio maratón 21,1 km', color: 'var(--z5)' }, { v: 15, label: '15 km' }],
+      caption: 'La salida a pie más larga de cada mes. Septiembre es la etapa de trail del Challenge Cobán (20 km en más de 5 h). Ningún mes ha pasado de 21 km todavía.' });
+    // brecha de resistencia: ritmo previsto por distancia
+    var E = exponente(X);
+    if (E) {
+      var dist = [5, 10, 15, 21.0975, 42.195], dl = ['5K', '10K', '15K', '21K', '42K'];
+      var base = E.k5.min / E.k5.km, prev = function (e) { return dist.map(function (d) { return base * Math.pow(d / E.k5.km, e - 1); }); };
+      var real = dist.map(function (d) { return d === 5 ? base : d === 15 ? E.g15.min / E.g15.km : null; });
+      out += C.legend([{ name: 'Si tuvieras resistencia de corredor entrenado (1,06)', color: 'var(--z2)' }, { name: 'Con tu resistencia de hoy (' + F.num(E.e, 2) + ')', color: 'var(--z5)' }, { name: 'Tus carreras de noviembre', color: 'var(--ink)' }]) +
+        C.lines({ labels: dl, height: 200, fmtY: pace, fmtVal: function (v) { return pace(v) + '/km'; }, label: 'Ritmo previsto por distancia: la brecha de resistencia',
+          series: [{ name: 'Entrenado', color: 'var(--z2)', values: prev(1.06), dots: true }, { name: 'Hoy', color: 'var(--z5)', values: prev(E.e), dots: true, dash: '5 3' }, { name: 'Real', color: 'var(--ink)', values: real, dots: true, width: 0.1 }],
+          caption: 'Ritmo por km (más arriba = más lento) según la fórmula de Riegel desde tu 5K de 23:56. La línea verde es lo que tu velocidad permitiría con resistencia; la roja, lo que sale con la de hoy: en el maratón la diferencia pasa de ' + pace(prev(E.e)[4] - prev(1.06)[4]) + ' min por km. Cerrar esa brecha es entrenar resistencia, no velocidad.' });
+    }
+    return out;
+  }
+
   function intensidad(X) {
     var b = X.bandaBici, r = X.bandaRun, tb = b.a + b.b + b.c || 1, tr = r.a + r.b + r.c || 1;
     var fila = function (lbl, v, t, col) { return { label: lbl, v: v, text: F.num(v, 0) + ' h · ' + F.num(100 * v / t, 0) + ' %', color: col }; };
@@ -159,7 +201,8 @@
         '<li><b>Comer y dormir para absorberlo:</b> 60–90 g/h de carbohidrato en salidas largas, sin déficit en los bloques duros y 7–8 h de sueño' + c('jeukendrup', 'mountjoy') + '.</li>' +
         '<li><b>Durabilidad a pie:</b> el 15K del 21 nov fue tu mejor marca, pero del 5K al 15K perdiste mucho más de lo normal y acabaste con los cuádriceps cargados. Una tirada larga por semana que crezca poco a poco, bajadas y sentadilla búlgara para el cuádriceps, y el día de una carrera a pie, la bici sólo suave.</li>' +
         '<li><b>Fuerza todo el año:</b> 1–2 sesiones por semana, la barra de dominadas por niveles y la prevención lumbar' + c('ronnestadMujika') + '.</li></ol>') +
-      U.acc('Volumen por mes', graficas(X), true) +
+      U.acc('El año en gráficas', graficasAno(X), true) +
+      U.acc('Volumen por mes', graficas(X)) +
       U.acc('¿Polarizado o gris? Tu intensidad', intensidad(X)) +
       U.acc('Trotes fáciles: pulso y ritmo por mes', trotes(X)) +
       U.acc('Eventos del año (' + X.eventos.length + ')', eventos(X)) +
