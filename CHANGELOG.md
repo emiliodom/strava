@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.30.1] — 2026-11-23
+
+### Cambiado
+- Metas › Temporada 2027: sin elegir carreras todavía. Nueva sección abierta **«Las duras: para estas se entrena»** (Challenge Cobán, 50K UTG/UTAM, Reto Cantel, Paseo Lunar, Ruta del Tun, Entre Senderos, Campanabaj y Cobán 21K); los choques del mismo día pasan a «no hace falta elegir ahora» con la regla «prepárate para la más dura del par»; la decisión UTG/UTAM sigue el 12 sep.
+
 ## [0.30.0] — 2026-11-23
 
 ### Añadido

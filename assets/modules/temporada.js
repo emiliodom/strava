@@ -74,7 +74,26 @@
     ], function (o) { return "<article class='gcard'><h5>" + o[0] + '</h5><p>' + o[1] + '</p></article>'; }) +
       '<h4>Las pruebas de «listo» (todas)</h4>' +
       cards(PUERTAS, function (p) { return "<article class='gcard'><span class='ses-k'>" + p[0] + '</span><h5>' + p[1] + '</h5><p>' + p[2] + '</p></article>'; }) +
-      U.note('Recomendación', 'Decide el 12 sep, una semana después del Challenge Cobán, con estas pruebas delante. Si pasan y tu prioridad es el 50K, opción 1; si pesan más tus carreras de noviembre, opción 2. Inscríbete en la UTAM 20K en cualquier caso: sirve para las dos.', 'ok');
+      U.note('Recomendación', 'No hay que elegir ahora: el entrenamiento es el mismo hasta el Challenge. Decide el 12 sep, una semana después, con estas pruebas delante. Si pasan y tu prioridad es el 50K, opción 1; si pesan más tus carreras de noviembre, opción 2. Inscríbete en la UTAM 20K en cualquier caso: sirve para las dos.', 'ok');
+  }
+
+  // Las duras: si te preparas para estas, cualquiera de las opciones de cada choque sale sola.
+  var DURAS = [
+    ['challenge27', 'La más larga del año: 10 h en 2026. Manda sobre todo el bloque de junio a septiembre.'],
+    ['utg27', 'El primer 50K (o la UTAM del 24 oct: se entrenan igual). Volumen a pie, montaña y comer durante horas.'],
+    ['cantel', 'Altura (≈2.400 m), técnica y 760 m: la que más te humilló.'],
+    ['lunar', '1.132 m en 40 km: la de más desnivel de las de bici.'],
+    ['tun', '784 m y más de 3 h: la primera larga de bici tras el 21K.'],
+    ['senderos27', '1.041 m y 3 h a FC 158: tu mejor referencia de bici.'],
+    ['campanabaj27', 'Técnica, barro, frío y 800 m. Si te preparas para esta, el 21K de Esquipulas del mismo día también sale.'],
+    ['coban21', 'La A a pie de mayo: la base de todo lo que viene después.']
+  ];
+  function duras() {
+    var EV = {}; App.plan.EVENTOS.forEach(function (e) { EV[e.id] = e; });
+    return cards(DURAS.filter(function (d) { return EV[d[0]]; }), function (d) {
+      var e = EV[d[0]];
+      return "<article class='gcard'><span class='ses-k'>" + F.fecha(e.fecha) + ' · ' + esc(e.deporte) + '</span><h5>' + esc(e.nombre) + ' ' + U.chip(e.prioridad, e.prioridad === 'A' ? '' : 'mut') + '</h5><p>' + d[1] + '</p></article>';
+    }) + U.note('Sin elegir todavía', 'No hace falta decidir ahora entre las carreras del mismo día ni entre UTG y UTAM: el entrenamiento para la más dura de cada par cubre la otra. Se decide la semana de cada evento, según cómo llegues.', 'ok');
   }
 
   function bloques() {
@@ -103,9 +122,10 @@
       ]) +
       bloques() +
       U.acc('El año en una gráfica', porMes(E), true) +
-      U.acc('Mismo día, elige uno (' + choques.length + ')', '<ul>' + choqueTxt.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
-        U.note('Cómo elegir', 'Gana la que sirve a la A más cercana: Cobán 21K sobre Potenz; en noviembre depende de la decisión del 50K (UTG sobre Sibaná si vas a por el 50K). El 17 ene, el 5K de los Bomberos o San Pablo.', '')) +
-      U.acc('Tu primer 50K: UTG en noviembre o UTAM en octubre', decision(), true) +
+      U.acc('Las duras: para estas se entrena', duras(), true) +
+      U.acc('Mismo día (' + choques.length + '): no hace falta elegir ahora', '<ul>' + choqueTxt.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        U.note('Prepárate para la más dura del par', 'San Pablo (MTB) cubre el 5K del 17 ene porque Charlotte ya entrena la carrera; el Medio Maratón de Cobán cubre Ruta Potenz; Campanabaj cubre el 21K de Esquipulas si llevas el volumen del 50K; la UTG 50K cubre Sibaná 9K. Eliges la semana del evento.', '')) +
+      U.acc('Tu primer 50K: UTG en noviembre o UTAM en octubre', decision()) +
       U.acc('Reto Cantel, tu referencia', cantel()) +
       U.acc('Lo que hay que batir de 2026', batir()) +
       U.acc('Todos los eventos de 2027', cards(E, function (e) {
