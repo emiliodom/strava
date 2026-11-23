@@ -88,11 +88,11 @@
   }
 
   var ESCALERA = [
-    ['21K · medio maratón', 'Primavera 2027 (mar–abr)', 'Semanas de 30–40 km a pie; tirada larga hasta 16–18 km; una sesión de umbral (≈ 5:05/km) a la semana.', '18 km fáciles sin dolor y un 10K por debajo de 50 min. Pronóstico desde la Guatemágica: 2 h 10–2 h 17 (Tu 2026 › Pronósticos).'],
-    ['Trail 20–30 km · Challenge Cobán', 'Sep 2027 (objetivo A de trail)', 'Una sesión de montaña por semana (subidas caminando fuerte + bajadas), 600–1.200 m de desnivel a pie por semana, tirada larga de 2–3 h en montaña cada 2 semanas.', '20 km y 800 m en menos de 4 h comiendo 60 g/h sin problemas de estómago ni de pies.'],
-    ['42K · maratón (ruta o trail)', '2028', '45–60 km a pie por semana durante 4–6 meses, tirada larga de 28–32 km, la bici como volumen extra pero no el día antes de la tirada.', '30 km a ritmo fácil sin que se caiga el ritmo en los últimos 10 km.'],
-    ['50K trail', '2028–2029, después del maratón', 'Fines de semana «back-to-back» (sábado 25 km + domingo 15 km), tiradas de 4–5 h, 1.500–2.500 m de desnivel por semana, ensayo de comida y material.', 'Un fin de semana de 40 km y 2.000 m sin dolor y comiendo todo el tiempo.'],
-    ['100K', '2030 o más (tras 2–3 años de ultras cortos)', 'Años de base: los que terminan 100 km suelen llevar mucho tiempo corriendo y varios ultras más cortos' + '§knechtle' + '. Noche, frío, estómago y cabeza pesan tanto como las piernas.', 'Haber terminado bien 2–3 ultras de 50–80 km y una salida de 8–10 h de prueba.']
+    ['21K · Medio Maratón de Cobán', '30 may 2027 (A a pie)', 'Semanas de 30–40 km a pie; tirada larga hasta 16–18 km (marzo y abril casi no tienen eventos: es el hueco); una sesión de umbral (≈ 5:05/km) a la semana.', '18 km fáciles sin dolor y un 10K por debajo de 50 min. Pronóstico desde la Guatemágica: 2 h 10–2 h 17 (Tu 2026 › Pronósticos).'],
+    ['Trail · Challenge Cobán', '5 sep 2027 (A de trail)', 'Una sesión de montaña por semana (subidas caminando fuerte + bajadas), 600–1.200 m de desnivel a pie por semana, tirada larga de 2–3 h en montaña cada 2 semanas. Las carreras de bici de julio y agosto, en Z2.', 'La etapa de trail en 4 h 30 o menos (en 2026, 7 h 20), comiendo 60 g/h sin problemas de estómago ni de pies.'],
+    ['50K trail · UTG Antigua o UTAM', '21 nov o 24 oct 2027, condicional', 'Del Challenge al 50K: semanas de 45–55 km a pie con 1.000–1.500 m, fines de semana «back-to-back» (30 km + 15 km), una salida de 5–6 h en montaña y la UTAM 20K como ensayo si el 50K es la UTG. Detalle y pruebas en Metas › Temporada 2027.', 'Las cuatro pruebas de Temporada 2027 (21K, Challenge ≤ 4 h 30, seis semanas de 45 km, ensayo largo). Si no pasan, el 50K pasa a 2028 sin drama.'],
+    ['42K · maratón (ruta o trail)', '2028', 'Opcional en el camino del trail: 45–60 km a pie por semana durante 4–6 meses y tirada larga de 28–32 km. Un maratón de asfalto te da ritmo; uno de trail, montaña.', '30 km a ritmo fácil sin que se caiga el ritmo en los últimos 10 km.'],
+    ['100K', '2030 o más (tras 2–3 años de ultras)', 'Años de base: los que terminan 100 km suelen llevar mucho tiempo corriendo y varios ultras más cortos' + '§knechtle' + '. Noche, frío, estómago y cabeza pesan tanto como las piernas.', 'Haber terminado bien 2–3 ultras de 50–80 km y una salida de 8–10 h de prueba.']
   ];
 
   var CLAVES = [
@@ -126,17 +126,17 @@
 
       U.acc('Challenge Cobán 2026: dónde se fue el día', coban(), true) +
 
-      U.acc('La escalera: 21K → trail → 42K → 50K → 100K', cards(ESCALERA, function (e, i) {
+      U.acc('La escalera: 21K → trail → 50K → 42K → 100K', cards(ESCALERA, function (e, i) {
         return "<article class='gcard'><span class='ses-k'>Paso " + (i + 1) + ' · ' + e[1] + '</span><h5>' + e[0] + '</h5><p>' + citar(e[2]) + '</p><p><small><b>Listo cuando:</b> ' + e[3] + '</small></p></article>';
-      }) + U.note('La regla que no se salta', 'Sube el volumen a pie poco a poco (más o menos un 10 % por semana y una semana más suave cada 3–4) y nunca subas a la vez distancia, desnivel y ritmo. Cada escalón necesita un año de base; saltarse uno es como acabas gateando.', 'warn'), true) +
+      }) + U.note('La regla que no se salta', 'Sube el volumen a pie poco a poco (más o menos un 10 % por semana y una semana más suave cada 3–4) y nunca subas a la vez distancia, desnivel y ritmo. Cada escalón se gana con las pruebas de «listo»: saltarse una es como acabas gateando.', 'warn'), true) +
 
       U.acc('Las claves del trail', cards(CLAVES, function (k) { return "<article class='gcard'><h5>" + k[0] + '</h5><p>' + citar(k[1]) + '</p></article>'; })) +
 
       U.acc('Cómo encaja con la bici y con Charlotte', U.coach('Un plan para 2027',
         '<ul><li><b>Charlotte (25 nov–13 ene), entre semana:</b> trabajas 8:00–17:00 de Utah = 10:00–19:00 en Charlotte (dos horas por delante), así que tienes de 6:00 a 9:30. Amanece hacia las 7:20: la primera parte va por greenway asfaltado con luz y la tierra cuando ya hay sol. Los senderos de tierra cercanos son los de Revolution Park (unos 3 km) y Renaissance Park (unos 6 km, al sur): ahí caben 1–2 trails cortos por semana.</li>' +
         '<li><b>Charlotte, sábado:</b> el U.S. National Whitewater Center (más de 60 km de senderos, gratis; sólo se paga el parking si vas en coche) queda a unos 20 km. En bici es un día «bici + trail»: ≈1 h de ida, 60–90 min de trail y vuelta, de día y evitando las avenidas grandes. En coche con la familia, también vale.</li>' +
-        '<li><b>Ene–abr 2027:</b> medio maratón como objetivo. Bici 2–3 días (volumen y una sesión dura), carrera 4–5 días con tirada larga, umbral y una sesión de cuesta.</li>' +
-        '<li><b>May–sep 2027:</b> bloque de trail hacia el Challenge Cobán: una salida de montaña por semana, bajadas, fuerza de cuádriceps y ensayos de comida. La MTB larga se queda, pero no la víspera de la tirada.</li>' +
+        '<li><b>Ene–may 2027:</b> el Medio Maratón de Cobán (30 may) como objetivo. Bici 2–3 días (volumen y una sesión dura), carrera 4–5 días con tirada larga, umbral y una sesión de cuesta.</li>' +
+        '<li><b>Jun–sep 2027:</b> bloque de trail hacia el Challenge Cobán (5 sep): una salida de montaña por semana, bajadas, fuerza de cuádriceps y ensayos de comida. La MTB larga se queda, pero no la víspera de la tirada.</li>' +
         '<li><b>Siempre:</b> el día de una carrera a pie, la bici sólo suave (lo aprendiste con Boxomá y la Guatemágica).</li></ul>')) +
 
       U.acc('Referencias', lista());

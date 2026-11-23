@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.29.0] — 2026-11-23
+
+### Cambiado
+- Guía › Ultra: la escalera usa las carreras reales y queda 21K → trail → 50K → 42K → 100K: Medio Maratón de Cobán (30 may 2027), Challenge Cobán (5 sep 2027), primer 50K condicional (UTG Antigua 21 nov o UTAM 24 oct, con las pruebas de Metas › Temporada 2027), maratón opcional en 2028 y 100K hacia 2030. «Cómo encaja con la bici» con los bloques ene–may y jun–sep.
+- Tu 2026 › «Decisiones para 2027»: el punto «Ultra a pie» con las fechas reales.
+
 ## [0.28.0] — 2026-11-23
 
 ### Añadido
