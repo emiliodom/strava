@@ -133,7 +133,8 @@
       U.acc('Las claves del trail', cards(CLAVES, function (k) { return "<article class='gcard'><h5>" + k[0] + '</h5><p>' + citar(k[1]) + '</p></article>'; })) +
 
       U.acc('Cómo encaja con la bici y con Charlotte', U.coach('Un plan para 2027',
-        '<ul><li><b>Charlotte (25 nov–13 ene):</b> la tirada larga del domingo sube a 14–15 km. Uno de cada dos domingos, en los senderos del U.S. National Whitewater Center, y si puedes, una visita a Crowders Mountain para subir y bajar caminando fuerte.</li>' +
+        '<ul><li><b>Charlotte (25 nov–13 ene), entre semana:</b> trabajas 8:00–17:00 de Utah = 10:00–19:00 en Charlotte (dos horas por delante), así que tienes de 6:00 a 9:30. Amanece hacia las 7:20: la primera parte va por greenway asfaltado con luz y la tierra cuando ya hay sol. Los senderos de tierra cercanos son los de Revolution Park (unos 3 km) y Renaissance Park (unos 6 km, al sur): ahí caben 1–2 trails cortos por semana.</li>' +
+        '<li><b>Charlotte, sábado:</b> el U.S. National Whitewater Center (más de 60 km de senderos, gratis; sólo se paga el parking si vas en coche) queda a unos 20 km. En bici es un día «bici + trail»: ≈1 h de ida, 60–90 min de trail y vuelta, de día y evitando las avenidas grandes. En coche con la familia, también vale.</li>' +
         '<li><b>Ene–abr 2027:</b> medio maratón como objetivo. Bici 2–3 días (volumen y una sesión dura), carrera 4–5 días con tirada larga, umbral y una sesión de cuesta.</li>' +
         '<li><b>May–sep 2027:</b> bloque de trail hacia el Challenge Cobán: una salida de montaña por semana, bajadas, fuerza de cuádriceps y ensayos de comida. La MTB larga se queda, pero no la víspera de la tirada.</li>' +
         '<li><b>Siempre:</b> el día de una carrera a pie, la bici sólo suave (lo aprendiste con Boxomá y la Guatemágica).</li></ul>')) +

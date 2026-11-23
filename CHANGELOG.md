@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.26.1] — 2026-11-22
+
+### Cambiado
+- Ultra › «Cómo encaja con la bici y con Charlotte»: el Whitewater Center (senderos gratis, ~20 km) pasa a opción de sábado (bici + trail o en coche); entre semana (6:00–9:30 de Charlotte, trabajo 10:00–19:00) los trails cortos van en Revolution Park y Renaissance Park, con greenway iluminado antes del amanecer (~7:20).
+
 ## [0.26.0] — 2026-11-22
 
 ### Añadido
