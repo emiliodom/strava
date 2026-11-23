@@ -3,6 +3,14 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.27.0] — 2026-11-23
+
+### Añadido
+- **Temporada 2027 en `EVENTOS`** (`plan.js`, campo `temporada: 2027`), 19 eventos con fecha estimada a partir de la edición 2026 (mismo fin de semana) y, cuando existe, el resultado de 2026 como referencia: Ruta Potenz y Medio Maratón de Cobán (30 may, chocan: gana Cobán, A), Ruta del Tun (13 jun), Epic Race Xolhuitz (4 jul), Teletón (11 jul), 5K Fundap (17 jul), Gran Travesía Entre Fincas (25 jul), Legado del Mar (1 ago), Reto Cantel (8 ago, referencia de humildad), Paseo Lunar (15 ago), Challenge Cobán (5 sep, A de trail), Tour de la Independencia (12 sep), UTAM Amatitlán (24 oct), 21K Esquipulas y Campanabaj (7 nov), Entre Senderos (14 nov), Guatemágica (20 nov), Sibaná 9K y UTG Antigua 50K (21 nov, A condicional).
+
+### Cambiado
+- «Preparación» muestra sólo los eventos de los próximos 90 días (la temporada completa irá en Metas).
+
 ## [0.26.2] — 2026-11-22
 
 ### Cambiado

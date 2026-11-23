@@ -82,9 +82,10 @@
 
   function render() {
     var hoy = isoHoy();
-    var evs = P.EVENTOS.filter(function (e) { return e.fecha >= hoy; });
+    var lim = new Date(Date.parse(hoy + 'T00:00:00Z') + 90 * 864e5).toISOString().slice(0, 10);   // sólo los próximos 90 días; la temporada completa está en Metas › Temporada 2027
+    var evs = P.EVENTOS.filter(function (e) { return e.fecha >= hoy && e.fecha <= lim; });
     return U.modhead('9', 'Preparación por evento', 'Qué debe ocurrir 15, 10 y 5 días antes de cada carrera y rodada del calendario. Los tres plazos se calculan desde la fecha de cada evento.') +
-      U.note('Cómo leerlo', 'Las carreras C se usan como entreno; la A (Guatemágica, 21 nov) manda. Si dos eventos se pisan, el plazo de 5 días de uno se cruza con el de 10 o 15 del siguiente: ahí gana el que está más cerca de la A y se recorta el otro.', 'warn') +
+      U.note('Cómo leerlo', 'Eventos de los próximos 90 días. Las carreras C se usan como entreno; la A manda. Si dos eventos se pisan, el plazo de 5 días de uno se cruza con el de 10 o 15 del siguiente: ahí gana el que está más cerca de la A y se recorta el otro.', 'warn') +
       (evs.length ? evs.map(function (e) { return tarjeta(e, hoy); }).join('') : '<p>No quedan eventos en el calendario.</p>') +
       U.note('Regla para todos', 'Nada nuevo en los últimos 10 días: ni zapatillas, ni comida, ni suplemento, ni técnica. Todo lo que vayas a usar en la carrera se prueba antes, en un entreno largo.', 'ok');
   }
