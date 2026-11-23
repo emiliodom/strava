@@ -200,6 +200,7 @@
         '<li><b>Charlotte:</b> crecer a pie (tirada larga hasta 11–15 km según el plan), mantener la bici con 3 × 8 min fuertes una vez por semana, fuerza con peso corporal y barra (Guía › Charlotte y › Barra).</li>' +
         '<li><b>Comer y dormir para absorberlo:</b> 60–90 g/h de carbohidrato en salidas largas, sin déficit en los bloques duros y 7–8 h de sueño' + c('jeukendrup', 'mountjoy') + '.</li>' +
         '<li><b>Durabilidad a pie:</b> el 15K del 21 nov fue tu mejor marca, pero del 5K al 15K perdiste mucho más de lo normal y acabaste con los cuádriceps cargados. Una tirada larga por semana que crezca poco a poco, bajadas y sentadilla búlgara para el cuádriceps, y el día de una carrera a pie, la bici sólo suave.</li>' +
+        '<li><b>Ultra a pie, paso a paso:</b> 21K en primavera de 2027, el Challenge Cobán en septiembre como objetivo de trail (meta: la etapa de montaña en 3 h 30–4 h 30, no 7 h 20), maratón en 2028, 50K después y 100K hacia 2030. Detalle en Guía › Ultra.</li>' +
         '<li><b>Fuerza todo el año:</b> 1–2 sesiones por semana, la barra de dominadas por niveles y la prevención lumbar' + c('ronnestadMujika') + '.</li></ol>') +
       U.acc('El año en gráficas', graficasAno(X), true) +
       U.acc('Volumen por mes', graficas(X)) +

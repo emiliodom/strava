@@ -3,6 +3,17 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.26.0] — 2026-11-22
+
+### Añadido
+- **Pestaña «Ultra»** en la Guía de resistencia (módulo 29, `assets/modules/ultra.js`, entre Charlotte y Tu 2026):
+  - Diagnóstico en vivo: el motor aeróbico (bici) ya es de ultra; lo que falta a pie es impacto, bajadas, pies, estómago y terreno.
+  - **Challenge Cobán 2026 km a km**: gráfica de minutos por km de la etapa de trail coloreada por subida/llano/bajada, con desnivel y pulso al pasar el cursor. Hallazgos: km 1–7 sostenibles, del km 8 en adelante el «gatear»; lo más lento fueron las bajadas; FC media 129 (el corazón no fue el límite); más de 2 h paradas. Meta para 2027: esa etapa en 3 h 30–4 h 30 en vez de 7 h 20.
+  - **La escalera**: 21K (primavera 2027), trail 20–30 km / Challenge Cobán (sep 2027), 42K (2028), 50K trail (2028–2029) y 100K (2030 o más), cada paso con requisitos y prueba de «listo».
+  - Claves del trail (caminar fuerte, bajar, cuádriceps, comer y entrenar el estómago, tiempo en pie, zapatillas, material, lesiones típicas) y encaje con la bici y Charlotte (domingos alternos en los senderos del Whitewater Center).
+  - 7 referencias nuevas comprobadas en Crossref (Knechtle, Hoffman, Millet, Vernillo, Giandolini, McHugh, Costa) más 4 de la Guía.
+- «Decisiones para 2027»: punto «Ultra a pie, paso a paso».
+
 ## [0.25.0] — 2026-11-22
 
 ### Añadido
