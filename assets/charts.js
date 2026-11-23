@@ -166,9 +166,12 @@
       s += "<text x='" + X(t).toFixed(1) + "' y='" + (fy.y0 + 14) + "' text-anchor='middle'>" + esc(o.fmtX ? o.fmtX(t) : F.num(t, 0)) + "</text>";
     });
     if (o.trend) {
-      var r = App.stat.linreg(xs, ys);
-      s += "<line x1='" + X(xlo).toFixed(1) + "' y1='" + fy.Y(r.m * xlo + r.b).toFixed(1) +
-        "' x2='" + X(xhi).toFixed(1) + "' y2='" + fy.Y(r.m * xhi + r.b).toFixed(1) +
+      var r = App.stat.linreg(xs, ys), ta = xlo, tb = xhi;
+      // recorta la tendencia al área del gráfico (sin salirse por arriba ni por abajo)
+      var dentro = function (x) { var y = r.m * x + r.b; return y < fy.lo ? (fy.lo - r.b) / r.m : y > fy.hi ? (fy.hi - r.b) / r.m : x; };
+      if (r.m) { ta = Math.max(xlo, Math.min(xhi, dentro(xlo))); tb = Math.max(xlo, Math.min(xhi, dentro(xhi))); }
+      s += "<line x1='" + X(ta).toFixed(1) + "' y1='" + fy.Y(r.m * ta + r.b).toFixed(1) +
+        "' x2='" + X(tb).toFixed(1) + "' y2='" + fy.Y(r.m * tb + r.b).toFixed(1) +
         "' stroke='var(--pico-muted-color)' stroke-width='1.4' stroke-dasharray='5 3'/>";
     }
     o.points.forEach(function (p) {

@@ -3,6 +3,19 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.28.0] — 2026-11-23
+
+### Añadido
+- **Metas › Temporada 2027** (módulo 30, `assets/modules/temporada.js`, primera pestaña de Metas):
+  - KPIs (23 eventos: 3 A, 7 B, 13 C) y tres bloques: ene–may a pie hacia el Medio Maratón de Cobán, jun–sep bloque de trail hacia el Challenge Cobán (riesgo: 9 eventos en 11 fines de semana; candidatas a saltar: Legado del Mar y Tour de la Independencia), oct–nov el 50K.
+  - Gráfica de eventos por mes y deporte; lista de choques del mismo día (17 ene, 30 may, 7 nov, 21 nov).
+  - **Primer 50K**: UTG Antigua (21 nov, vacía tu noviembre) frente a UTAM (24 oct, conserva Esquipulas, Entre Senderos, Guatemágica y Sibaná), con cuatro pruebas de «listo» y decisión el 12 sep.
+  - Reto Cantel como referencia de humildad (2026: 2 h 59 en movimiento, 4 h 06 en total, FC 143; altura, técnica y paradas; meta 2027 < 2 h 40 / < 3 h 15).
+  - Dispersión velocidad 2026 frente a desnivel por km de los eventos de bici que se repiten, con tendencia.
+
+### Corregido
+- `charts.js` → `scatter`: la línea de tendencia ya no se sale del área del gráfico.
+
 ## [0.27.0] — 2026-11-23
 
 ### Añadido

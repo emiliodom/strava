@@ -3,7 +3,7 @@
   'use strict';
   var App = global.App, $ = App.$, $$ = App.$$;
 
-  var ORDEN = ['resumen', 'dia', 'bitacora', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'prerace', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas', 'candelaria', 'guia', 'fuerza', 'trampas', 'sesiones', 'barra', 'salsa', 'charlotte', 'ultra', 'leccion'];
+  var ORDEN = ['resumen', 'dia', 'bitacora', 'ano', 'carga', 'running', 'bici', 'proyeccion', 'calendario', 'suenos', 'prerace', 'temporada', 'cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper', 'preparacion', 'registro', 'recursos', 'menu', 'zonas', 'candelaria', 'guia', 'fuerza', 'trampas', 'sesiones', 'barra', 'salsa', 'charlotte', 'ultra', 'leccion'];
   // Cada «página» agrupa módulos afines; la URL es #pagina (o #modulo, que abre su página y baja hasta él).
   var PAGINAS = [
     { id: 'hoy', nom: 'Hoy', icono: 'p_hoy', mods: ['resumen', 'dia', 'bitacora'] },
@@ -11,7 +11,7 @@
     { id: 'rendimiento', nom: 'Rendimiento', corto: 'Rendim.', icono: 'p_rend', mods: ['ano', 'carga', 'running', 'bici'] },
     { id: 'ruta', nom: 'Ruta Candelaria', corto: 'Ruta', navNom: 'Ruta', icono: 'p_ruta', mods: ['candelaria'] },
     { id: 'resistencia', nom: 'Guía de resistencia', corto: 'Guía', navNom: 'Guía', icono: 'p_guia', mods: ['guia', 'fuerza', 'trampas', 'sesiones', 'barra', 'salsa', 'charlotte', 'ultra', 'leccion'] },
-    { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['proyeccion', 'suenos', 'prerace', 'preparacion'] },
+    { id: 'metas', nom: 'Metas', icono: 'p_metas', mods: ['temporada', 'proyeccion', 'suenos', 'prerace', 'preparacion'] },
     { id: 'cuerpo', nom: 'Cuerpo y ciencia', navNom: 'Cuerpo', icono: 'p_cuerpo', mods: ['cuerpo', 'ciencia', 'calidad', 'prevencion', 'vtaper'] },
     { id: 'comida', nom: 'Comida', icono: 'p_comida', mods: ['menu'] },
     { id: 'horarios', nom: 'Horarios', corto: 'Horas', icono: 'p_reloj', mods: ['zonas'] },
