@@ -21,6 +21,12 @@
     var largoRun = Math.max.apply(null, D.runs.map(function (a) { return a.km; }).concat([0]));
     var p15 = M.predecir(D.vdot, 15000, largoRun);
     var dias15 = App.date.diffDays(new Date(), App.date.d('2026-11-21'));
+    // Tras el 21 nov la cuenta atrás pasa al siguiente evento A/B (o al siguiente de cualquier prioridad).
+    var hoyISO0 = new Date().toISOString().slice(0, 10);
+    var futuros = App.plan.EVENTOS.filter(function (e) { return e.fecha >= hoyISO0; }).sort(function (a, b) { return a.fecha < b.fecha ? -1 : 1; });
+    var meta0 = futuros.filter(function (e) { return e.prioridad === 'A' || e.prioridad === 'B'; })[0] || futuros[0];
+    var diasMeta = meta0 ? App.date.diffDays(new Date(), App.date.d(meta0.fecha)) : null;
+    var g15 = D.runs.filter(function (a) { return a.fechaISO === '2026-11-21' && a.km >= 14; })[0];
     var acwrOk = M.clasifAcwr(hoyAct.acwrEwma) === 'ok', monoOk = M.clasifMonotonia(ult.monotonia) === 'ok';
 
     var fichas = [], modales = [];
@@ -102,7 +108,8 @@
       '<p>Hasta ahora hoy: <b>' + esc(H.realHoy) + '</b>.</p>' + H.tablaHtml));
 
     /* ---- Guatemágica ---- */
-    fichas.push(ficha('meta', 'Guatemágica 15K', dias15 + ' días', 'predicción ' + F.hms(p15.real) + ' · ' + F.paceKm(p15.real / 15), 'warn'));
+    fichas.push(g15 ? ficha('meta', 'Guatemágica 15K', F.hms(g15.min * 60), 'hecha · ' + F.paceKm(g15.min * 60 / g15.km) + ' · tu mejor 15K', 'ok') :
+      ficha('meta', 'Guatemágica 15K', dias15 + ' días', 'predicción ' + F.hms(p15.real) + ' · ' + F.paceKm(p15.real / 15), 'warn'));
     modales.push(plantilla('meta', 'La carrera del año: 21 de noviembre',
       U.note('La carrera del año es el 21 de noviembre',
         'La Guatemágica 15K en Retalhuleu es exactamente tu meta de 15K a 5:00/km. Faltan ' + dias15 + ' días y hoy la predicción honesta es ' +
@@ -156,7 +163,7 @@
       "<p class='hero-s'>" + (pausa ? esc(PZ.motivo || '') : saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
         (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
       "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>" + (pausa ? 'Qué hacer ›' : 'Ver sesión ›') + "</button>" +
-      "<div class='hero-race'><b>" + dias15 + "</b><span>días a la<br>Guatemágica 15K</span></div></div>" +
+      (meta0 ? "<div class='hero-race'><b>" + diasMeta + "</b><span>días a<br>" + esc(meta0.nombre.replace(/\s*\(.*\)$/, '')) + '</span></div>' : '') + '</div>' +
       (!pausa && (puedeSaltar || cambios.length) ? "<div class='hero-acts'>" +
         (puedeSaltar ? "<button type='button' class='hero-skip' data-saltar='" + esc(H.hoyISO) + "'>" + (saltadoHoy ? 'Sí la hice · deshacer' : 'No la hice · reorganizar') + '</button>' : '') +
         (cambios.length ? "<button type='button' class='hero-chg' data-modal='ajustes'>Plan reorganizado · " + cambios.length + ' cambios ›</button>' : '') + '</div>' : '') +

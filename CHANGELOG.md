@@ -3,6 +3,20 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.24.0] — 2026-11-22
+
+### Añadido
+- **Bitácora del fin de semana** (`notas.js`): Boxomá con sprints la mañana del 15K, la Guatemágica (15,0 km en 1 h 30 en movimiento, 6:02/km, tu mejor 15K) con parciales, parada al baño, pie derecho y exponente de Riegel 5K→15K ≈ 1,21, y Sibaná (25,8 km/584 m a 14,1 km/h, más rápido que Entre Senderos). Resumen nuevo del 8 al 22 nov: la velocidad está, falta la resistencia a pie.
+- «Tu 2026»: resultados de la Guatemágica y Sibaná frente al pronóstico, exponente de Riegel calculado en vivo, pronóstico de medio maratón para la primavera de 2027 y una decisión nueva para 2027 («Durabilidad a pie»).
+- Charlotte: tarjeta «Pie y zapatillas» y la Guatemágica como prueba de que la resistencia a pie es la prioridad.
+
+### Cambiado
+- Plan: 23 nov rodada social sin sprints en Z1–Z2 (Candelaria no) + trote fácil 3–5 km si el pie no duele, sin fuerza de pierna; 24 nov trote corto de 3 km por la mañana, sin bici, y viaje a la capital por la tarde.
+- Notas de la Guatemágica y de Sibaná en `EVENTOS` con el resultado.
+
+### Corregido
+- La portada mostraba «−1 días a la Guatemágica»: la cuenta atrás pasa al siguiente evento A/B (Tecpanpana) y la ficha de la Guatemágica muestra el resultado.
+
 ## [0.23.0] — 2026-11-20
 
 ### Añadido

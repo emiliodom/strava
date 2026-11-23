@@ -57,10 +57,11 @@
       ]) +
 
       U.acc('Qué puede mejorar y qué no', cards([
-        ['Correr: resistencia', 'Lo que más rinde. La tirada larga del domingo sube de 10 a 14–15 km, a 6:30–7:00/km y FC baja. No subas más de una tirada y unos 3–5 km semanales por semana' + c('lauersen') + '.', 'Puede mejorar'],
+        ['Correr: resistencia', 'Lo que más rinde, y lo que confirmó la Guatemágica: 6:02/km en 15K frente a 4:48/km en 5K es una caída mucho mayor de lo normal. La tirada larga del domingo sube de 10 a 14–15 km, a 6:30–7:00/km y FC baja. No subas más de una tirada y unos 3–5 km semanales por semana' + c('lauersen') + '.', 'Puede mejorar'],
         ['Correr: velocidad', 'El tempo y los HIIT del Greenway ya están en el plan, con los ritmos del VDOT 40 (umbral ≈ 5:04/km). Con frío salen más rápidos al mismo esfuerzo: no te asustes ni te pases.', 'Puede mejorar'],
         ['Bici', 'Una salida por semana, ahora con 3 × 8 min fuertes dentro. Si hay sol al mediodía el fin de semana, una segunda salida suave suma. Sin intensidad, el VO₂máx empieza a caer en 2–4 semanas' + c('mujikaPadilla') + '.', 'Mantener'],
         ['Fuerza sin pesas', 'Rutina K (peso corporal) 1–2 veces por semana: sentadilla búlgara, puente a una pierna, elevación de talones, flexiones. Una barra de puerta convierte Charlotte en un bloque de dominadas (Guía › Barra).', 'Mantener o subir'],
+        ['Pie y zapatillas', 'En el 15K del 21 nov el pie derecho se deslizaba dentro de la zapatilla y dolieron los dedos pequeños y el dedo gordo desde el km 10. Antes de subir la tirada larga: lazada de bloqueo del talón, calcetín adecuado y, si hace falta, otra talla o modelo (en Charlotte hay tiendas de running donde te miran la pisada). Si duele en reposo o en un punto del hueso, médico.', 'Cuidar'],
         ['Peso y fiestas', 'Thanksgiving (26 nov) y Navidad caen dentro. Sin déficit agresivo con más kilómetros a pie: proteína en cada comida y que los días de fiesta sean días, no semanas.', 'Cuidar'],
         ['Sueño', 'Charlotte va una hora por delante: acostarte a la hora de Charlotte desde el primer día. Las mañanas son oscuras: correr 6:00–7:15 pide luces.', 'Cuidar']
       ], function (f) { return "<article class='gcard'><h5>" + f[0] + "</h5><span class='ver'>" + f[2] + '</span><p>' + f[1] + '</p></article>'; }), true) +

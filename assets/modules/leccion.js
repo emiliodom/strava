@@ -118,15 +118,19 @@
       var f365 = new Date(Date.parse(X.racha.f + 'T00:00:00Z') + (365 - X.racha.n) * 864e5).toISOString().slice(0, 10);
       filas.push(['<b>Racha #365</b>', 'Día 365 el <b>' + F.fecha(f365) + ' ' + f365.slice(0, 4) + '</b>', "<span class='wrap'>Último registro: día " + X.racha.n + ' el ' + F.fecha(X.racha.f) + '. Cae en Charlotte: planea la milla de ese día.</span>']);
     }
-    var base = X.runs.filter(function (a) { return a.km >= 4.5 && a.km <= 16 && a.fechaISO >= '2026-07-01' && a.min * 60 / a.km < 450; })
-      .map(function (a) { return { a: a, w: /5k|10k|15k|21k|carrera|race/i.test(a.nombre || '') ? 0.99 : 1, t15: function (e) { return a.min * Math.pow(15 / a.km, e); } }; })   // una carrera con dorsal gana los empates
-      .sort(function (x, y) { return x.t15(1.06) * x.w - y.t15(1.06) * y.w; });
-    if (base.length) {
-      var b0 = base[0], corta = b0.a.km < 8, e1 = corta ? 1.07 : 1.06, e2 = corta ? 1.10 : 1.08, lo = b0.t15(e1), hi = b0.t15(e2);
-      filas.push(['<b>Guatemágica 15K</b>', '<b>' + hm(lo) + '–' + hm(hi) + '</b> (' + ritmo(lo * 4) + '–' + ritmo(hi * 4) + '/km)',
-        "<span class='wrap'>Fórmula de Riegel (exponente " + (corta ? '1,07–1,10, más conservador porque la base es corta' : '1,06–1,08') + ')' + c('riegel') + ' desde tu mejor carrera de 4,5–16 km desde julio: ' + F.num(b0.a.km, 1) + ' km a ' + ritmo(b0.a.min * 60 / b0.a.km) + '/km el ' + F.fecha(b0.a.fechaISO) + '. Supone que aguantas la distancia: tu tirada más larga reciente es de 6 km, el calor de la noche en Retalhuleu y el 5K del día anterior suman 2–4 min; sal en el extremo lento.</span>']);
+    // Desde el 21 nov la Guatemágica y Sibaná son resultados; el pronóstico nuevo es el medio maratón.
+    var g15 = X.runs.filter(function (a) { return a.fechaISO === '2026-11-21' && a.km >= 14; })[0];
+    var k5 = X.runs.filter(function (a) { return a.fechaISO === '2026-11-20' && a.km >= 4.9 && a.km < 5.2; })[0];
+    if (g15) {
+      var eR = k5 ? Math.log(g15.min / k5.min) / Math.log(g15.km / k5.km) : null;
+      filas.push(['<b>Guatemágica 15K</b>', '<b>' + hm(g15.min) + '</b> (' + ritmo(g15.min * 60 / g15.km) + '/km) · hecha',
+        "<span class='wrap'>Pronóstico 1 h 21–1 h 25 si aguantabas la distancia; salió más lenta con 31,7 km de MTB y sprints esa mañana, la parada al baño del km 11 y el pie derecho desde el km 10. Aun así, tu mejor 15K: 6:02/km frente a 6:36 el 23 ago." +
+        (eR ? ' Del 5K al 15K tu exponente de Riegel fue ' + F.num(eR, 2) + ' (lo habitual en corredores entrenados es 1,06–1,08)' + c('riegel') + ': la velocidad está, la resistencia a pie es lo que falta.' : '') + '</span>']);
+      var lo21 = g15.min * Math.pow(21.0975 / g15.km, 1.06), hi21 = g15.min * Math.pow(21.0975 / g15.km, 1.10);
+      filas.push(['<b>Medio maratón (primavera 2027)</b>', '<b>' + hm(lo21) + '–' + hm(hi21 + 5) + '</b>',
+        "<span class='wrap'>Desde la Guatemágica con Riegel 1,06–1,10, más 5 min de margen. Vale si antes la tirada larga llega a 16–18 km sin dolor (Charlotte la sube a 14–15 km). Si haces el 15K sin el MTB de la mañana y sin parar, el punto de partida baja solo.</span>"]);
     }
-    filas.push(['<b>Xab Sibaná</b>', '<b>1 h 55–2 h 15</b> en movimiento', "<span class='wrap'>25 km y 700 m (28 m/km) a 11–13 km/h, como Campanabaj (12,3 km/h, 31 m/km) y la Travesía entre Fincas (12,2, 28 m/km), 13 h después del 15K y en Z2.</span>"]);
+    filas.push(['<b>Xab Sibaná</b>', '<b>1 h 50</b> en movimiento · hecha', "<span class='wrap'>Pronóstico 1 h 55–2 h 15 a 11–13 km/h; saliste a 14,1 km/h con 584 m y FC 152, 13 h después del 15K: más rápido que Entre Senderos (13,9 km/h con FC 158). Sin competir, el motor de la bici sigue muy por delante del de correr.</span>"]);
     filas.push(['<b>5K Bomberos, 17 ene</b>', '<b>23:30–24:30</b>', "<span class='wrap'>Desde los 23:56 del 20 nov, con seis semanas de carrera en Charlotte a favor y el calor de Retalhuleu en contra a tres días de volver (se reaclimata en 1–2 semanas). Si la contrarreloj del 7 ene sale por debajo de 23:30, apunta al extremo rápido.</span>"]);
     filas.push(['<b>Candelaria, 23 ene</b>', '<b>19–20,5 km/h</b>', "<span class='wrap'>Fresco en temporada seca promedias 19,6 km/h (página Ruta). Siete semanas en Charlotte con 2 sesiones de intensidad por semana mantienen casi toda la forma aeróbica; sin ellas, el VO₂máx empieza a caer en 2–4 semanas" + c('mujikaPadilla') + '. Clave: 9 días tranquilos antes de la prueba.</span>']);
     return "<div class='t'>" + U.tabla([{ t: 'Qué' }, { t: 'Pronóstico' }, { t: 'De dónde sale' }], filas) + '</div>' +
@@ -153,6 +157,7 @@
         '<li><b>Elegir carreras:</b> 4–6 objetivos A al año. Arranque de 2027: 5K por los Bomberos o Travesía San Pablo (17 ene, una de las dos), Tecpanpana (6 feb, objetivo B) y, opcional, la travesía de la Pana Epic (7 feb). Las etapas de la Pana Epic son de élite: no esta temporada.</li>' +
         '<li><b>Charlotte:</b> crecer a pie (tirada larga hasta 11–15 km según el plan), mantener la bici con 3 × 8 min fuertes una vez por semana, fuerza con peso corporal y barra (Guía › Charlotte y › Barra).</li>' +
         '<li><b>Comer y dormir para absorberlo:</b> 60–90 g/h de carbohidrato en salidas largas, sin déficit en los bloques duros y 7–8 h de sueño' + c('jeukendrup', 'mountjoy') + '.</li>' +
+        '<li><b>Durabilidad a pie:</b> el 15K del 21 nov fue tu mejor marca, pero del 5K al 15K perdiste mucho más de lo normal y acabaste con los cuádriceps cargados. Una tirada larga por semana que crezca poco a poco, bajadas y sentadilla búlgara para el cuádriceps, y el día de una carrera a pie, la bici sólo suave.</li>' +
         '<li><b>Fuerza todo el año:</b> 1–2 sesiones por semana, la barra de dominadas por niveles y la prevención lumbar' + c('ronnestadMujika') + '.</li></ol>') +
       U.acc('Volumen por mes', graficas(X), true) +
       U.acc('¿Polarizado o gris? Tu intensidad', intensidad(X)) +
