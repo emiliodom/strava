@@ -392,6 +392,7 @@ header.top .brand a::before{content:'';display:inline-block;width:.55rem;height:
 .hero .strip .dia i{color:#dbe2f1}
 .hero .strip .dia.hoy{outline-color:#ff8a4f;background:rgba(255,138,79,.22)}
 .hero .strip .dia.ok u{color:#2dd4a3}.hero .strip .dia.bad u{color:#ffb3b3}.hero .strip .dia.warn u{color:#fbb73a}
+.hero .strip .dia.hoy.ok u,.hero .strip .dia.hoy.warn u{color:#fff}
 @media(min-width:760px){.hero{padding:1.8rem 2rem 1.4rem}.hero-s{font-size:1.02rem}}
 
 /* ---------- SLIDER (m--vil): fichas deslizables con snap ---------- */

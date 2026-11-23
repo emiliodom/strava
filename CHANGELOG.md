@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.30.0] — 2026-11-23
+
+### Añadido
+- **La portada cambia cuando el día está hecho** (`hoy.js` → `hecho`, `manana`, `notaHoy`; `resumen.js`): si Strava ya trae lo de hoy y cumple el plan, el hero pasa a «Hoy · hecho ✓» con lo que hiciste, el titular de la bitácora, lo que decía el plan y **la sesión de mañana**; si cumple en parte, «Hoy · llevas» con lo que falta. La casilla de hoy en la tira semanal muestra ✓ o ≈ y desaparece «No la hice» cuando ya está hecho.
+- En días de evento basta con el 60 % de los minutos de bici previstos para contar como cumplido (la carrera puede salir más corta que la estimación).
+
+### Corregido
+- La cuenta atrás del hero usa la fecha local (con `toISOString` cambiaba de día a las 18:00 de Guatemala) y dice «hoy» el día del evento en vez de un número negativo.
+
 ## [0.29.0] — 2026-11-23
 
 ### Cambiado

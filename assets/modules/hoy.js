@@ -25,7 +25,8 @@
     var req = [], ok = [];
     var fz = /fuerza [ABCGUKO]/.test(dia.sesion);
     if (dia.km >= 3) { req.push(1); if (r && r.kmRun >= 0.8 * dia.km) ok.push(1); }
-    if (dia.minBici >= 30) { req.push(1); if (r && r.bici >= 0.8 * dia.minBici) ok.push(1); }
+    // En días de evento cuenta haberlo hecho: el plan pone minutos totales estimados y la carrera puede salir más corta.
+    if (dia.minBici >= 30) { req.push(1); if (r && r.bici >= (dia.evento ? 0.6 : 0.8) * dia.minBici) ok.push(1); }
     if (fz) { req.push(1); if (r && r.fuerza >= 15) ok.push(1); }
     if (!req.length) return r && r.min > 90 ? '≈' : '✓';
     return ok.length === req.length ? '✓' : ok.length ? '≈' : '✗';
@@ -67,7 +68,8 @@
     out.semana = [0, 1, 2, 3, 4, 5, 6].map(function (i) {
       var d = new Date(lun); d.setDate(lun.getDate() + i);
       var iso = isoLocal(d), pd = dias.filter(function (x) { return x.fecha === iso; })[0];
-      var estado = pd && pd.pausa && iso >= hoyISO ? (iso === hoyISO ? 'hoy' : 'pausa') : iso < hoyISO ? (pd ? cumple(pd, real(D, iso)) : '·') : iso === hoyISO ? 'hoy' : 'pend';
+      var rh = iso === hoyISO ? real(D, iso) : null, hechoHoy = pd && rh && rh.min ? cumple(pd, rh) : null;
+      var estado = pd && pd.pausa && iso >= hoyISO ? (iso === hoyISO ? 'hoy' : 'pausa') : iso < hoyISO ? (pd ? cumple(pd, real(D, iso)) : '·') : iso === hoyISO ? (hechoHoy === '✓' || hechoHoy === '≈' ? 'hoy' + hechoHoy : 'hoy') : 'pend';
       return { iso: iso, dow: ['D', 'L', 'M', 'X', 'J', 'V', 'S'][d.getDay()], tipo: pd ? pd.tipo : '·', sesion: pd ? pd.sesion : 'sin plan', estado: estado };
     });
 
@@ -93,6 +95,11 @@
     out.obj = App.actividad ? App.actividad.corto(hoyDia, D) : '';
     out.detalleHtml = App.actividad ? App.actividad.detalle(hoyDia, D) : '';
     out.pausa = !!hoyDia.pausa;
+    // ¿Ya está hecho? Si Strava trae lo de hoy, la portada pasa a «hecho» y enseña lo de mañana.
+    out.hecho = rHoy && rHoy.min ? cumple(hoyDia, rHoy) : null;
+    if (out.hecho === '✗') out.hecho = null;
+    out.manana = dias.filter(function (d) { return d.fecha > hoyISO; })[0] || null;
+    out.notaHoy = App.notas && App.notas[hoyISO] ? App.notas[hoyISO].t : null;
     out.n = App.cuerpo && App.cuerpo.metaDia ? App.cuerpo.metaDia(pid, hoyDia) : null;
     out.talla = App.cuerpo && App.cuerpo.metaTalla ? App.cuerpo.metaTalla(pid, hoyDia) : null;
     return out;

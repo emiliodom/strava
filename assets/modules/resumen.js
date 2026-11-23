@@ -22,10 +22,10 @@
     var p15 = M.predecir(D.vdot, 15000, largoRun);
     var dias15 = App.date.diffDays(new Date(), App.date.d('2026-11-21'));
     // Tras el 21 nov la cuenta atrás pasa al siguiente evento A/B (o al siguiente de cualquier prioridad).
-    var hoyISO0 = new Date().toISOString().slice(0, 10);
+    var hoyISO0 = H.hoyISO;   // fecha local (toISOString daría mañana a partir de las 18:00 en Guatemala)
     var futuros = App.plan.EVENTOS.filter(function (e) { return e.fecha >= hoyISO0; }).sort(function (a, b) { return a.fecha < b.fecha ? -1 : 1; });
     var meta0 = futuros.filter(function (e) { return e.prioridad === 'A' || e.prioridad === 'B'; })[0] || futuros[0];
-    var diasMeta = meta0 ? App.date.diffDays(new Date(), App.date.d(meta0.fecha)) : null;
+    var diasMeta = meta0 ? Math.max(0, App.date.diffDays(App.date.d(hoyISO0), App.date.d(meta0.fecha))) : null;
     var g15 = D.runs.filter(function (a) { return a.fechaISO === '2026-11-21' && a.km >= 14; })[0];
     var acwrOk = M.clasifAcwr(hoyAct.acwrEwma) === 'ok', monoOk = M.clasifMonotonia(ult.monotonia) === 'ok';
 
@@ -86,11 +86,13 @@
 
     /* ---- Semana en curso ---- */
     var chipSem = H.semana.map(function (x) {
-      var s = x.estado === 'hoy' ? '●' : x.estado === 'pend' ? '○' : x.estado === 'pausa' ? '‖' : x.estado;
-      var c = x.estado === 'hoy' ? 'hoy' : x.estado === 'pausa' ? 'pausa' : x.estado === '✓' ? 'ok' : x.estado === '✗' ? 'bad' : x.estado === '≈' ? 'warn' : '';
+      var hv = /^hoy./.test(x.estado) ? x.estado.slice(3) : null;   // hoy ya hecho (✓) o en parte (≈)
+      var s = hv || (x.estado === 'hoy' ? '●' : x.estado === 'pend' ? '○' : x.estado === 'pausa' ? '‖' : x.estado);
+      var c = hv ? 'hoy ' + (hv === '✓' ? 'ok' : 'warn') : x.estado === 'hoy' ? 'hoy' : x.estado === 'pausa' ? 'pausa' : x.estado === '✓' ? 'ok' : x.estado === '✗' ? 'bad' : x.estado === '≈' ? 'warn' : '';
       return "<span class='dia " + c + "' title='" + esc(x.sesion) + "'><b>" + x.dow + '</b><i>' + esc(x.tipo) + '</i><u>' + s + '</u></span>';
     }).join('');
     var pendientes = H.semana.filter(function (x) { return x.estado === 'pend' || x.estado === 'hoy'; }).length;
+    var hecho = !pausa && !(H.hoyDia && H.hoyDia.saltado) && H.hecho;   // ✓: la portada pasa a «hecho» y enseña mañana; ≈: lo que llevas y lo que falta
     /* la tira semanal se pinta dentro del hero */
     modales.push(plantilla('semana', 'Esta semana y los últimos días',
       U.tabla([{ t: 'Día' }, { t: 'Tipo' }, { t: 'Plan' }, { t: '' }], H.semana.map(function (x) {
@@ -145,7 +147,7 @@
 
     var cambios = App.calExport && App.calExport.cambios ? App.calExport.cambios(H.pid) : [];
     var saltadoHoy = !!(H.hoyDia && H.hoyDia.saltado);
-    var puedeSaltar = !!(H.hoyDia && (saltadoHoy || H.hoyDia.tipo !== 'D'));
+    var puedeSaltar = !!(H.hoyDia && (saltadoHoy || H.hoyDia.tipo !== 'D')) && H.hecho !== '✓';   // si ya está hecho, no hay nada que reorganizar
     if (cambios.length) {
       modales.push(plantilla('ajustes', 'Plan reorganizado',
         '<p>Las sesiones que marcaste como «no la hice» se movieron con reglas fijas, sin IA: una sesión dura pasa al primer día suave sin dos duros seguidos ni competencia cerca; el volumen fácil se reparte con tope de +25 % por día; lo que no cabe se descarta.</p>' +
@@ -158,12 +160,15 @@
     var heroHtml = "<div class='hero" + (pausa ? ' pausa' : '') + "' data-tipo='" + esc(H.hoyDia ? H.hoyDia.tipo : '-') + "'>" +
       "<div class='hero-top'><span class='hero-fecha'>" + esc(App.hoy.fecha(H.hoyISO)) + "</span>" +
       (pausa ? "<span class='hero-chip'>En pausa</span>" : H.hoyDia ? "<span class='hero-chip'>" + esc(H.tipo.nom || 'Sesión') + "</span>" : '') + '</div>' +
-      "<p class='hero-k'>" + (pausa ? 'Hasta nuevo aviso' : saltadoHoy ? 'Hoy' : 'Hoy toca') + '</p>' +
-      "<h2 class='hero-t'>" + (pausa ? 'Pausa' : saltadoHoy ? 'Sesión saltada' : H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
-      "<p class='hero-s'>" + (pausa ? esc(PZ.motivo || '') : saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
+      "<p class='hero-k'>" + (pausa ? 'Hasta nuevo aviso' : saltadoHoy ? 'Hoy' : hecho === '✓' ? 'Hoy · hecho ✓' : hecho ? 'Hoy · llevas' : 'Hoy toca') + '</p>' +
+      "<h2 class='hero-t'>" + (pausa ? 'Pausa' : saltadoHoy ? 'Sesión saltada' : hecho ? esc(H.realHoy) : H.hoyDia ? esc(H.resumenTxt || 'Descanso activo') : 'Sin sesión') + '</h2>' +
+      "<p class='hero-s'>" + (pausa ? esc(PZ.motivo || '') : saltadoHoy ? 'Se reprogramó en los próximos días; revisa qué cambió.' : hecho ?
+        (hecho === '✓' ? esc((H.notaHoy ? H.notaHoy + ' · ' : '') + 'El plan era ' + (H.resumenTxt || 'descanso activo') + '.') + (H.manana ? '<br><b>Mañana:</b> ' + esc(H.manana.sesion) : '') :
+          esc('Llevas esto; el plan era ' + (H.resumenTxt || 'descanso activo') + '. Lo que falta: ' + H.hoyDia.sesion)) :
+        H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
         (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
-      "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>" + (pausa ? 'Qué hacer ›' : 'Ver sesión ›') + "</button>" +
-      (meta0 ? "<div class='hero-race'><b>" + diasMeta + "</b><span>días a<br>" + esc(meta0.nombre.replace(/\s*\(.*\)$/, '')) + '</span></div>' : '') + '</div>' +
+      "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>" + (pausa ? 'Qué hacer ›' : hecho ? 'Ver lo de hoy ›' : 'Ver sesión ›') + "</button>" +
+      (meta0 ? "<div class='hero-race'><b>" + (diasMeta === 0 ? 'hoy' : diasMeta) + "</b><span>" + (diasMeta === 0 ? 'es el día:' : 'días a') + '<br>' + esc(meta0.nombre.replace(/\s*\(.*\)$/, '')) + '</span></div>' : '') + '</div>' +
       (!pausa && (puedeSaltar || cambios.length) ? "<div class='hero-acts'>" +
         (puedeSaltar ? "<button type='button' class='hero-skip' data-saltar='" + esc(H.hoyISO) + "'>" + (saltadoHoy ? 'Sí la hice · deshacer' : 'No la hice · reorganizar') + '</button>' : '') +
         (cambios.length ? "<button type='button' class='hero-chg' data-modal='ajustes'>Plan reorganizado · " + cambios.length + ' cambios ›</button>' : '') + '</div>' : '') +
