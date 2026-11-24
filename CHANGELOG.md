@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.30.2] — 2026-11-23
+
+### Añadido
+- Bitácora del 23 nov: Takalik Abaj – Cantón Morazán (30,1 km, 615 m, 1 h 46, 109 W estimados, sin banda; más larga y con más subida que los 60–75 min en llano del plan) y trote de 3,0 km con FC 119, el pulso más bajo de los trotes de noviembre. Resumen de los últimos 15 días movido al 9–23 nov.
+
 ## [0.30.1] — 2026-11-23
 
 ### Cambiado
