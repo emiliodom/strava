@@ -48,7 +48,7 @@
   // Frío en Charlotte (el usuario, 27 nov): de lunes a viernes, mañanas bajo cero o cerca, y el trabajo de 10:00 a 19:00. La bici
   // sale de entre semana y va al mediodía del fin de semana (12–15 h, lo más templado); correr sigue por la mañana con capas.
   // Para volver al esquema anterior: FRIO.activo = false.
-  var FRIO = { activo: true, desde: '2026-11-28', regla: 'bici sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo; si no, trote o trail' };
+  var FRIO = { activo: true, desde: '2026-11-27', regla: 'bici sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo; si no, trote o trail' };
   var BICI_CLT = { estructurado: [4, 50], intermedio: [2, 45], brutal: [1, 60] };   // [dow, minutos]
   function aplicarViaje(id, dias) {
     var semMonte = 0;
@@ -281,7 +281,7 @@
     '2026-11-24': ['R', 3, 0, 'AM: trote corto de 3 km fácil (o la milla si el pie molesta), sin bici · PM: viaje a la Ciudad de Guatemala (duermes allí)', 'Mañana te levantas a las 3:00 y el vuelo sale a las 6:00: ropa de correr en el equipaje de mano, cena temprano y a dormir antes de las 21:00. Mete las zapatillas que mejor te ajustan.'],
     '2026-11-25': ['R', 1.6, 0, 'Vuelo a Charlotte: despierta 3:00, despega 6:00 de Guatemala (7:00 de Charlotte) · por la noche la milla mínima en Charlotte', 'Día largo y con poco sueño: sólo la milla. Mañana Thanksgiving.'],
     '2026-11-26': ['B', 5, 60, 'Thanksgiving: bici corta ~60 min alrededor de Revolution Park + trote 5 km (unas millas)', 'Día de familia: entrena temprano y llega a la cena. Charlotte va una hora por delante de Guatemala.'],
-    '2026-11-27': ['B', 5, 180, 'Opción larga: bici de ruta ~60 km desde Barfield Dr por el Sugar Creek Greenway hacia Pineville (NC) y vuelta, Z2 + trote 5 km. Plan B según la familia: 60 min alrededor de Revolution Park + trote 5 km', 'Pineville está en Carolina del Norte, junto a la frontera con Carolina del Sur. Lleva agua y comida: el greenway tiene pocos servicios.'],
+    '2026-11-27': ['R', 3.5, 0, 'Trote 3–5 km al mediodía (hecho: 3,8 km). La bici larga a Pineville se canceló por el frío: la bici pasa al mediodía del fin de semana (desde el 28 nov)', 'Ajuste por frío acordado el 27 nov: entre semana sólo correr; la bici, sábados al mediodía si la sensación térmica a 25 km/h pasa de −5 °C.'],
     '2026-11-28': ['B', 5, 60, 'Mediodía (12:00–15:00): bici 45–60 min en Z2 por el Irwin Creek Greenway sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo; después, trote 5 km fácil. Si hace demasiado frío: sólo el trote, por la mañana o al mediodía', 'Con frío, guíate por ritmo y sensación: el pulso de muñeca falla (el 26 marcó 173 a 6:26/km).'],
     '2026-11-29': ['T', 6, 0, 'Trail en tierra (Revolution Park o Renaissance Park) 60 min, a media mañana o al mediodía; subidas caminando fuerte y bajadas con pasos cortos. El MTB en el Whitewater Center sólo si el día es templado (más de 5 °C) y seco, en coche con la familia', 'Sal con algo de frío y capas que te puedas quitar; quítate la ropa mojada al terminar.'],
     '2026-12-05': ['F', 3, 50, 'Mediodía (12:00–15:00): referencia de bici 1 en el Greenway: 15 min suave + 20 min a tope en el tramo plano (mismo sentido; anota distancia, velocidad, temperatura y viento) + 15 min suave · después, trote 3 km fácil', 'Movida del lunes 7 al sábado por el frío: mañanas bajo cero. Si hay hielo o la sensación térmica a 25 km/h baja de −5 °C, pásala al domingo al mediodía.'],

@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.32.1] — 2026-11-27
+
+### Corregido
+- El 27 nov seguía mostrando la bici larga de 180 min a Pineville: el ajuste por frío empezaba el 28 y la fila fija de `AGENDA` del 27 no se había cambiado. Ahora el 27 es trote 3–5 km sin bici (hecho: 3,8 km) y `FRIO.desde` = 27 nov; la portada pasa a «hecho ✓» con la sesión de mañana.
+
 ## [0.32.0] — 2026-11-27
 
 ### Añadido
