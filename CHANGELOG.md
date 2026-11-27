@@ -3,6 +3,17 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.32.0] — 2026-11-27
+
+### Añadido
+- **Extractor de clima** `connector/clima.mjs` (`npm run clima`), con APIs gratuitas y sin clave:
+  - NWS api.weather.gov, estación KCLT: observaciones medidas de los últimos ~7 días en Charlotte.
+  - Open-Meteo forecast (`past_days=10`) para los días recientes y archive (ERA5) para el resto del año.
+  - Pronóstico horario de 7 días del lugar actual (Charlotte durante el viaje, Retalhuleu fuera de él).
+  - Lugar por fechas de viaje y por nombre de la actividad (Cobán, Cantel, Xela, Totonicapán, Antigua, Tecpán, Panajachel, Amatitlán, Esquipulas). En Charlotte se usa Revolution Park, no la dirección de la familia.
+  - Salida `data/clima.json` (586 actividades con clima); `actualizar.sh` lo corre tras el sync y lo publica (si falla la red, no frena el sync).
+- `assets/clima.js` (`App.clima`): el hero muestra el clima de hoy (6–10 h, 12–15 h) y, en días con bici, el veredicto de la regla del frío (sensación térmica a 25 km/h > −5 °C); la pestaña «Análisis» del calendario muestra el clima de cada actividad del día (con su fuente) y el pronóstico de los próximos 7 días. Crédito a Open-Meteo (CC BY 4.0) y NWS en el pie.
+
 ## [0.31.0] — 2026-11-27
 
 ### Cambiado

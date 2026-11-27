@@ -592,7 +592,13 @@
     var n = App.notas && App.notas[f];
     return n ? "<div class='nota-dia'><b>" + esc(n.t) + '</b><p>' + esc(n.n) + '</p></div>' : '';
   }
-  function analisisHtml(d) { return notaHtml(d.fecha) + analisisBase(d); }
+  function climaHtml(f) {
+    if (!App.clima) return '';
+    var acts = (((App.data || {}).raw || {}).actividades || []).filter(function (a) { return String(a.start_local).slice(0, 10) === f; })
+      .map(function (a) { return { id: a.id, nombre: a.name }; });
+    return App.clima.diaHtml(f, acts);
+  }
+  function analisisHtml(d) { return notaHtml(d.fecha) + climaHtml(d.fecha) + analisisBase(d); }
   function analisisBase(d) {
     var f = d.fecha, a = ANALISIS_FULL[f], tipo = d.tipoOriginal || d.tipo, T = TIPOS[tipo] || {}, lim = limitesFC(), z = D0 && D0.zonas;
     var plan = d.sesionOriginal || d.sesion;

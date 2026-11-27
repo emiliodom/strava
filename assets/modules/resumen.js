@@ -167,6 +167,11 @@
           esc('Llevas esto; el plan era ' + (H.resumenTxt || 'descanso activo') + '. Lo que falta: ' + H.hoyDia.sesion)) :
         H.hoyDia ? esc((H.obj ? 'Objetivo ' + H.obj + ' · ' : '') + H.hoyDia.sesion) :
         (H.sig ? 'Sigue: ' + esc(H.sig.sesion) : 'el plan terminó el 30 nov')) + '</p>' +
+      (function () {   // clima de hoy (Open-Meteo / NWS) y regla del frío para la bici
+        var x = App.clima && App.clima.dia(H.hoyISO); if (!x || pausa) return '';
+        var bici = H.hoyDia && H.hoyDia.minBici > 0 && !hecho;
+        return "<p class='hero-clima'>" + App.clima.lineaDia(x) + (bici && x.md ? ' · <b>' + esc(App.clima.veredictoBici(x)) + '</b>' : '') + '</p>';
+      })() +
       "<div class='hero-row'><button type='button' class='hero-cta' data-modal='hoy'>" + (pausa ? 'Qué hacer ›' : hecho ? 'Ver lo de hoy ›' : 'Ver sesión ›') + "</button>" +
       (meta0 ? "<div class='hero-race'><b>" + (diasMeta === 0 ? 'hoy' : diasMeta) + "</b><span>" + (diasMeta === 0 ? 'es el día:' : 'días a') + '<br>' + esc(meta0.nombre.replace(/\s*\(.*\)$/, '')) + '</span></div>' : '') + '</div>' +
       (!pausa && (puedeSaltar || cambios.length) ? "<div class='hero-acts'>" +

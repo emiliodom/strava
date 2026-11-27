@@ -219,7 +219,8 @@
 
     (App.mods || []).forEach(function (m) { MODS[m.id] = m; });
 
-    App.data.cargar().then(function (raw) {
+    // El clima (data/clima.json) es opcional: si no carga, la web funciona igual.
+    Promise.all([App.data.cargar(), App.clima ? App.clima.cargar() : null]).then(function (r) { return r[0]; }).then(function (raw) {
       App.data.raw = raw;
       MODELO = App.metrics.construir(raw);
       global.__MODELO__ = MODELO;              // para inspeccionar desde la consola
@@ -228,7 +229,8 @@
       $('#pie').innerHTML = 'Datos de ' + App.esc(String(m.generado || '').slice(0, 10) || '2026') +
         ' · ' + MODELO.acts.length + ' actividades · ' +
         (MODELO.acts.length - MODELO.limpias.length) + ' descartadas. ' +
-        'Para actualizar: <code>node connector/sync.mjs &amp;&amp; node connector/build.mjs</code>.';
+        'Para actualizar: <code>node connector/sync.mjs &amp;&amp; node connector/build.mjs</code>.' +
+        (App.clima && App.clima.datos() ? ' Clima: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0) y NWS (estación KCLT).' : '');
       iniciarAutoActualizacion();
       if (location.hash === '#imprimir') { document.body.classList.add('imprimir-todo'); prepararImpresion(); }
       else if (location.hash) mostrar(location.hash);

@@ -20,11 +20,13 @@ cd "$RAIZ"
 
 git pull --rebase --autostash origin main
 ( cd connector && npm run actualizar )   # sync.mjs + build.mjs --js
+# Clima (Open-Meteo + NWS, gratis y sin clave). Si falla la red, no frena el sync de Strava.
+( cd connector && node clima.mjs ) || echo "· clima no disponible esta vez"
 
-if git diff --quiet -- ano2026_datos.min.json; then
+if git diff --quiet -- ano2026_datos.min.json data/clima.json; then
   echo "· $(date +%F' '%H:%M) sin cambios en los datos"
 else
-  git add ano2026_datos.min.json
+  git add ano2026_datos.min.json data/clima.json
   git commit -m "datos: sync automático $(date +%F' '%H:%M)"
   # el sync puede tardar y main avanzar entretanto: rebase antes de empujar
   git pull --rebase --autostash origin main
