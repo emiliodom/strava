@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.30.3] — 2026-11-27
+
+### Añadido
+- Bitácora del 24 al 27 nov: viaje (2,2 km y la milla), primer día en Charlotte (Thanksgiving: 13,2 km de bici al mediodía y 5,2 km a 5:50/km con FC «157/173», casi seguro un error del sensor de muñeca por el frío enganchado a la cadencia) y el 27 sin la bici larga por el frío (3,8 km de trote). Resumen de 15 días al 13–27 nov.
+
 ## [0.30.2] — 2026-11-23
 
 ### Añadido
