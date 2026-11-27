@@ -45,6 +45,10 @@
     intermedio: { 1: ['H', 'HIIT AM · repeticiones en el ' + GREENWAY, 8], 3: ['Q', 'Q AM · tempo en el ' + GREENWAY, 8], 4: ['S', 'Sprints AM · rectas del ' + GREENWAY, 6], 5: ['T', null, 10] },
     brutal: { 0: ['Q', 'Q AM · tempo en el ' + GREENWAY, 9], 2: ['H', 'HIIT AM · repeticiones en el ' + GREENWAY, 9], 4: ['S', 'Sprints AM · rectas del ' + GREENWAY, 7], 5: ['T', null, 12] }
   };
+  // Frío en Charlotte (el usuario, 27 nov): de lunes a viernes, mañanas bajo cero o cerca, y el trabajo de 10:00 a 19:00. La bici
+  // sale de entre semana y va al mediodía del fin de semana (12–15 h, lo más templado); correr sigue por la mañana con capas.
+  // Para volver al esquema anterior: FRIO.activo = false.
+  var FRIO = { activo: true, desde: '2026-11-28', regla: 'bici sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo; si no, trote o trail' };
   var BICI_CLT = { estructurado: [4, 50], intermedio: [2, 45], brutal: [1, 60] };   // [dow, minutos]
   function aplicarViaje(id, dias) {
     var semMonte = 0;
@@ -58,7 +62,11 @@
         d.tipo = cal[0]; d.km = cal[2]; d.minBici = 0;
         if (cal[0] === 'T') {
           var m = MONTANAS[semMonte++ % MONTANAS.length];
-          if (/Whitewater/.test(m)) {   // a ~20 km de Barfield Dr: se llega en bici (senderos gratis; el parking sólo si vas en coche)
+          if (/Whitewater/.test(m) && FRIO.activo && d.fecha >= FRIO.desde) {   // con frío, este sábado es el de la bici, al mediodía
+            d.tipo = 'F'; d.km = 4; d.minBici = 75;
+            d.sesion = 'Bici al mediodía (12:00–15:00, lo más templado): 15 min suave + 3 × 8 min fuerte (FC 158–168, o «difícil pero sostenible» si el pulso de muñeca falla) con 3 min suave + resto Z2, y después 20–30 min de trote en tierra (Revolution Park). Regla: ' + FRIO.regla;
+            d.lugar = 'Irwin Creek / Sugar Creek Greenway al mediodía. Guantes gruesos, cubrezapatillas, cortavientos y algo seco para el trote de después.';
+          } else if (/Whitewater/.test(m)) {   // a ~20 km de Barfield Dr: se llega en bici (senderos gratis; el parking sólo si vas en coche)
             d.minBici = 120;
             d.sesion = 'Bici + trail: ~1 h en bici hasta el ' + m + ' (de día, sin avenidas grandes), 60–90 min de trail (subidas caminando fuerte, bajadas con pasos cortos) y vuelta en bici · plan B: en coche con la familia';
             d.lugar = m + ': senderos gratis; sólo se paga el parking si vas en coche. Lleva agua, algo de comer y luz trasera para la vuelta.';
@@ -67,6 +75,8 @@
             d.lugar = m + '. Sal temprano: el desnivel manda, no el ritmo.';
           }
         } else { d.sesion = cal[1] + fzTxt; d.lugar = GREENWAY + ': tramo plano y sin cruces, el mejor lugar de Charlotte para velocidad. Calienta 2 km, lo duro en el tramo recto y vuelve trotando.'; }
+      } else if (w === bici[0] && (d.tipo === 'E' || d.tipo === 'R') && !d.hito && FRIO.activo && d.fecha >= FRIO.desde) {
+        d.sesion = d.tipo + fzTxt + ' (la bici de la semana pasa al mediodía del fin de semana por el frío)';
       } else if (w === bici[0] && (d.tipo === 'E' || d.tipo === 'R') && !d.hito) {
         d.minBici = bici[1]; d.sesion = d.tipo + ' + bici por el ' + GREENWAY + ': 10 min suave + 3 × 8 min fuerte (FC 158–168) con 3 min suave + resto Z2' + fzTxt;   // la intensidad conserva la forma de bici en Charlotte
         d.lugar = 'Bici de Freedom Park a Pineville por el Sugar Creek Greenway (ida y vuelta); ajusta el retorno a los minutos del plan.';
@@ -272,10 +282,12 @@
     '2026-11-25': ['R', 1.6, 0, 'Vuelo a Charlotte: despierta 3:00, despega 6:00 de Guatemala (7:00 de Charlotte) · por la noche la milla mínima en Charlotte', 'Día largo y con poco sueño: sólo la milla. Mañana Thanksgiving.'],
     '2026-11-26': ['B', 5, 60, 'Thanksgiving: bici corta ~60 min alrededor de Revolution Park + trote 5 km (unas millas)', 'Día de familia: entrena temprano y llega a la cena. Charlotte va una hora por delante de Guatemala.'],
     '2026-11-27': ['B', 5, 180, 'Opción larga: bici de ruta ~60 km desde Barfield Dr por el Sugar Creek Greenway hacia Pineville (NC) y vuelta, Z2 + trote 5 km. Plan B según la familia: 60 min alrededor de Revolution Park + trote 5 km', 'Pineville está en Carolina del Norte, junto a la frontera con Carolina del Sur. Lleva agua y comida: el greenway tiene pocos servicios.'],
-    '2026-11-28': ['B', 6, 60, 'Trote 6 km + bici 60 min cerca de Revolution Park (o lo que permita el plan familiar)', null],
-    '2026-11-29': ['B', 1.6, 150, 'MTB en un parque de la zona (p. ej. los senderos del U.S. National Whitewater Center) si encaja con la familia + la milla de la racha', 'Domingo flexible: si el plan familiar no deja, basta la milla.'],
-    '2026-12-07': ['F', 3, 50, 'AM: referencia de bici 1 en el Greenway: 15 min suave + 20 min a tope en el tramo plano (mismo sentido; anota distancia, velocidad, FC media y viento) + 15 min suave + PM: trote 3 km fácil', 'Sin potenciómetro no es la FTP: es tu punto de partida en Charlotte. Se repite el 4 ene en el mismo tramo, sentido y hora.'],
-    '2027-01-04': ['F', 3, 50, 'AM: referencia de bici 2 en el Greenway: la misma prueba del 7 dic (15 min suave + 20 min a tope + 15 min suave) + PM: trote 3 km fácil', 'Compara con el 7 dic: más velocidad con el mismo pulso, o igual con menos, es que la bici se mantuvo.'],
+    '2026-11-28': ['B', 5, 60, 'Mediodía (12:00–15:00): bici 45–60 min en Z2 por el Irwin Creek Greenway sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo; después, trote 5 km fácil. Si hace demasiado frío: sólo el trote, por la mañana o al mediodía', 'Con frío, guíate por ritmo y sensación: el pulso de muñeca falla (el 26 marcó 173 a 6:26/km).'],
+    '2026-11-29': ['T', 6, 0, 'Trail en tierra (Revolution Park o Renaissance Park) 60 min, a media mañana o al mediodía; subidas caminando fuerte y bajadas con pasos cortos. El MTB en el Whitewater Center sólo si el día es templado (más de 5 °C) y seco, en coche con la familia', 'Sal con algo de frío y capas que te puedas quitar; quítate la ropa mojada al terminar.'],
+    '2026-12-05': ['F', 3, 50, 'Mediodía (12:00–15:00): referencia de bici 1 en el Greenway: 15 min suave + 20 min a tope en el tramo plano (mismo sentido; anota distancia, velocidad, temperatura y viento) + 15 min suave · después, trote 3 km fácil', 'Movida del lunes 7 al sábado por el frío: mañanas bajo cero. Si hay hielo o la sensación térmica a 25 km/h baja de −5 °C, pásala al domingo al mediodía.'],
+    '2027-01-02': ['F', 3, 50, 'Mediodía (12:00–15:00): referencia de bici 2: la misma prueba del 5 dic, mismo tramo, sentido y hora (anota también la temperatura) · después, trote 3 km fácil', 'Compárala con la del 5 dic: con una temperatura parecida, más velocidad con la misma sensación es mantener o mejorar.'],
+    '2026-12-07': ['R', 3, 0, 'R: trote 3 km fácil por la mañana (la referencia de bici pasó al sábado 5 dic al mediodía por el frío)', null],
+    '2027-01-04': ['R', 3, 0, 'R: trote 3 km fácil por la mañana (la referencia de bici 2 pasó al sábado 2 ene al mediodía por el frío)', null],
     '2027-01-07': ['Q', 9, 0, 'AM: contrarreloj 5K en el Greenway: 2 km suaves + 4 rectas de 20 s + 5 km a tope + 2 km suaves', 'Referencia: 23:56 el 20 nov. Con frío y seis semanas de constancia, 23:00–23:30 es razonable. Sal a 4:45 y aprieta desde el km 3.'],
     '2027-01-30': ['F', 1.6, 75, 'Prueba de FTP de 20 min en subida: 20 min de calentamiento con 3 × 1 min fuerte, 5 min suave, 20 min a tope en una subida constante sin bajadas, 15 min suave + trote de la racha 1,6 km', 'Anota tiempo, distancia y desnivel del tramo y calcúlala en Guía › Bici o correr. Repite cada 6–8 semanas en la misma subida. Si choca con una carrera de enero, se mueve.'],
     '2027-01-16': ['R', 2, 45, 'Víspera del 5K (o de la travesía): bici suave 45 min + trote 2 km con 4 rectas de 20 s', 'Llegaste el 13 por la noche: duerme, bebe con sal y no hagas la MTB larga del sábado.'],

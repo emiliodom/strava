@@ -3,6 +3,15 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.31.0] — 2026-11-27
+
+### Cambiado
+- **Plan de Charlotte ajustado al frío** (`FRIO` en `ajuste.js`, desde el 28 nov; `FRIO.activo = false` lo deshace): entre semana sólo correr por la mañana; la bici semanal sale del viernes y va al **mediodía del sábado** (12:00–15:00) un sábado de cada dos, con 3 × 8 min fuertes y 20–30 min de trote en tierra (el otro sábado, trail en Crowders en coche). Regla del día: bici sólo si la sensación térmica a 25 km/h pasa de −5 °C y no hay hielo.
+- Pruebas de referencia de bici movidas del lunes 7 dic y 4 ene a los **sábados 5 dic y 2 ene al mediodía** (anotando la temperatura). 28 nov: bici Z2 al mediodía condicionada + trote 5 km; 29 nov: trail en tierra 60 min (MTB en el Whitewater sólo si el día es templado y seco).
+
+### Añadido
+- Guía › Charlotte › **«Ajuste por frío»**: por qué correr con frío va bien y pedalear peor (sensación térmica por la propia velocidad, músculo frío, mejor rendimiento en bici a ~11 °C que a 4 °C), aclimatación pequeña al frío, vías respiratorias con aire frío y seco, el pulso de muñeca que falla con frío y los cambios del plan. Cinco referencias nuevas comprobadas en Crossref (Galloway y Maughan 1997, Oksa 2002, Castellani y Young 2016, Carlsen 2012, Osczevski y Bluestein 2005).
+
 ## [0.30.3] — 2026-11-27
 
 ### Añadido

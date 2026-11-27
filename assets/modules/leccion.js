@@ -195,7 +195,7 @@
       U.coach('Decisiones para 2027 (lo que concluimos)', '<ol>' +
         '<li><b>Bici para el volumen, carrera para la velocidad.</b> A pie ya tienes un 5K de 23:56 (VDOT ≈ 40, umbral ≈ 5:04/km); lo que falta es resistencia. Metas: 10K por debajo de 47 min en 2027 y de 45 en 2028; en bici, conocer tu FTP real y acercarte a 3,3 W/kg en 2–3 años (Guía › Bici o correr).</li>' +
         '<li><b>Fácil de verdad en bici:</b> la mayoría de las salidas por debajo de FC 135 y dos sesiones duras de verdad por semana' + c('seiler') + '.</li>' +
-        '<li><b>Medir:</b> referencias de bici en el Greenway (7 dic y 4 ene), 5K contrarreloj (7 ene), Candelaria (23 ene) y FTP de 20 min en subida (30 ene, con la calculadora de la Guía). Repetir cada 6–8 semanas.</li>' +
+        '<li><b>Medir:</b> referencias de bici en el Greenway (5 dic y 2 ene, al mediodía por el frío), 5K contrarreloj (7 ene), Candelaria (23 ene) y FTP de 20 min en subida (30 ene, con la calculadora de la Guía). Repetir cada 6–8 semanas.</li>' +
         '<li><b>Elegir carreras:</b> 4–6 objetivos A al año. Arranque de 2027: 5K por los Bomberos o Travesía San Pablo (17 ene, una de las dos), Tecpanpana (6 feb, objetivo B) y, opcional, la travesía de la Pana Epic (7 feb). Las etapas de la Pana Epic son de élite: no esta temporada.</li>' +
         '<li><b>Charlotte:</b> crecer a pie (tirada larga hasta 11–15 km según el plan), mantener la bici con 3 × 8 min fuertes una vez por semana, fuerza con peso corporal y barra (Guía › Charlotte y › Barra).</li>' +
         '<li><b>Comer y dormir para absorberlo:</b> 60–90 g/h de carbohidrato en salidas largas, sin déficit en los bloques duros y 7–8 h de sueño' + c('jeukendrup', 'mountjoy') + '.</li>' +
