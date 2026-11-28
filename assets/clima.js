@@ -59,9 +59,12 @@
   function diaHtml(fecha, idsReales) {
     if (!C) return '';
     var filas = (idsReales || []).map(function (a) { var w = actividad(a.id); return w ? '<li><b>' + esc(a.nombre || '') + ':</b> ' + esc(texto(w)) + ' <small>(' + esc(w.f) + ')</small></li>' : ''; }).join('');
-    var x = dia(fecha), prev = x ? '<p><b>Pronóstico:</b> ' + lineaDia(x) + (x.md ? '. ' + esc(veredictoBici(x)) : '') + '.</p>' : '';
+    var x = dia(fecha);
+    var verd = x && x.md ? " <span class='clima-tag " + (x.biciOk ? 'ok' : 'no') + "'>" + esc(veredictoBici(x)) + '</span>' : '';
+    var prev = x ? "<p class='clima-prev'><b>Pronóstico:</b> " + lineaDia(x) + verd + '</p>' : '';
     if (!filas && !prev) return '';
-    return "<div class='clima'><h5>Clima</h5>" + (filas ? '<ul>' + filas + '</ul>' : '') + prev + '</div>';
+    return "<div class='clima'><div class='clima-cab'><h5>Clima</h5>" + (x ? "<span class='clima-lugar'>" + esc(x.lugar.replace(/\s*\(.*\)/, '')) + '</span>' : '') + '</div>' +
+      (filas ? '<ul>' + filas + '</ul>' : '') + prev + '</div>';
   }
 
   App.clima = { cargar: cargar, actividad: actividad, texto: texto, dia: dia, lineaDia: lineaDia, veredictoBici: veredictoBici, diaHtml: diaHtml, sensacion: sensacion, datos: function () { return C; } };

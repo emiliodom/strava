@@ -75,7 +75,14 @@
         var manualValor = c.deporte === 'running' ? entrada.km : c.deporte === 'bici' ? entrada.minBici : entrada.minFuerza;
         if (manualValor != null && manualValor > 0) { valor = manualValor; manual = true; }
       }
-      var minimo = c.deporte === 'fuerza' ? c.objetivo : c.objetivo * 0.8;
+      var reTot = candidatas.reduce(function (s, a) { return s + (a.re || 0); }, 0);
+      var elevTot = candidatas.reduce(function (s, a) { return s + (a.elev || 0); }, 0);
+      var hrMax = candidatas.reduce(function (m, a) { return Math.max(m, a.hr || 0); }, 0);
+      var intenso = reTot >= 30 || elevTot >= 150 || hrMax >= 135;
+      var factor = d.evento ? 0.6 : intenso ? 0.7 : 0.75;
+      var rx = c.unidad === 'km' ? /(\d+(?:[.,]\d+)?)\s*[–-]\s*\d+(?:[.,]\d+)?\s*km/i : /(\d+)\s*[–-]\s*\d+\s*min/i;
+      var rm = rx.exec(d.sesion || ''), rMin = rm ? parseFloat(rm[1].replace(',', '.')) : null;
+      var minimo = c.deporte === 'fuerza' ? Math.min(c.objetivo, 12) : rMin ? Math.min(c.objetivo * factor, rMin * 0.9) : c.objetivo * factor;
       return {
         deporte: c.deporte, nombre: c.nombre, unidad: c.unidad, objetivo: c.objetivo, valor: valor, cantidad: cantidad, manual: manual, opcional: !!c.opcional,
         estado: (cantidad || manual) && valor + 1e-9 >= minimo ? 'ok' : cantidad || manual ? 'parcial' : 'miss'

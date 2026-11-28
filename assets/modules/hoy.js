@@ -12,22 +12,42 @@
   function planActivo() { return App.data.pref('calPlan', 'estructurado'); }
   function fecha(iso) { var d = new Date(iso + 'T12:00:00'); return DIAS[d.getDay()] + ' ' + d.getDate(); }
 
-  /* Lo que Strava dice que se hizo ese día */
+  /* Lo que Strava dice que se hizo ese día (incluye esfuerzo, desnivel y FC para juzgar intensidad) */
   function real(D, iso) {
     var d = D.dias.filter(function (x) { return x.iso === iso; })[0];
     if (!d) return null;
-    var g = d.grupos || {};
-    return { kmRun: d.kmRun, bici: (g.ruta || 0) + (g.mtb || 0), fuerza: (g.fuerza || 0) + (g.otros || 0), min: d.min };
+    var g = d.grupos || {}, acts = (d.acts || []).filter(function (a) { return !a.anomalia; });
+    var re = acts.reduce(function (s, a) { return s + (a.re || 0); }, 0);
+    var elev = acts.reduce(function (s, a) { return s + (a.elev || 0); }, 0);
+    var hrMax = acts.reduce(function (m, a) { return Math.max(m, a.hr || 0); }, 0);
+    return { kmRun: d.kmRun, bici: (g.ruta || 0) + (g.mtb || 0), fuerza: (g.fuerza || 0) + (g.otros || 0), min: d.min, re: re, elev: elev, hr: hrMax };
+  }
+
+  function rangoMin(sesion, re) {
+    var m = re.exec(sesion || '');
+    return m ? parseFloat(m[1].replace(',', '.')) : null;
   }
 
   /* ¿Se cumplió? '✓' todo, '≈' parte, '✗' nada, '·' sin requisitos */
   function cumple(dia, r) {
     var req = [], ok = [];
     var fz = /fuerza [ABCGUKO]/.test(dia.sesion);
-    if (dia.km >= 3) { req.push(1); if (r && r.kmRun >= 0.8 * dia.km) ok.push(1); }
-    // En días de evento cuenta haberlo hecho: el plan pone minutos totales estimados y la carrera puede salir más corta.
-    if (dia.minBici >= 30) { req.push(1); if (r && r.bici >= (dia.evento ? 0.6 : 0.8) * dia.minBici) ok.push(1); }
-    if (fz) { req.push(1); if (r && r.fuerza >= 15) ok.push(1); }
+    var intenso = !!(r && (r.re >= 30 || r.elev >= 150 || r.hr >= 135));
+    var factor = intenso ? 0.7 : 0.75;
+    if (dia.km >= 3) {
+      req.push(1);
+      var minKm = rangoMin(dia.sesion, /(\d+(?:[.,]\d+)?)\s*[–-]\s*\d+(?:[.,]\d+)?\s*km/i);
+      var metaKm = minKm ? Math.min(dia.km * factor, minKm * 0.9) : dia.km * factor;
+      if (r && r.kmRun + 1e-6 >= metaKm) ok.push(1);
+    }
+    // En días de evento cuenta haberlo hecho; si el plan da un rango (p. ej. 45–60 min), el mínimo del rango cuenta.
+    if (dia.minBici >= 30) {
+      req.push(1);
+      var minB = rangoMin(dia.sesion, /(\d+)\s*[–-]\s*\d+\s*min/i);
+      var metaB = dia.evento ? 0.6 * dia.minBici : minB ? Math.min(dia.minBici * factor, minB * 0.9) : dia.minBici * factor;
+      if (r && r.bici + 1e-6 >= metaB) ok.push(1);
+    }
+    if (fz) { req.push(1); if (r && r.fuerza >= 12) ok.push(1); }
     if (!req.length) return r && r.min > 90 ? '≈' : '✓';
     return ok.length === req.length ? '✓' : ok.length ? '≈' : '✗';
   }
@@ -61,7 +81,7 @@
     out.buenos = filas.filter(function (f) { return f[3] === '✓'; }).length;
     out.nFilas = filas.length;
     out.tablaHtml = filas.length ? U.tabla([{ t: 'Día' }, { t: 'Plan' }, { t: 'Strava' }, { t: '' }], filas,
-      { pie: out.buenos + ' de ' + filas.length + ' días cumplidos (✓ todo · ≈ parte · ✗ nada). Cuenta como cumplido el 80 % de los km o de los minutos de bici, y 15 min de fuerza.' }) : '';
+      { pie: out.buenos + ' de ' + filas.length + ' días cumplidos (✓ todo · ≈ parte · ✗ nada). Cuenta como cumplido el 75 % del volumen previsto (70 % si hubo intensidad o desnivel, o el mínimo del rango) y 12 min de fuerza.' }) : '';
 
     // La semana en curso (lunes a domingo): hecho, hoy y lo que falta.
     var lun = new Date(hoyISO + 'T12:00:00'); lun.setDate(lun.getDate() - ((lun.getDay() + 6) % 7));

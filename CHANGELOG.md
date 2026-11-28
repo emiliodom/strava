@@ -3,6 +3,13 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.33.0] — 2026-11-28
+
+### Mejorado
+- **Evaluador de cumplimiento más robusto** (`hoy.js` y `calendario.js`): reconoce rangos en el texto del plan (p. ej. `45–60 min` o `3–5 km`, tomando el mínimo del rango al 90 %), tolera 75 % del volumen previsto (70 % si hubo intensidad/desnivel: `re ≥ 30`, `elev ≥ 150` o `fc ≥ 135`) y baja fuerza a 12 min; evita que días ya hechos (como los 47 min de bici + 5,0 km del 28 nov) queden como «incompletos».
+- **Análisis enriquecido por deporte** (`dia.js`): detecta progresión negativa/caída en splits, enganche de pulso de muñeca a la cadencia por frío, picos irreales de GPS en bici (>75 km/h) y añade **«Para la próxima»** con una mejora concreta por sesión, además de mostrar el clima de cada actividad.
+- **Estilos CSS del clima** (`app.css`, `clima.js`): tarjetas `.clima` y `.dia-clima` con variables de tema (claro/oscuro), cabecera con lugar, etiquetas `.clima-tag` (sí/no bici) y `.hero-clima` en pastilla translúcida.
+
 ## [0.32.2] — 2026-11-28
 
 ### Añadido

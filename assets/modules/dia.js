@@ -120,20 +120,76 @@
         [{ t: 'Km' }, { t: 'Ritmo', n: true }, { t: 'FC', n: true }, { t: 'Zona' }, { t: 'Desnivel', n: true }], filas), false);
   }
 
-  /* ---------- veredicto global de una actividad ---------- */
+  /* ---------- veredicto global de una actividad + mejora para la próxima ---------- */
+  function analisisSplits(a) {
+    var sp = (a.splits || []).filter(function (s) { return s && s[0]; });
+    if (sp.length < 3) return null;
+    var n = sp.length, enteros = [];
+    for (var i = 0; i < n; i++) {
+      var dist = i < n - 1 ? 1 : Math.max(a.km - (n - 1), 0.01);
+      if (dist >= 0.6) enteros.push(sp[i][0] / dist);
+    }
+    if (enteros.length < 2) return null;
+    var mitad = Math.floor(enteros.length / 2);
+    var avg = function (arr) { return arr.reduce(function (s, x) { return s + x; }, 0) / arr.length; };
+    var p1 = avg(enteros.slice(0, mitad)), p2 = avg(enteros.slice(mitad));
+    return { diff: p2 - p1, p1: p1, p2: p2, primero: enteros[0], ultimo: enteros[enteros.length - 1] };
+  }
+
   function veredicto(a, D, f) {
-    var esRun = a.grupo === 'running';
+    var esRun = a.grupo === 'running', esBici = a.grupo === 'ruta' || a.grupo === 'mtb';
     var zp = esRun ? zonaPace(D.zonas, a.paceSpk) : null;
     var zh = zonaHR(f, a.hr);
-    if (!zp && !zh) return '';
-    var txt = [];
-    if (zp) txt.push('Por ritmo medio cae en <b>' + esc(zp.nom) + '</b>');
-    if (zh) txt.push('la FC media la sitúa en <b>' + esc(zh.nom) + '</b>');
-    var aviso = '';
-    if (esRun && zp && zh && /Fácil|Recuperación/.test(zp.nom) && zh.k !== 'z1') {
-      aviso = ' El ritmo era de rodaje fácil pero el corazón iba en ' + zh.nom.split(' ')[0] + ': un «fácil que no lo es», típico de días de calor, cansancio o desnivel.';
+    var pts = [], mejora = [], nivel = zh && zh.k === 'z3' ? 'warn' : 'ok';
+
+    if (esRun) {
+      if (zp) pts.push('Por ritmo medio cae en <b>' + esc(zp.nom) + '</b>');
+      if (zh) pts.push('la FC media la sitúa en <b>' + esc(zh.nom) + '</b>');
+      if (zp && zh && /Fácil|Recuperación/.test(zp.nom) && zh.k !== 'z1') {
+        var cadPpm = a.cad ? a.cad * 2 : 0;
+        if (cadPpm && Math.abs(a.hr - cadPpm) <= 14) {
+          pts.push('posible enganche de muñeca a la cadencia (' + F.num(a.hr, 0) + ' lpm vs ' + F.num(cadPpm, 0) + ' ppm) por frío');
+        } else {
+          pts.push('ritmo fácil con pulso en ' + zh.nom.split(' ')[0] + ' (calor, fatiga o desnivel)');
+        }
+      }
+      var sp = analisisSplits(a);
+      if (sp) {
+        if (sp.diff <= -8) pts.push('<b>progresión negativa</b> (' + F.paceKm(sp.p1) + ' → ' + F.paceKm(sp.p2) + ')');
+        else if (sp.diff >= 15) pts.push('caída de ritmo en la segunda mitad (' + F.paceKm(sp.p1) + ' → ' + F.paceKm(sp.p2) + ')');
+        else pts.push('ritmo parejo (' + F.paceKm(sp.p1) + ' → ' + F.paceKm(sp.p2) + ')');
+      }
+      if (a.cad) {
+        var ppm = a.cad * 2;
+        pts.push('cadencia ' + (ppm >= 178 ? 'viva' : ppm >= 168 ? 'sólida' : 'baja') + ' (' + F.num(ppm, 0) + ' ppm)');
+      }
+      // Mejora concreta para la próxima carrera
+      if (sp && sp.diff >= 15) mejora.push('arranca 10–15 s/km más suave en los primeros 2 km para sostener el cierre');
+      else if (zp && /Fácil|Recuperación/.test(zp.nom) && zh && zh.k !== 'z1') mejora.push('baja 15–20 s/km o usa banda de pecho en frío para confirmar Z1 real');
+      else if (sp && sp.diff <= -8) mejora.push('buen control: la próxima vez mantén ese primer km contenido y acelera sólo los últimos 2 km');
+      if (a.cad && a.cad * 2 < 168) mejora.push('suma 4 × 20 s de rectas suaves al final para subir cadencia');
+      if (!mejora.length) mejora.push(a.km >= 10 ? 'lleva agua y 30–60 g/h de carbohidrato si pasa de 75 min' : 'calienta 5–10 min dentro de casa antes de salir con frío');
+    } else if (esBici) {
+      var picoKmh = a.maxMs ? a.maxMs * 3.6 : 0;
+      if (picoKmh > 75) {
+        pts.push('<b>pico de velocidad irreal (' + F.num(picoKmh, 0) + ' km/h)</b> por fallo de GPS: toma como válidos el tiempo (' + F.num(a.min, 0) + ' min)' + (a.hr ? ' y la FC (' + F.num(a.hr, 0) + ' lpm)' : '') + ', no la distancia ni los vatios estimados');
+        nivel = 'warn';
+      } else {
+        if (zh) pts.push('Intensidad en <b>' + esc(zh.nom) + '</b>');
+        if (a.watts) pts.push('potencia estimada ' + F.num(a.watts, 0) + ' W');
+        if (a.elev >= 50 && a.km >= 1) pts.push('densidad de subida ' + F.num(a.elev / a.km, 0) + ' m/km');
+      }
+      if (a.elapsed > a.min + 10) pts.push('pausas acumuladas de ' + F.num(a.elapsed - a.min, 0) + ' min');
+      // Mejora concreta para la próxima salida en bici
+      if (picoKmh > 75) mejora.push('espera 30 s a que fije el GPS antes de arrancar o graba con Wahoo para no distorsionar distancia ni vatios');
+      else if (zh && zh.k === 'z1') mejora.push('si buscas mantener forma en frío, mete 3 × 8 min en Z3 al mediodía en la próxima salida');
+      else if (a.elev >= 300) mejora.push('come 60 g/h de carbohidrato desde los primeros 25 min para no vaciar piernas en subidas largas');
+      else mejora.push('mantén cadencia ágil (80–90 rpm) y guantes/cortavientos para conservar potencia muscular');
     }
-    return U.note('Cómo salió', txt.join(' y ') + '.' + aviso, zh && zh.k === 'z3' ? 'warn' : 'ok');
+
+    if (!pts.length) return '';
+    var cuerpo = pts.join(' · ') + '.' + (mejora.length ? '<br><b>Para la próxima:</b> ' + esc(mejora.join('; ')) + '.' : '');
+    return U.note('Análisis de la sesión', cuerpo, nivel);
   }
 
   /* ---------- tarjeta por actividad ---------- */
@@ -142,9 +198,11 @@
       return "<article class='card'><h4>" + (EMO[a.grupo] || '•') + ' ' + esc(a.nombre || a.deporte) +
         '</h4>' + U.note('Datos inconsistentes', esc(a.anomalia) + ' Esta actividad queda fuera de las estadísticas.', 'warn') + '</article>';
     }
+    var w = App.clima && App.clima.actividad ? App.clima.actividad(a.id) : null;
     var hora = (a.hora < 10 ? '0' : '') + a.hora + ':00';
     var out = "<article class='card'><h4>" + (EMO[a.grupo] || '•') + ' ' + esc(a.nombre || a.deporte) +
       " <small style='font-weight:normal;opacity:.7'>· " + esc(hora) + '</small></h4>';
+    if (w) out += "<p class='dia-clima'><b>Clima:</b> " + esc(App.clima.texto(w)) + ' <small>(' + esc(w.f) + ')</small></p>';
     out += U.kpis(kpisDe(a, f), 'k3');
     out += veredicto(a, D, f);
     if (a.grupo === 'running') out += splits(a, D, f);
@@ -174,7 +232,7 @@
         (evaluacion.parciales ? ', ' + evaluacion.parciales + ' parciales' : '');
     var cuerpo = '<b>' + esc(tipo.nom ? tipo.nom + ' · ' : '') + esc(dia.sesion) + '</b>' +
       (componentes.length ? '<br>' + esc(componentes.join(' · ')) : '<br>Sin componentes puntuables: cualquier movimiento suma.') +
-      '<br><small>Cuenta como cumplida una actividad con al menos el 80% del volumen previsto (fuerza: 15 min). Se comparan deportes por separado.</small>';
+      '<br><small>Cuenta como cumplida una actividad con al menos el 75 % del volumen previsto (70 % si hubo intensidad o desnivel, o el mínimo del rango; fuerza: 12 min). Se comparan deportes por separado.</small>';
     return U.note(titulo, cuerpo, nivel);
   }
 
