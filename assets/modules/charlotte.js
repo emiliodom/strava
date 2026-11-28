@@ -85,7 +85,10 @@
         '<p>Charlotte en diciembre y enero: máximas de unos 10–13 °C y mínimas cerca de 0 °C, con mañanas bajo cero algunas semanas. El frío no daña al que va bien abrigado y moviéndose; lo que limita es la pérdida de calor en manos, pies y cara, y la potencia de los músculos fríos' + c('castellani') + '.</p>' +
         '<ul><li><b>Capas por temperatura al correr:</b> más de 10 °C, camiseta de manga larga · 5–10 °C, manga larga y mallas o cortos con guantes finos · 0–5 °C, capa térmica + cortavientos, mallas, guantes, gorro · bajo 0 °C, lo mismo más cuello y calcetines gruesos. Sales con algo de frío: a los 10 min sobra calor.</li>' +
         '<li><b>Bici, más frío que correr:</b> el viento de tu propia velocidad (20–25 km/h) baja la sensación unos 5–8 °C. Bajo 5 °C: guantes gruesos, cubrezapatillas, cortavientos y bajadas cortas. Si hay hielo o la sensación es de −5 °C o menos, la bici va al mediodía o se cambia por correr.</li>' +
-        '<li><b>Calentamiento:</b> 5–10 min dentro (movilidad, saltos suaves) antes de salir y los primeros 10 min muy suaves. Las series no empiezan hasta estar caliente.</li>' +
+        '<li><b>Calentamiento en casa (5–10 min antes de salir):</b>' +
+        '<ol><li><b>Subir temperatura (2–3 min):</b> marcha rápida, saltos suaves (jumping jacks) o 1–2 min de boxeo de sombra ligero hasta entrar en calor sin llegar a sudar.</li>' +
+        '<li><b>Movilidad y activación (4–5 min):</b> gato-camello (8–10 lentos), balanceos de pierna adelante-atrás y laterales (10 por lado), puentes de glúteo con pausa de 2–3 s (10–12), sentadillas sin carga o zancadas atrás (8–10) y círculos de tobillo + elevaciones de talón (10 por lado).</li>' +
+        '<li><b>Arranque fuera (primeros 10 min):</b> muy suave (Z1–Z2); en días de series (mar/jue), mete 2–4 × 20 s progresivos sólo después de 10–15 min suaves cuando el músculo ya esté caliente.</li></ol></li>' +
         '<li><b>Oscuridad:</b> amanece cerca de las 7:20. Luz frontal o de pecho, ropa reflectante y el tramo del Greenway sin cruces.</li>' +
         '<li><b>Hidratación:</b> con frío se tiene menos sed pero se sigue sudando; bebe igual en las tiradas largas.</li>' +
         '<li><b>Al volver:</b> quítate la ropa mojada enseguida; el enfriamiento de después es lo que más se nota.</li>' +

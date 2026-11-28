@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.32.2] — 2026-11-28
+
+### Añadido
+- Guía › Charlotte › **«Entrenar con frío»**: protocolo detallado de calentamiento en casa (5–10 min en 3 fases: subir temperatura, movilidad y activación con gato-camello, balanceos de pierna, puentes de glúteo, sentadillas/zancadas y tobillo/talón, más arranque suave fuera).
+- Bitácora del **28 nov** en `assets/notas.js` (y resumen al 28 nov): análisis del doble de mañana en Freedom Park (47 min Z2 con FC 129, pico de GPS erróneo en Samsung) + 5,01 km con Wahoo en 27:01 (5:24/km en progresión).
+
 ## [0.32.1] — 2026-11-27
 
 ### Corregido
