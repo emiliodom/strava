@@ -165,7 +165,7 @@
 
   /* Prevención (espalda baja y equilibrio): lunes, miércoles y viernes (espalda), jueves y sábado (equilibrio),
      y al terminar cada MTB larga. Nunca en días de vuelo. */
-  var DESDE_PREV = '2026-10-19', MTB_LARGAS = { rodada100: 1, colomba: 1, campana: 1, senderos: 1, xab: 1 };
+  var DESDE_PREV = '2026-10-19', MTB_LARGAS = { rodada100: 1, colomba: 1, campana: 1, senderos: 1, xab: 1, barrancas: 1 };
   function aplicarPrevencion(dias) {
     dias.forEach(function (d) {
       if (d.fecha < DESDE_PREV || d.hito) return;
@@ -290,14 +290,14 @@
     '2027-01-04': ['R', 3, 0, 'R: trote 3 km fácil por la mañana (la referencia de bici 2 pasó al sábado 2 ene al mediodía por el frío)', null],
     '2027-01-07': ['Q', 9, 0, 'AM: contrarreloj 5K en el Greenway: 2 km suaves + 4 rectas de 20 s + 5 km a tope + 2 km suaves', 'Referencia: 23:56 el 20 nov. Con frío y seis semanas de constancia, 23:00–23:30 es razonable. Sal a 4:45 y aprieta desde el km 3.'],
     '2027-01-30': ['F', 1.6, 75, 'Prueba de FTP de 20 min en subida: 20 min de calentamiento con 3 × 1 min fuerte, 5 min suave, 20 min a tope en una subida constante sin bajadas, 15 min suave + trote de la racha 1,6 km', 'Anota tiempo, distancia y desnivel del tramo y calcúlala en Guía › Bici o correr. Repite cada 6–8 semanas en la misma subida. Si choca con una carrera de enero, se mueve.'],
-    '2027-01-16': ['R', 2, 45, 'Víspera del 5K (o de la travesía): bici suave 45 min + trote 2 km con 4 rectas de 20 s', 'Llegaste el 13 por la noche: duerme, bebe con sal y no hagas la MTB larga del sábado.'],
+    '2027-01-15': ['R', 2, 35, 'Víspera del Reto Las Barrancas: bici suave 35 min con 3 × 1 min alegre + trote 2 km con 4 rectas · revisa pastillas, cubiertas y comida', '1.500 m de subida y 1.500 m de bajada exigen frenos al 100 % y 250–350 g de carbohidrato preparados. Cena temprano y bebe con sodio.'],
     '2027-01-18': ['E', 4, 45, 'Recuperación: trote 4 km fácil + bici Z1 45 min', 'Semana de la prueba de Candelaria (sábado 23): martes y jueves normales, viernes suave.'],
     '2027-02-04': ['E', 5, 45, 'Semana de Panajachel: trote 5 km fácil + bici 45 min con 3 × 1 min fuerte (sin HIIT largo)', 'El sábado Tecpanpana: desde hoy carbohidrato normal-alto y revisa la bici (pastillas, cubiertas, cambios).'],
     '2027-02-05': ['R', 1.6, 30, 'Viaje a Tecpán: bici 30 min soltando (si se puede) + milla de la racha; cena temprano', 'Altura: más agua, nada de alcohol y a dormir temprano. Ropa para el frío de la madrugada y de la bajada al lago.'],
     '2027-02-08': ['R', 3, 40, 'Recuperación tras Panajachel: bici Z1 40 min + trote 3 km muy suave', 'Dos días de montaña en altura: sin intensidad hasta el miércoles.'],
     '2027-01-22': ['R', 3, 30, 'Víspera de la prueba de Candelaria: trote 3 km suave + bici 30 min soltando con 3 × 1 min', 'Mañana prueba: menos de 6 h de bici en la semana, cena con carbohidrato, revisa la presión y carga la banda de pulso.'],
     '2027-01-23': ['F', 1.6, 90, 'Prueba de la ruta Candelaria (≈24 km, ≈500 m) a ritmo de prueba, 17:00–19:00, con banda de pulso y la misma presión + trote de la racha 1,6 km', 'Primera prueba en temporada seca. Meta: 19,5 km/h. Anota si llovió y regístrala; la página Ruta Candelaria la compara sola.'],
-    '2027-01-14': ['B', 5, 90, 'Primer día en casa: MTB 90 min + trote 5 km fácil; desde mañana, la rutina del colegio (correr 5:00–6:00, bici de noche)', 'Si la mañana se complica con el colegio, la ventana de respaldo es 7:00–9:00 (antes de las 8:00 de Utah = 9:00 aquí).']
+    '2027-01-14': ['E', 4, 45, 'Primer día en casa: trote fácil 4 km + bici Z1–Z2 45 min para soltar el viaje y empezar a sentir el calor (sin forzar: el sábado es Reto Las Barrancas)', 'Llegaste anoche a las 22:00 desde el frío: hidrátate con sal y no gastes piernas antes del sábado.'],
   };
   /* Rutina del colegio (15 ene en adelante): la hija entra al colegio, así que se corre de 5:00 a 6:00 y la bici (ruta o MTB) va de noche;
      respaldo 7:00–9:00, porque el trabajo empieza a las 8:00 de Utah (9:00 en Guatemala). Lunes…domingo. */
@@ -313,7 +313,8 @@
   var RUTINA_DESDE = '2027-01-15';
   /* Eventos que caen en días generados (extender no les pone evento). Fila: [tipo, km a pie, min de bici, sesión, id de evento]. */
   var DIAS_EVENTO = {
-    '2027-01-17': ['C', 5, 0, '5K por los Bomberos (Retalhuleu) o Travesía San Pablo (MTB): elige una; recomendación, el 5K como control en calor', 'bomberos'],
+    '2027-01-16': ['M', 1.6, 240, 'Reto Las Barrancas (55 km gravel de montaña + asfalto, 1.500 m D+ y 1.500 m D−): Z2 alta en la primera hora, 60–80 g/h y bajada controlada + milla de la racha', 'barrancas'],
+    '2027-01-17': ['R', 3, 0, 'Recuperación tras Reto Las Barrancas: trote muy suave 3 km o la milla de la racha (5K Bomberos / San Pablo sólo si no corres el sábado)', 'bomberos'],
     '2027-02-06': ['M', 1.6, 240, 'Travesía Tecpanpana (Tecpán → Panajachel), MTB o ruta: por pulso, comiendo 60–90 g/h + milla de la racha', 'tecpanpana'],
     '2027-02-07': ['B', 1.6, 150, 'Opcional: travesía de la Pana Epic Race (≈25 km, 600 m) en Z2 sin competir; si las piernas no responden, sólo la milla', 'panaepic']
   };

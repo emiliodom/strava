@@ -3,6 +3,12 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.34.0] — 2026-11-28
+
+### Cambiado
+- **Nuevo objetivo principal: Reto Las Barrancas (`2027-01-16`)** en `plan.js` y `ajuste.js`: 55 km de gravel de montaña y asfalto con 1.500 m de subida y 1.500 m de bajada, prioridad `A` (el contador del hero pasa de Travesía Tecpanpana a Reto Las Barrancas).
+- Ajustados `2027-01-14` (suave al volver de Charlotte), `2027-01-15` (víspera y revisión de frenos/cubiertas), `2027-01-16` (`DIAS_EVENTO` + `MTB_LARGAS` con prevención lumbar) y `2027-01-17` (recuperación tras Barrancas).
+
 ## [0.33.1] — 2026-11-28
 
 ### Corregido
