@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.33.1] — 2026-11-28
+
+### Corregido
+- **Wrapping en el modal «Esta semana y los últimos días»** (`#portDlg` en `app.css`): las tablas `.tw` dentro del diálogo ahora hacen salto de línea en la columna del plan (`white-space:normal; overflow-wrap:anywhere`) manteniendo compactas las columnas de fecha y estado (`✓`/`hoy✓`).
+
 ## [0.33.0] — 2026-11-28
 
 ### Mejorado

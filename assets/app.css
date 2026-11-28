@@ -298,6 +298,9 @@ details.acc[open]>summary{margin-bottom:.5rem;border-bottom:1px solid var(--pico
 .port-dlg header{display:flex;justify-content:space-between;align-items:center;gap:.5rem;position:sticky;top:-1rem;background:inherit;margin:-1rem -1rem .75rem;padding:.8rem 1rem}
 .port-dlg .close-x{all:unset;cursor:pointer;padding:.2rem .5rem;border-radius:6px;color:var(--pico-muted-color)}
 .port-dlg .close-x:hover{background:var(--pico-muted-border-color)}
+.port-dlg .tw table{width:100%}
+.port-dlg .tw th,.port-dlg .tw td{white-space:normal;overflow-wrap:anywhere;vertical-align:top}
+.port-dlg .tw th:first-child,.port-dlg .tw td:first-child,.port-dlg .tw th:last-child,.port-dlg .tw td:last-child{white-space:nowrap}
 .tile.semana{padding-bottom:1.4rem}
 
 /* =====================================================================
