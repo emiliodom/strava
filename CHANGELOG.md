@@ -3,6 +3,11 @@
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado [SemVer](https://semver.org/lang/es/).
 Mientras la versión sea `0.x`, la estructura del JSON de datos y de los módulos puede cambiar entre versiones menores.
 
+## [0.34.1] — 2026-11-28
+
+### Añadido
+- **Sección específica «Barrancas»** (`assets/modules/barrancas.js`, módulo 31 en Guía de resistencia): preparación completa para el Reto Las Barrancas (55 km gravel de montaña + asfalto, +1.500 m / −1.500 m), con bloque de entrenamiento desde Charlotte (torque a 55–65 rpm, trail excéntrico en Crowders, rutina K y prevención lumbar P), táctica de subida, técnica de bajada en transición grava ↔ asfalto, revisión mecánica y puente de 72 h al calor (13–16 ene).
+
 ## [0.34.0] — 2026-11-28
 
 ### Cambiado
